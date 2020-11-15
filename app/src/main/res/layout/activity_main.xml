@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/writeView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/main_bar_bg"
+    tools:context=".ui.MainActivity">
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/main_toolbar"
+        android:layout_width="match_parent"
+        android:theme="@style/Theme.AppCompat.DayNight"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        android:layout_height="?attr/actionBarSize">
+    </androidx.appcompat.widget.Toolbar>
+
+  <androidx.viewpager2.widget.ViewPager2
+      android:layout_below="@+id/main_toolbar"
+      android:layout_width="match_parent"
+      android:id="@+id/page2_layout"
+      android:layout_height="match_parent"/>
+
+
+</RelativeLayout>
+</layout>
