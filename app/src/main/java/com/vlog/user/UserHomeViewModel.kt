@@ -7,6 +7,6 @@ class UserHomeViewModel @ViewModelService(UserHomeActivity::class)internal const
     private val source: UserSource
 ):ViewModel(){
 
-    fun userRelation(userId:Int) = source.checkRelation(Owner().userId,userId)
+    fun userRelation(userId:Int) = source.checkRelation(userId)
 
 }

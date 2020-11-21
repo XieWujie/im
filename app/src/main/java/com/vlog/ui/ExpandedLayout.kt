@@ -9,6 +9,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewConfiguration
 import android.widget.LinearLayout
+import android.widget.Scroller
 import androidx.annotation.RequiresApi
 import com.vlog.R
 import kotlin.math.abs
@@ -52,6 +53,7 @@ class ExpandedLayout : LinearLayout {
     private var mLastX = 0
     private var mLastY = 0
     private val mStateExpand = 0
+    private val scroller = Scroller(context)
     private val mStateCollapsed = 1
     private var mState = mStateExpand
     private var mGiveUpTouchEventListener: GiveUpTouchEventListener? = null
@@ -115,7 +117,7 @@ class ExpandedLayout : LinearLayout {
                 } else if (mState == mStateExpand && dy <= -mScaledTouchSlop) {
                     //上滑
                     true
-                } else if(mGiveUpTouchEventListener != null && mGiveUpTouchEventListener!!.giveUpTouchEvent() && dy > mScaledTouchSlop){
+                } else if(dy > mScaledTouchSlop){
                     //下滑
                     true
                 }else{
@@ -180,5 +182,6 @@ class ExpandedLayout : LinearLayout {
         }
         headerView!!.layoutParams.height = height
         headerView!!.requestLayout()
+
     }
 }

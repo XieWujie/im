@@ -9,8 +9,10 @@ import com.dibus.DiBus
 import com.google.gson.Gson
 import okhttp3.*
 import java.io.IOException
+import java.lang.RuntimeException
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
+
 
 inline fun<reified T> Request.enqueue(crossinline onResponse:(response: T)->Unit, crossinline onFailure:(e: Exception)->Unit,type:Type = T::class.java){
     val httpClient = DiBus().fetch(OkHttpClient::class.java.canonicalName!!)
@@ -25,6 +27,10 @@ inline fun<reified T> Request.enqueue(crossinline onResponse:(response: T)->Unit
                 }
 
                 override fun onResponse(call: Call, response: Response) {
+                    if(!response.isSuccessful){
+                        onFailure(Exception(response.message))
+                        return
+                    }
                     val gs = DiBus.get(Gson::class.java.canonicalName!!) as Gson
                     val realType = getType(HttpResponse::class.java,type)
                     val body = response.body!!.string()
@@ -60,4 +66,19 @@ inline fun <reified T> Request.toLiveData(type:Type = T::class.java,noinline act
         liveData.postValue(Result.Error(it))
     },type)
     return liveData
+}
+
+inline fun <reified T>Request.sync(type: Type = T::class.java):T{
+    val httpClient = DiBus().fetch(OkHttpClient::class.java.canonicalName!!) as OkHttpClient
+    val response =  httpClient.newCall(this).execute()
+    val gs = DiBus.get(Gson::class.java.canonicalName!!) as Gson
+    val realType = getType(HttpResponse::class.java,type)
+    val res = response.body!!.string()
+    Log.d("net",res)
+    val r = gs.fromJson<HttpResponse<T>>(res,realType)
+    if(r.statusCode == 200){
+        return r.data
+    }else{
+        throw RuntimeException(r.description)
+    }
 }

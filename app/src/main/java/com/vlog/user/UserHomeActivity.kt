@@ -32,13 +32,8 @@ class UserHomeActivity : BaseActivity() {
         binding.user = user
         binding.sendMessageBt.isClickable = false
         viewModel.userRelation(user.userId).observe(this,  {relation->
-            when(relation){
-                is Result.Error->{}
-                is Result.Data->{
-                    binding.sendMessageBt.setOnClickListener {
-                        user?.also {  ConversationActivity.launch(this,user,relation.data.conversationId) }
-                    }
-                }
+            binding.sendMessageBt.setOnClickListener {
+                user.also {  ConversationActivity.launch(this,relation) }
             }
 
         })

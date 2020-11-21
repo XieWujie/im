@@ -62,7 +62,7 @@ class MessageOnTime :Runnable{
     }
 
     fun setDestination(user:Int){
-        message.destination = user
+        message.conversationId = user
     }
 
     data class P(val x:Float,val y:Float,val type:Int)

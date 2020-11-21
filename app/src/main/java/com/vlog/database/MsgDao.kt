@@ -9,12 +9,12 @@ import androidx.room.Query
 @Dao
 interface MsgDao {
 
-    @Query("select * from msgwithuser where destination=:destination order by createAt")
-    fun getFromDestination(destination:Int):LiveData<List<MsgWithUser>>
+    @Query("select * from message where conversationId=:destination order by createAt")
+    fun getByConversationId(destination:Int):List<Message>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(msgWithUser: MsgWithUser)
+    fun insert(message: Message)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(msgWithUser: List<MsgWithUser>)
+    fun insert(msgs: List<Message>)
 }

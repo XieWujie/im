@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+<com.common.DragLinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:background="@color/main_bar_bg"
+    android:layout_height="match_parent"
+    tools:context=".ui.relation.RoomListActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:id="@+id/top_bar"
+        android:gravity="center_vertical"
+        android:layout_height="?attr/actionBarSize">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:id="@+id/back_layout"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:src="@drawable/ic_back"
+                android:id="@+id/ic_back_view"
+                android:layout_width="wrap_content"
+                android:layout_marginStart="3dp"
+                android:layout_height="wrap_content"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:textColor="@android:color/black"
+                android:text="群聊"
+                android:layout_marginStart="5dp"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+    </RelativeLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:text="群聊"
+        android:layout_margin="5dp"
+        android:layout_height="wrap_content"/>
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:background="@android:color/white"
+        android:id="@+id/recyclerView"
+        android:layout_height="wrap_content"/>
+
+</com.common.DragLinearLayout>
+</layout>

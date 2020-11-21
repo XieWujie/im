@@ -8,8 +8,6 @@ import android.widget.RelativeLayout
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.common.Result
-import com.common.ext.toast
 import com.dibus.AutoWire
 import com.vlog.R
 import com.vlog.verify.list.VerifyListActivity
@@ -35,20 +33,17 @@ class RelationFragment :Fragment(){
         recyclerView = view.findViewById(R.id.recyclerView)
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(context)
-        newFLayout = view.findViewById(R.id.new_friend_layout)
         event()
         return view
     }
 
-    fun event(){
-        newFLayout.setOnClickListener {
-            VerifyListActivity.launch(it.context)
-        }
+    private fun event(){
+
         viewModel.getRelations().observe(viewLifecycleOwner){
-            when(it){
-                is Result.Error->context?.toast(it.toString())
-                is Result.Data->adapter.setList(it.data)
-            }
+
+        }
+        viewModel.friendListen().observe(viewLifecycleOwner){
+            adapter.setList(it)
         }
     }
 

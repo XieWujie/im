@@ -64,8 +64,8 @@ class WriteMessageHolder{
    }
 
     companion object{
-        fun L( binding:LeftWriteMessageBinding) = LWriteViewHolder(binding)
+        fun l(binding:LeftWriteMessageBinding) = LWriteViewHolder(binding)
 
-        fun R(binding: RightWriteMessageBinding) = RWriteViewHolder(binding)
+        fun r(binding: RightWriteMessageBinding) = RWriteViewHolder(binding)
     }
 }

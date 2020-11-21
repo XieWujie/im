@@ -69,7 +69,6 @@ class InputBottom : FrameLayout, TextWatcher {
             }else{
                 val content = binding.inputText.text.toString()
                 val message = Message(0, Owner().userId,conversationId, Message.MESSAGE_TEXT,content,0)
-                DiBus.postEvent(MsgWithUser(message,user))
                 DiBus.postEvent(message,MessageSend{
 
                 })

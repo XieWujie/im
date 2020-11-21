@@ -1,10 +1,8 @@
 package com.vlog.adapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.SortedList
 import com.dibus.*
 import com.google.gson.Gson
 import com.vlog.database.Message
@@ -37,6 +35,12 @@ class MessageListAdapter :RecyclerView.Adapter<MessageHolder>(){
 
     fun getFirstItemBefore() = if(mList.isEmpty()) Long.MAX_VALUE else mList.first.message.createAt
 
+    @BusEvent
+    fun newMessage(mesWithUser: MsgWithUser){
+        mList.addLast(mesWithUser)
+        notifyItemInserted(mList.size-1)
+    }
+
     fun flashList(list: List<MsgWithUser>){
         if(list.isEmpty()){
             mList.clear()
@@ -66,11 +70,11 @@ class MessageListAdapter :RecyclerView.Adapter<MessageHolder>(){
        return when(viewType){
             TYPE_RIGHT_WRITE->{
                 val binding = RightWriteMessageBinding.inflate(inflater,parent,false)
-               WriteMessageHolder.R(binding)
+               WriteMessageHolder.r(binding)
             }
            TYPE_LEFT_WRITE->{
                val binding = LeftWriteMessageBinding.inflate(inflater,parent,false)
-              WriteMessageHolder.L(binding)
+              WriteMessageHolder.l(binding)
            }
            TYPE_RIGHT_TEXT->{
                val binding = RightTextMessageBinding.inflate(inflater,parent,false)

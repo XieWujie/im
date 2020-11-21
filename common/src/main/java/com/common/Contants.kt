@@ -2,4 +2,4 @@ package com.common
 
 
 
-const val HOST = "http://192.168.137.1:8000"
+const val HOST = "http://10.17.221.69:8000"

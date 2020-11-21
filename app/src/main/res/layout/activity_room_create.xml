@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="match_parent"
+    android:background="@color/main_bar_bg"
+    tools:context=".room.RoomCreateActivity">
+
+    <RelativeLayout
+        android:id="@+id/top_bar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="取消"
+            android:id="@+id/cancel_action"
+            android:layout_marginStart="5dp"
+            android:textColor="@android:color/black"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="创建群聊"
+            android:textColor="@android:color/black"
+            android:layout_height="wrap_content"/>
+    </RelativeLayout>
+    <TextView
+        android:layout_below="@+id/top_bar"
+        android:layout_width="wrap_content"
+        android:id="@+id/check_text"
+        android:layout_margin="5dp"
+        android:text="选择联系人"
+        android:layout_height="wrap_content"/>
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_below="@+id/check_text"
+        android:id="@+id/recyclerView"
+        android:layout_height="wrap_content"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:background="@android:color/white"
+        android:layout_alignParentBottom="true"
+        android:layout_height="50dp">
+        <Button
+            android:layout_width="match_parent"
+            android:layout_margin="10dp"
+            android:id="@+id/next_bt"
+            android:text="下一步"
+            android:clickable="false"
+            android:background="@drawable/blue_rectangle_bg"
+            android:textSize="14sp"
+            android:textColor="@android:color/white"
+            android:layout_height="match_parent"/>
+    </RelativeLayout>
+</RelativeLayout>
+</layout>

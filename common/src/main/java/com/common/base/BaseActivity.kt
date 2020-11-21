@@ -12,7 +12,6 @@ import androidx.appcompat.app.AppCompatActivity
 open class BaseActivity :AppCompatActivity(){
 
 
-    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window.statusBarColor = Color.parseColor("#fff4f5f9")

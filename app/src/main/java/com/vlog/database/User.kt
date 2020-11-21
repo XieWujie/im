@@ -2,18 +2,17 @@ package com.vlog.database
 
 import android.os.Parcel
 import android.os.Parcelable
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import androidx.lifecycle.LiveData
+import androidx.room.*
 
-@Entity
-data class User(@PrimaryKey val userId:Int, val username:String, val avatar:String, val description:String):Parcelable {
+@Entity(primaryKeys = ["userId"])
+data class User(val userId:Int, val username:String, val avatar:String, val description:String):Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readInt(),
         parcel.readString()!!,
         parcel.readString()!!,
         parcel.readString()!!
-    ) {
-    }
+    )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeInt(userId)
@@ -37,4 +36,20 @@ data class User(@PrimaryKey val userId:Int, val username:String, val avatar:Stri
     }
 
 }
+
+@Dao
+interface UserDao{
+
+    @Query("select * from user where userId=:userId")
+    fun getUser(userId:Int): User
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insert(user:List<User>)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insert(user:User)
+
+}
+
+
 

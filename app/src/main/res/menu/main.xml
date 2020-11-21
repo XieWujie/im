@@ -5,6 +5,7 @@
     <item android:id="@+id/action_add" app:showAsAction="always" android:title="添加" android:icon="@drawable/ic_add_24">
         <menu>
             <item android:id="@+id/search" app:showAsAction="always" android:title="搜索" android:icon="@drawable/ic_search_24"/>
-        </menu>
+            <item android:id="@+id/room_create" app:showAsAction="always" android:title="创建群" android:icon="@drawable/ic_room_create"/>
+       </menu>
     </item>
 </menu>

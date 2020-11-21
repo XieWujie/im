@@ -10,6 +10,7 @@ import com.vlog.user.Owner
 import com.vlog.R
 import com.vlog.databinding.ActivityMainBinding
 import com.vlog.login.LoginActivity
+import com.vlog.room.RoomCreateActivity
 import com.vlog.search.FindActivity
 import com.vlog.ui.relation.RelationFragment
 import dibus.app.WsListenerCreator
@@ -45,11 +46,12 @@ class MainActivity :BaseActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.action_add -> {
-
-            }
             R.id.search -> {
                 launch<FindActivity>()
+                return true
+            }
+            R.id.room_create->{
+                launch<RoomCreateActivity>()
                 return true
             }
         }

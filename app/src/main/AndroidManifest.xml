@@ -13,10 +13,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".verify.list.VerifyListActivity"></activity>
-        <activity android:name=".verify.ReceiveVerifyActivity" />
+        <activity android:name=".ui.relation.RoomListActivity"></activity>
+        <activity android:name=".conversation.room.CovRoomEditActivity" />
+        <activity android:name=".room.RoomCreateActivity" />
+        <activity android:name=".verify.list.VerifyListActivity" />
         <activity android:name=".verify.send.SendVerifyActivity" />
-        <activity android:name=".conversation.ConversationActivity" />
+        <activity
+            android:name=".conversation.ConversationActivity"
+            android:launchMode="singleTask" />
         <activity android:name=".user.UserHomeActivity" />
         <activity android:name=".search.FindActivity" />
         <activity android:name=".register.RegisterActivity" />

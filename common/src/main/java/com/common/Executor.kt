@@ -6,8 +6,8 @@ import java.util.concurrent.ThreadPoolExecutor
 import java.util.concurrent.TimeUnit
 
 private val executor =
-    ThreadPoolExecutor(2,
-        2,
+    ThreadPoolExecutor(1,
+        1,
         100,
         TimeUnit.SECONDS,
         LinkedBlockingQueue())

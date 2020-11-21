@@ -8,6 +8,7 @@ import com.vlog.database.Message
 import com.vlog.database.MsgDao
 import com.vlog.database.MsgWithUser
 import com.vlog.user.Owner
+import com.vlog.user.UserSource
 import okhttp3.*
 import okio.ByteString
 
@@ -21,8 +22,10 @@ class WsListener:WebSocketListener() {
     @AutoWire
     lateinit var msgDao: MsgDao
 
+    @AutoWire lateinit var userSource: UserSource
+
     private val request = Request.Builder()
-        .url("ws://192.168.137.1:8000/ws?userId=${Owner().userId}")
+        .url("ws://10.17.221.69:8000/ws?userId=${Owner().userId}")
         .build()
 
     private var ws:WebSocket? = null
@@ -72,9 +75,9 @@ class WsListener:WebSocketListener() {
 
     override fun onMessage(webSocket: WebSocket, text: String) {
         super.onMessage(webSocket, text)
-        val m = gson.fromJson(text, MsgWithUser::class.java)
-        if(m.message.sendFrom != Owner().userId)
-        DiBus.postEvent(m)
+        val m = gson.fromJson(text, Message::class.java)
+        val user = userSource.findUser(m.sendFrom)
+        DiBus.postEvent(MsgWithUser(m,user))
         Log.d(TAG,"onMessage:$text")
         msgDao.insert(m)
     }

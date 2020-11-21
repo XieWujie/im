@@ -30,6 +30,8 @@ class LoginActivity : BaseActivity() {
         dispatchEvent()
         binding.passwordText.setText("123456")
         binding.userText.setText("xiee")
+        binding.icPassword.visibility = View.GONE
+        binding.icUser.visibility = View.GONE
     }
 
     private fun dispatchEvent(){

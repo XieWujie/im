@@ -10,4 +10,6 @@ class RelationViewModel @ViewModelService(RelationFragment::class) internal cons
 
 
     fun getRelations() = source.getRelations(Owner().userId)
+
+    fun friendListen() = source.friendListen(Owner().userId)
 }
