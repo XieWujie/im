@@ -10,6 +10,7 @@ import com.common.base.BaseActivity
 import com.dibus.AutoWire
 import com.vlog.R
 import com.vlog.adapter.MessageListAdapter
+import com.vlog.conversation.room.CovRoomEditActivity
 import com.vlog.database.Friend
 import com.vlog.database.Room
 import com.vlog.database.User
@@ -52,6 +53,9 @@ class ConversationActivity :BaseActivity() {
             val room = intent.getParcelableExtra<Room>("room")?:throw RuntimeException("传入friend 或者room")
             conversationId = room.conversationId
             binding.titleText.text = room.roomName
+            binding.moreActionView.setOnClickListener {
+               CovRoomEditActivity.launch(this,room)
+            }
         }
 
         binding.icBack.setOnClickListener {
@@ -86,6 +90,7 @@ class ConversationActivity :BaseActivity() {
                }
            }
        })
+
     }
 
     companion object{
@@ -96,7 +101,7 @@ class ConversationActivity :BaseActivity() {
             context.startActivity(intent)
         }
 
-        fun launch(context: Context, room: com.vlog.database.Room){
+        fun launch(context: Context, room:Room){
             val intent = Intent(context,ConversationActivity::class.java)
             intent.putExtra("room",room)
             context.startActivity(intent)

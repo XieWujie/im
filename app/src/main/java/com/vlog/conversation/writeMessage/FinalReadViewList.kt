@@ -52,6 +52,7 @@ class FinalReadViewList:RecyclerView {
         val message = Message(0, Owner().userId,conversationId, Message.MESSAGE_WRITE,content,0)
         list.clear()
         mAdapter.notifyDataSetChanged()
+        DiBus.postEvent(MsgWithUser(message,user))
         DiBus.postEvent(message,MessageSend{
 
         })

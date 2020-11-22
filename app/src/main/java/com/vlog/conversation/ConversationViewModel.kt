@@ -15,7 +15,7 @@ class ConversationViewModel @ViewModelService(ConversationActivity::class)
     fun queryMessage(conversationId:Int) = source.getFromConversation(conversationId)
 
 
-  fun query(before:Long,conversationId: Int): LiveData<Result<List<Message>>> {
+  fun query(before:Long,conversationId: Int): LiveData<Result<List<MsgWithUser>>> {
     return source.loadFromNet(before, conversationId)
   }
 }

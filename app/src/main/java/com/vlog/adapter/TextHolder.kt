@@ -1,5 +1,6 @@
 package com.vlog.adapter
 
+import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
@@ -36,6 +37,11 @@ class TextHolder{
 
         override fun bind(m: MsgWithUser) {
             holder.load(binding.contentText,binding.userAvatarView,binding.usernameText,m)
+            if(m.message.messageId == 0){
+                binding.sendIng.visibility = View.VISIBLE
+            }else{
+                binding.sendIng.visibility = View.GONE
+            }
         }
     }
 }

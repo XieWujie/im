@@ -24,6 +24,8 @@ class MessageListAdapter :RecyclerView.Adapter<MessageHolder>(){
 
     private val mList = LinkedList<MsgWithUser>()
 
+    private val temptList = LinkedList<MsgWithUser>()
+
 
 
     private fun addBefore(list:List<MsgWithUser>){
@@ -37,8 +39,7 @@ class MessageListAdapter :RecyclerView.Adapter<MessageHolder>(){
 
     @BusEvent
     fun newMessage(mesWithUser: MsgWithUser){
-        mList.addLast(mesWithUser)
-        notifyItemInserted(mList.size-1)
+
     }
 
     fun flashList(list: List<MsgWithUser>){
@@ -88,7 +89,11 @@ class MessageListAdapter :RecyclerView.Adapter<MessageHolder>(){
     }
 
     override fun onBindViewHolder(holder: MessageHolder, position: Int) {
-        holder.bind(mList[position])
+        if(position<mList.size){
+            holder.bind(mList[position])
+        }else{
+            holder.bind(temptList[position+mList.size-1])
+        }
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -106,7 +111,7 @@ class MessageListAdapter :RecyclerView.Adapter<MessageHolder>(){
     }
 
     override fun getItemCount(): Int {
-        return mList.size
+        return mList.size+temptList.size
     }
 
 

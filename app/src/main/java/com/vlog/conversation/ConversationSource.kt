@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.common.HOST
 import com.common.Result
 import com.common.ext.getType
+import com.common.ext.map
 import com.common.ext.toLiveData
 import com.common.pushExecutors
 import com.dibus.AutoWire
@@ -22,27 +23,26 @@ class ConversationSource {
    @AutoWire
    lateinit var dao: MsgDao
 
+   @AutoWire
+   lateinit var userDao: UserDao
+
    @AutoWire lateinit var userSource:UserSource
 
    fun getFromConversation(conversationId:Int):LiveData<List<MsgWithUser>>{
-      val liveData = MutableLiveData<List<MsgWithUser>>()
-      pushExecutors {
-        val mList =  dao.getByConversationId(conversationId).map {
-            MsgWithUser(it,userSource.findUser(it.sendFrom))
-         }
-         liveData.postValue(mList)
-      }
-      return liveData
+      return dao.getLiveById(conversationId)
    }
 
-   fun loadFromNet(before:Long,conversationId: Int):LiveData<Result<List<Message>>>{
+   fun loadFromNet(before:Long,conversationId: Int):LiveData<Result<List<MsgWithUser>>>{
       val url = "$HOST/message/get?destination=$conversationId&&before=$before&&messageType=10"
       val request = Request.Builder()
          .url(url)
          .get()
          .build()
-      return request.toLiveData(getType(List::class.java,Message::class.java)){
-         dao.insert(it)
+      return request.toLiveData(getType(List::class.java,MsgWithUser::class.java)){
+         val users = it.map { it.user }
+         userDao.insert(users)
+         val messages = it.map { it.message }
+         dao.insert(messages)
       }
    }
 }

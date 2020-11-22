@@ -72,6 +72,7 @@ class InputBottom : FrameLayout, TextWatcher {
                 DiBus.postEvent(message,MessageSend{
 
                 })
+                DiBus.postEvent(MsgWithUser(message,user))
                 binding.inputText.setText("")
             }
         }

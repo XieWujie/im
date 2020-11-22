@@ -26,6 +26,10 @@ class UserSource {
         return dao.getFromUerId(userId)
     }
 
+    fun insert(user:User){
+        userDao.insert(user)
+    }
+
     fun findUser(userId: Int):User{
        return userDao.getUser(userId)?:findByNet(userId).also {
            userDao.insert(it)

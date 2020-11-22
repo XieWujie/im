@@ -4,9 +4,16 @@ import androidx.room.Embedded
 import androidx.room.Entity
 
 @Entity(primaryKeys = ["messageId"])
-data class Message(val messageId:Int, var sendFrom:Int, var conversationId:Int, val messageType:Int, var content:String, var createAt:Long){
+data class Message(
+    val messageId: Int,
+    var sendFrom: Int,
+    var conversationId: Int,
+    val messageType: Int,
+    var content: String,
+    var createAt: Long
+) {
 
-    companion object{
+    companion object {
 
         const val Verify = 3
         const val MESSAGE_WRITE = 12
@@ -14,7 +21,10 @@ data class Message(val messageId:Int, var sendFrom:Int, var conversationId:Int, 
     }
 }
 
-data class MsgWithUser(val message:Message,val user: User)
+data class MsgWithUser(
+    @Embedded val message: Message,
+    @Embedded  val user: User
+)
 
 
 

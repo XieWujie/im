@@ -2,11 +2,13 @@ package com.vlog.connect
 
 import android.util.Log
 import android.view.ViewGroup
+import com.common.pushExecutors
 import com.dibus.*
 import com.google.gson.Gson
 import com.vlog.database.Message
 import com.vlog.database.MsgDao
 import com.vlog.database.MsgWithUser
+import com.vlog.database.UserDao
 import com.vlog.user.Owner
 import com.vlog.user.UserSource
 import okhttp3.*
@@ -21,6 +23,7 @@ class WsListener:WebSocketListener() {
 
     @AutoWire
     lateinit var msgDao: MsgDao
+
 
     @AutoWire lateinit var userSource: UserSource
 
@@ -70,16 +73,17 @@ class WsListener:WebSocketListener() {
         super.onFailure(webSocket, t, response)
         Log.d(TAG,"onFailure:${t.message}")
         t.printStackTrace()
-        ws = null
+        connect()
     }
 
     override fun onMessage(webSocket: WebSocket, text: String) {
         super.onMessage(webSocket, text)
-        val m = gson.fromJson(text, Message::class.java)
-        val user = userSource.findUser(m.sendFrom)
-        DiBus.postEvent(MsgWithUser(m,user))
+        val m = gson.fromJson(text, MsgWithUser::class.java)
+        pushExecutors {
+            userSource.insert(m.user)
+            msgDao.insert(m.message)
+        }
         Log.d(TAG,"onMessage:$text")
-        msgDao.insert(m)
     }
 
     override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
