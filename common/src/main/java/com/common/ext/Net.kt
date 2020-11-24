@@ -68,17 +68,18 @@ inline fun <reified T> Request.toLiveData(type:Type = T::class.java,noinline act
     return liveData
 }
 
+@Throws(IOException::class)
 inline fun <reified T>Request.sync(type: Type = T::class.java):T{
     val httpClient = DiBus().fetch(OkHttpClient::class.java.canonicalName!!) as OkHttpClient
     val response =  httpClient.newCall(this).execute()
     val gs = DiBus.get(Gson::class.java.canonicalName!!) as Gson
     val realType = getType(HttpResponse::class.java,type)
     val res = response.body!!.string()
-    Log.d("net",res)
-    val r = gs.fromJson<HttpResponse<T>>(res,realType)
-    if(r.statusCode == 200){
+    Log.d("net", res)
+    val r = gs.fromJson<HttpResponse<T>>(res, realType)
+    if (r.statusCode == 200) {
         return r.data
-    }else{
-        throw RuntimeException(r.description)
+    } else {
+        throw Exception(r.description)
     }
 }

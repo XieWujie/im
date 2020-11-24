@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.common.ext.launch
 import com.vlog.R
+import com.vlog.avatar.load
 import com.vlog.conversation.ConversationActivity
 import com.vlog.database.Friend
 import com.vlog.databinding.RelationListItemBinding
@@ -28,8 +29,7 @@ class RelationListAdapter :RecyclerView.Adapter<RecyclerView.ViewHolder>(){
     class ViewHolder(private val binding:RelationListItemBinding):RecyclerView.ViewHolder(binding.root){
 
         fun bind(friend: Friend){
-            Glide.with(itemView).load(friend.user.avatar).placeholder(R.drawable.avater_default)
-                .into(binding.avatarView)
+            binding.avatarView.load(friend.user.avatar)
             binding.nameText.text = friend.user.username
             binding.root.setOnClickListener {
                 ConversationActivity.launch(it.context,friend)

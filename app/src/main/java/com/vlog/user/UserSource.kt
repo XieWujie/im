@@ -1,17 +1,21 @@
 package com.vlog.user
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.common.HOST
 import com.common.Result
 import com.common.ext.sync
-import com.common.ext.toLiveData
+import com.common.pushExecutors
 import com.dibus.AutoWire
 import com.dibus.Service
+import com.google.gson.Gson
+import com.vlog.avatar.ImgSource
 import com.vlog.database.Friend
 import com.vlog.database.FriendDao
 import com.vlog.database.User
 import com.vlog.database.UserDao
 import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
 
 @Service
 class UserSource {
@@ -21,6 +25,12 @@ class UserSource {
 
     @AutoWire
     lateinit var userDao: UserDao
+
+    @AutoWire
+    lateinit var gson: Gson
+
+    @AutoWire
+    lateinit var imgSource: ImgSource
 
     fun checkRelation(userId:Int):LiveData<Friend>{
         return dao.getFromUerId(userId)
@@ -44,5 +54,38 @@ class UserSource {
             .build()
        return request.sync()
     }
+
+    fun changeAvatar(path:String,user: User):LiveData<Result<String>>{
+        val liveData = MutableLiveData<Result<String>>()
+        pushExecutors {
+            try {
+                val url =  imgSource.upLoad(path)
+                val newUser = user.copy(avatar = url)
+                val request = buildUserRequest(newUser)
+                 request.sync<String?>()
+                liveData.postValue(Result.Data(url))
+            }catch (e :Exception){
+                liveData.postValue(Result.Error(e))
+            }
+
+        }
+        return liveData
+    }
+
+
+    private fun buildUserRequest(user: User):Request{
+        val json = gson.toJson(user)
+        val url = "$HOST/user/update"
+        return Request.Builder()
+            .url(url)
+            .post(json.toRequestBody())
+            .build()
+    }
+
+    fun userUpdate(user: User):String{
+       val request = buildUserRequest(user)
+        return request.sync()
+    }
+
 }
 

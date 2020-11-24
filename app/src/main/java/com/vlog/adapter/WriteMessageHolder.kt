@@ -7,6 +7,7 @@ import com.bumptech.glide.Glide
 import com.dibus.AutoWire
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.vlog.avatar.load
 import com.vlog.database.Message
 import com.vlog.database.MsgWithUser
 import com.vlog.databinding.LeftWriteMessageBinding
@@ -36,8 +37,7 @@ class WriteMessageHolder{
 
 
     fun load(avatarView:ImageView, usernameText: TextView, m: MsgWithUser){
-        Glide.with(avatarView).load(m.user.avatar).placeholder(com.vlog.R.drawable.avater_default)
-            .into(avatarView)
+        avatarView.load(m.user.avatar)
         usernameText.text = m.user.username
         avatarView.setOnClickListener {
             UserHomeActivity.launch(it.context,m.user)

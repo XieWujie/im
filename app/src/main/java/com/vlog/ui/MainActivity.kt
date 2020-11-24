@@ -12,13 +12,14 @@ import com.vlog.databinding.ActivityMainBinding
 import com.vlog.login.LoginActivity
 import com.vlog.room.RoomCreateActivity
 import com.vlog.search.FindActivity
+import com.vlog.ui.me.MeFragment
 import com.vlog.ui.relation.RelationFragment
 import dibus.app.WsListenerCreator
 
 class MainActivity :BaseActivity() {
     private lateinit var binding: ActivityMainBinding
 
-    private val adapter = PageAdapter(this, listOf(RelationFragment()))
+    private val adapter = PageAdapter(this, listOf(RelationFragment(),MeFragment()))
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,7 +31,7 @@ class MainActivity :BaseActivity() {
     }
 
     private fun verify() {
-        if (Owner().userId == -1) {
+        if (Owner().userId == 0) {
                launch<LoginActivity>()
         }else{
             WsListenerCreator.get().connect()

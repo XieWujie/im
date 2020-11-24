@@ -11,6 +11,7 @@ import com.common.Result
 import com.common.base.BaseActivity
 import com.dibus.AutoWire
 import com.vlog.R
+import com.vlog.avatar.load
 import com.vlog.conversation.ConversationActivity
 import com.vlog.database.User
 import com.vlog.databinding.ActivityUserHomeBinding
@@ -44,9 +45,7 @@ class UserHomeActivity : BaseActivity() {
     }
 
     private fun loadView(user: User){
-        Glide.with(this).load(user.avatar).placeholder(R.drawable.avater_default)
-            .into(binding.avatarView)
-
+        binding.avatarView.load(user.avatar)
     }
 
 

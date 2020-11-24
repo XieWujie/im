@@ -50,6 +50,7 @@
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_below="@+id/top_bar"
+            android:layout_marginBottom="5dp"
             android:layout_above="@+id/bottom_input_layout"
             android:layout_height="match_parent" />
         <com.vlog.conversation.InputBottom

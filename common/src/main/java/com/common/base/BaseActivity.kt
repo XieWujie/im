@@ -1,20 +1,84 @@
 package com.common.base
 
+import android.Manifest
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Color
-import android.os.Build
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.view.View
-import android.view.WindowManager
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import com.common.ext.toast
+
 
 open class BaseActivity :AppCompatActivity(){
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        window.statusBarColor = Color.parseColor("#fff4f5f9")
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            window.statusBarColor = Color.parseColor("#fff4f5f9")
+        }
         window.decorView.systemUiVisibility =  window.decorView.systemUiVisibility or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+    }
+
+
+    private var permission = arrayOf<String>(
+         Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        Manifest.permission.READ_EXTERNAL_STORAGE
+    )
+
+    // 声明一个集合，在后面的代码中用来存储用户拒绝授权的权
+    private var mPermissionList: MutableList<String> = ArrayList()
+
+
+
+    //授权服务
+   protected fun checkPermission(callback:()->Unit) {
+        for (i in permission.indices) {
+            if (ContextCompat.checkSelfPermission(this, permission[i]
+                ) !== PackageManager.PERMISSION_GRANTED
+            ) {
+                mPermissionList.add(permission[i])
+            }
+        }
+        if (mPermissionList.isEmpty()) { //未授予的权限为空，表示都授予了
+           toast("已经授权")
+            callback.invoke()
+            agreeRequest()
+        } else { //请求权限方法
+            val permissions = mPermissionList.toTypedArray() //将List转为数组
+            ActivityCompat.requestPermissions(this, permissions, 1)
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+         permissions: Array<String>,
+         grantResults: IntArray
+    ) {
+        if (requestCode == 1) {
+            for (i in grantResults.indices) {
+                if (grantResults[i] != PackageManager.PERMISSION_GRANTED) { //用户拒绝授权的权限
+                    //判断是否勾选禁止后不再询问
+                    val showRequestPermission: Boolean =
+                        ActivityCompat.shouldShowRequestPermissionRationale(
+                            this,
+                            permissions[i]
+                        )
+                    if (showRequestPermission) {
+                      toast("权限未申请")
+                    }
+                } else { //用户同意的权限
+                   agreeRequest()
+                }
+            }
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
+
+    open fun agreeRequest(){
+
     }
 }

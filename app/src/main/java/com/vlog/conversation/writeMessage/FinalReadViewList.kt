@@ -43,7 +43,13 @@ class FinalReadViewList:RecyclerView {
         FinalReadViewListCreator.inject(this)
         this.adapter = mAdapter
         layoutManager =LinearLayoutManager(context,RecyclerView.HORIZONTAL,false)
-
+        mAdapter.registerAdapterDataObserver(object :RecyclerView.AdapterDataObserver(){
+            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                if(positionStart>0){
+                   scrollToPosition(mAdapter.itemCount-1)
+                }
+            }
+        })
     }
 
 

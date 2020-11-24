@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.vlog.R
+import com.vlog.avatar.load
 import com.vlog.conversation.ConversationActivity
 import com.vlog.database.Room
 import com.vlog.databinding.RelationListItemBinding
@@ -23,7 +24,7 @@ class RoomListAdapter :RecyclerView.Adapter<RoomListAdapter.ViewHolder>(){
 
         fun bind(room:Room){
             binding.nameText.text = room.roomName
-            Glide.with(itemView).load(room.roomAvatar).placeholder(R.drawable.avater_default).into(binding.avatarView)
+            binding.avatarView.load(room.roomAvatar)
             itemView.setOnClickListener {
                 ConversationActivity.launch(it.context,room)
             }

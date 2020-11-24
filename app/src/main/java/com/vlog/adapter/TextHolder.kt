@@ -4,6 +4,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
+import com.vlog.avatar.load
 import com.vlog.database.MsgWithUser
 import com.vlog.databinding.LeftTextMessageBinding
 import com.vlog.databinding.RightTextMessageBinding
@@ -13,8 +14,7 @@ class TextHolder{
 
     fun load(contentView:TextView,avatarView:ImageView,usernameText:TextView,m: MsgWithUser){
         contentView.text = m.message.content
-        Glide.with(avatarView).load(m.user.avatar).placeholder(com.vlog.R.drawable.avater_default)
-            .into(avatarView)
+        avatarView.load(m.user.avatar)
         usernameText.text = m.user.username
         avatarView.setOnClickListener {
             UserHomeActivity.launch(it.context,m.user)
