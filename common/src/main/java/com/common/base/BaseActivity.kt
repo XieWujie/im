@@ -9,18 +9,21 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.common.Util
 import com.common.ext.toast
 
 
 open class BaseActivity :AppCompatActivity(){
 
+    protected open var customerBar = false
+
+    private var callback:(()->Unit)? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-            window.statusBarColor = Color.parseColor("#fff4f5f9")
+        if (!customerBar){
+            Util.setLightBar(this,Color.parseColor("#fff4f5f9"))
         }
-        window.decorView.systemUiVisibility =  window.decorView.systemUiVisibility or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
     }
 
 
@@ -36,6 +39,7 @@ open class BaseActivity :AppCompatActivity(){
 
     //授权服务
    protected fun checkPermission(callback:()->Unit) {
+        this.callback = callback
         for (i in permission.indices) {
             if (ContextCompat.checkSelfPermission(this, permission[i]
                 ) !== PackageManager.PERMISSION_GRANTED
@@ -72,6 +76,10 @@ open class BaseActivity :AppCompatActivity(){
                     }
                 } else { //用户同意的权限
                    agreeRequest()
+                    this.callback?.also {
+                        it.invoke()
+                        this.callback = null
+                    }
                 }
             }
         }

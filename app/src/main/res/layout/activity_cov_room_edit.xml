@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout>
-<com.common.DragLinearLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -31,5 +31,5 @@
         android:id="@+id/recyclerView"
         android:background="@color/main_bar_bg"
         android:layout_height="wrap_content"/>
-</com.common.DragLinearLayout>
+</LinearLayout>
 </layout>

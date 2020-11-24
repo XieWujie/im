@@ -5,12 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.bumptech.glide.Glide
-import com.vlog.R
+import com.common.ext.launch
 import com.vlog.avatar.UserAvatarActivity
 import com.vlog.avatar.load
 import com.vlog.databinding.FragmentMeBinding
 import com.vlog.user.Owner
+import com.vlog.user.UserItemEditActivity
 
 class MeFragment :Fragment(){
 
@@ -34,11 +34,15 @@ class MeFragment :Fragment(){
         binding.avatarView.setOnClickListener {
             UserAvatarActivity.launch(this.requireContext(),user)
         }
+        binding.userInfoLayout.setOnClickListener {
+            requireContext().launch<UserItemEditActivity>()
+        }
     }
 
     override fun onStart() {
         super.onStart()
         user = Owner().getUser()
+        initView()
     }
 
     private fun initView(){

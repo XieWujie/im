@@ -4,11 +4,14 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
+import com.common.ext.launch
 import com.vlog.avatar.load
 import com.vlog.database.MsgWithUser
 import com.vlog.databinding.LeftTextMessageBinding
 import com.vlog.databinding.RightTextMessageBinding
+import com.vlog.user.Owner
 import com.vlog.user.UserHomeActivity
+import com.vlog.user.UserItemEditActivity
 
 class TextHolder{
 
@@ -17,7 +20,11 @@ class TextHolder{
         avatarView.load(m.user.avatar)
         usernameText.text = m.user.username
         avatarView.setOnClickListener {
-            UserHomeActivity.launch(it.context,m.user)
+            if (m.user.userId != Owner().userId) {
+                UserHomeActivity.launch(it.context, m.user)
+            } else {
+                it.context.launch<UserItemEditActivity>()
+            }
         }
     }
 

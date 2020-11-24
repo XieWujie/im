@@ -4,9 +4,14 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.common.ext.launch
 import com.vlog.R
+import com.vlog.avatar.load
 import com.vlog.database.User
 import com.vlog.databinding.RUListItemBinding
+import com.vlog.user.Owner
+import com.vlog.user.UserHomeActivity
+import com.vlog.user.UserItemEditActivity
 
 class RUserListAdapter:RecyclerView.Adapter<RUserListAdapter.ViewHolder>() {
 
@@ -18,7 +23,14 @@ class RUserListAdapter:RecyclerView.Adapter<RUserListAdapter.ViewHolder>() {
 
         fun bind(user: User){
             binding.usernameText.text = user.username
-            Glide.with(itemView).load(user.avatar).placeholder(R.drawable.avater_default).into(binding.avatarView)
+            binding.avatarView.load(user.avatar)
+            binding.avatarView.setOnClickListener {
+                if (user.userId != Owner().userId) {
+                    UserHomeActivity.launch(it.context, user)
+                } else {
+                    it.context.launch<UserItemEditActivity>()
+                }
+            }
         }
     }
 

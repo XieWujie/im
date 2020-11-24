@@ -6,7 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.room.*
 
 @Entity(primaryKeys = ["conversationId"])
-class Room(
+data class Room(
     val conversationId: Int,
     val roomName: String,
     val roomAvatar: String,

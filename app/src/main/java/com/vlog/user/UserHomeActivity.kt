@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
@@ -33,8 +34,11 @@ class UserHomeActivity : BaseActivity() {
         binding.user = user
         binding.sendMessageBt.isClickable = false
         viewModel.userRelation(user.userId).observe(this,  {relation->
-            binding.sendMessageBt.setOnClickListener {
-                user.also {  ConversationActivity.launch(this,relation) }
+            if(relation != null) {
+                binding.addFriendBt.visibility = View.GONE
+                binding.sendMessageBt.setOnClickListener {
+                    user.also { ConversationActivity.launch(this, relation) }
+                }
             }
 
         })

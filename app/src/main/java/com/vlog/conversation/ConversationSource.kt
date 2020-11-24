@@ -33,7 +33,7 @@ class ConversationSource {
    }
 
    fun loadFromNet(before:Long,conversationId: Int):LiveData<Result<List<MsgWithUser>>>{
-      val url = "$HOST/message/get?destination=$conversationId&&before=$before&&messageType=10"
+      val url = "$HOST/message/get?conversationId=$conversationId&&before=$before&&messageType=10"
       val request = Request.Builder()
          .url(url)
          .get()

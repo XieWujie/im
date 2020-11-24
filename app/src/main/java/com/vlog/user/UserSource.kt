@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.common.HOST
 import com.common.Result
 import com.common.ext.sync
+import com.common.ext.toLiveData
 import com.common.pushExecutors
 import com.dibus.AutoWire
 import com.dibus.Service
@@ -82,9 +83,9 @@ class UserSource {
             .build()
     }
 
-    fun userUpdate(user: User):String{
+    fun userUpdate(user: User):LiveData<Result<String>>{
        val request = buildUserRequest(user)
-        return request.sync()
+        return request.toLiveData()
     }
 
 }

@@ -6,4 +6,7 @@
     <color name="main_bar_bg">#fff4f5f9</color>
     <color name="blue_bg">#ff2a7dff</color>
     <color name="line_bg">#CFC0C0</color>
+    <color name="yellow">#ff07c160</color>
+    <color name="grey_bg">#ffe1e1e1</color>
+    <color name="grey_text">#dadada</color>
 </resources>

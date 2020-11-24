@@ -4,6 +4,7 @@ import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
+import com.common.ext.launch
 import com.dibus.AutoWire
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -14,7 +15,9 @@ import com.vlog.databinding.LeftWriteMessageBinding
 import com.vlog.databinding.RightWriteMessageBinding
 import com.vlog.conversation.writeMessage.MessageWriteWord
 import com.vlog.conversation.writeMessage.WordListLayout
+import com.vlog.user.Owner
 import com.vlog.user.UserHomeActivity
+import com.vlog.user.UserItemEditActivity
 import dibus.app.WriteMessageHolderCreator
 
 
@@ -40,7 +43,11 @@ class WriteMessageHolder{
         avatarView.load(m.user.avatar)
         usernameText.text = m.user.username
         avatarView.setOnClickListener {
-            UserHomeActivity.launch(it.context,m.user)
+            if (m.user.userId != Owner().userId) {
+                UserHomeActivity.launch(it.context, m.user)
+            } else {
+                it.context.launch<UserItemEditActivity>()
+            }
         }
     }
 

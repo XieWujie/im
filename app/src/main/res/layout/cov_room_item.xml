@@ -4,78 +4,70 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:background="@color/main_bar_bg"
+    android:background="@android:color/white"
     android:orientation="vertical"
     android:layout_marginTop="10dp"
     android:layout_height="match_parent">
 
-<RelativeLayout
-    android:layout_width="match_parent"
-    android:background="@android:color/white"
-    android:layout_gravity="center_vertical"
-    android:layout_height="40dp">
-    <androidx.cardview.widget.CardView
-        android:layout_width="35dp"
-        android:layout_marginStart="10dp"
-        app:cardCornerRadius="4dp"
-        android:layout_centerVertical="true"
-        android:id="@+id/avatar_card"
-        android:layout_height="35dp">
-        <ImageView
-            android:layout_width="match_parent"
-            android:id="@+id/avatar_view"
-            android:scaleType="centerCrop"
-            android:layout_height="match_parent"/>
-
-    </androidx.cardview.widget.CardView>
-    <TextView
-        android:layout_width="wrap_content"
-        android:id="@+id/name_text"
-        android:layout_toStartOf="@id/name_right"
-        android:layout_centerVertical="true"
-        android:layout_height="wrap_content"/>
-    <ImageView
-        android:id="@+id/name_right"
-        android:layout_width="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true"
-        android:layout_marginEnd="5dp"
-        android:src="@drawable/ic_right"
-        android:layout_height="wrap_content"/>
-</RelativeLayout>
-<!--    <View-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_marginStart="10dp"-->
-<!--        android:layout_marginEnd="10dp"-->
-<!--        android:background="@color/line_bg"-->
-<!--        android:layout_height="1px"/>-->
     <RelativeLayout
         android:layout_width="match_parent"
-        android:id="@+id/remark_layout"
-        android:background="@android:color/white"
-        android:gravity="center_vertical"
-        android:layout_height="40dp">
+        android:id="@+id/avatar_layout"
+        android:layout_height="60dp">
         <TextView
             android:layout_width="wrap_content"
-            android:id="@+id/remark_hint"
-            android:layout_marginStart="10dp"
+            android:text="头像"
             android:textColor="@android:color/black"
-            android:text="我在群里的昵称"
             android:layout_centerVertical="true"
-            android:layout_height="wrap_content"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:id="@+id/remark_text"
-            android:layout_centerVertical="true"
-            android:layout_toStartOf="@+id/remark_right"
+            android:layout_marginStart="10dp"
             android:layout_height="wrap_content"/>
         <ImageView
             android:layout_width="wrap_content"
-            android:src="@drawable/ic_right"
-            android:id="@+id/remark_right"
             android:layout_centerVertical="true"
             android:layout_alignParentEnd="true"
+            android:src="@drawable/ic_right"
+            android:layout_marginEnd="10dp"
+            android:id="@+id/avatar_right"
+            android:layout_height="wrap_content"/>
+        <ImageView
+            android:layout_width="50dp"
+            android:id="@+id/avatar_view"
+            android:scaleType="centerCrop"
+            android:layout_centerVertical="true"
             android:layout_marginEnd="5dp"
+            android:layout_toStartOf="@+id/avatar_right"
+            android:layout_height="50dp"/>
+    </RelativeLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:background="@color/line_bg"
+        android:layout_height="1px"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:id="@+id/room_name_layout"
+        android:layout_height="50dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:text="群聊名称"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="10dp"
+            android:textColor="@android:color/black"
+            android:layout_height="wrap_content"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="10dp"
+            android:id="@+id/username_right"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="10dp"
+            android:layout_toStartOf="@+id/username_right"
+            android:id="@+id/room_name_text"
             android:layout_height="wrap_content"/>
     </RelativeLayout>
 </LinearLayout>

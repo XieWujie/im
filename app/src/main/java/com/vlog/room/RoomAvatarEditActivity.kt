@@ -1,53 +1,50 @@
-package com.vlog.avatar
+package com.vlog.room
 
 import android.app.Activity
-import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
 import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.target.Target
 import com.common.Result
 import com.common.Util
 import com.common.base.BaseActivity
 import com.common.ext.toast
 import com.common.pushExecutors
 import com.dibus.AutoWire
+import com.dibus.DiBus
 import com.vlog.R
+import com.vlog.avatar.UserAvatarActivity
+import com.vlog.avatar.load
+import com.vlog.database.Room
 import com.vlog.database.User
 import com.vlog.user.Owner
 import com.vlog.user.UserSource
+import dibus.app.RoomEditSourceCreator
 import dibus.app.UserAvatarActivityCreator
-import java.io.File
 
-class UserAvatarActivity : BaseActivity() {
-
+class RoomAvatarEditActivity : BaseActivity() {
     private lateinit var imageView: ImageView
 
-    @AutoWire
-    lateinit var userSource:UserSource
+
+    private var source = RoomEditSourceCreator.get()
+
+    lateinit var room: Room
 
     override var customerBar = true
-
-    lateinit var user:User
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Util.setDarkBar(this,Color.BLACK)
-        setContentView(R.layout.activity_user_avatar)
-        UserAvatarActivityCreator.inject(this)
+        setContentView(R.layout.activity_room_avatar_edit)
         imageView = findViewById(R.id.avatar_view)
-        user= intent.getParcelableExtra<User>("user")?:throw IllegalArgumentException()
-        imageView.load(user.avatar)
+        room= intent.getParcelableExtra("room")?:throw IllegalArgumentException()
+        imageView.load(room.roomAvatar)
         dispatchEvent()
     }
 
@@ -70,7 +67,7 @@ class UserAvatarActivity : BaseActivity() {
                     1-> {
                         pushExecutors {
                             try {
-                                 Glide.with(this).load(imageView.drawable)
+                                Glide.with(this).load(imageView.drawable)
                                     .downloadOnly(200, 200).get()
                                 runOnUiThread {
                                     toast("下载成功")
@@ -109,18 +106,16 @@ class UserAvatarActivity : BaseActivity() {
             toast("获取图片失败")
         }else {
             Glide.with(this).load(uri).into(imageView)
-            userSource.changeAvatar(realPath,user).observe(this){
+            source.changeAvatar(realPath,room).observe(this){
                 when(it){
                     is Result.Error->{
                         it.error.printStackTrace()
                         toast(it.toString())
                     }
                     is Result.Data->{
-                        Owner().apply {
-                            avatar = it.data
-                            userFetcher.avatar = it.data
-                        }
                         toast("更换成功")
+                        DiBus.postEvent(it.data)
+                        room = it.data
                     }
                 }
             }
@@ -128,9 +123,9 @@ class UserAvatarActivity : BaseActivity() {
     }
 
     companion object{
-        fun launch(context: Context,user: User){
-            val intent = Intent(context,UserAvatarActivity::class.java)
-            intent.putExtra("user",user)
+        fun launch(context: Context, room: Room){
+            val intent = Intent(context,RoomAvatarEditActivity::class.java)
+            intent.putExtra("room",room)
             context.startActivity(intent)
         }
     }

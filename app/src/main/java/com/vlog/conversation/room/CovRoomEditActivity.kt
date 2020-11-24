@@ -14,6 +14,7 @@ import com.vlog.databinding.ActivityCovRoomEditBinding
 class CovRoomEditActivity :BaseActivity() {
 
     private lateinit var binding:ActivityCovRoomEditBinding
+    private lateinit var adapter:CovREditAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,8 +25,14 @@ class CovRoomEditActivity :BaseActivity() {
 
     fun init(room: Room){
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
-        binding.recyclerView.adapter = CovREditAdapter(this,room)
+        adapter =  CovREditAdapter(this,room)
+        binding.recyclerView.adapter =adapter
         binding.titleText.text = room.roomName
+    }
+
+    override fun onStart() {
+        super.onStart()
+        adapter.notifyDataSetChanged()
     }
 
     companion object{

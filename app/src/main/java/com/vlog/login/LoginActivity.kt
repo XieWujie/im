@@ -37,7 +37,10 @@ class LoginActivity : BaseActivity() {
     private fun dispatchEvent(){
         val observerOfLogin = Observer<Result<LoginResponse>> {
             when(it){
-               is Result.Error->toast(it.error.message!!)
+               is Result.Error->{
+                   it.error.printStackTrace()
+                   toast(it.error.message!!)
+               }
                 is Result.Data->{
                     launch<MainActivity>()
                 }

@@ -3,8 +3,6 @@ package com.vlog.ui.relation
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.vlog.R
 import com.vlog.avatar.load
 import com.vlog.conversation.ConversationActivity
 import com.vlog.database.Room

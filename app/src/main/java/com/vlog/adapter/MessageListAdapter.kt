@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.common.Util
 import com.dibus.AutoWire
+import com.dibus.CREATE_PER
 import com.dibus.Service
 import com.google.gson.Gson
 import com.vlog.R
@@ -20,7 +21,7 @@ import kotlin.collections.ArrayList
 
 private const val TAG = "MessageListAdapter"
 
-@Service
+@Service(createModel = CREATE_PER)
 class MessageListAdapter :RecyclerView.Adapter<MessageHolder>(){
 
     @AutoWire
@@ -43,11 +44,11 @@ class MessageListAdapter :RecyclerView.Adapter<MessageHolder>(){
 
 
 
-    private val haftHour = 60*60/20
+    private val haftHour = 60*3
+    var lastTime = 0L
 
     fun flashList(list: List<MsgWithUser>){
         val lastSize = mList.size
-        var lastTime = 0L
         val midTime = if(mList.isEmpty()) 0 else mList[mList.size-1].message!!.message.createAt
         var i = 0
         while(i<list.size){
