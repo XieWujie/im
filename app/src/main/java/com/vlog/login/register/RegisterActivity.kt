@@ -1,8 +1,7 @@
-package com.vlog.register
+package com.vlog.login.register
 
 import android.os.Bundle
 import android.view.View
-import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import com.common.Result
@@ -26,7 +25,7 @@ class RegisterActivity : BaseActivity(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         RegisterActivityCreator.inject(this)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_login)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_register)
         dispatchEvent()
     }
 
@@ -35,9 +34,8 @@ class RegisterActivity : BaseActivity(){
             viewModel.register(binding.userText.text.toString(),binding.passwordText.text.toString()).observe(this,
                 Observer {
                     when(it){
-                        is Result.Error->toast(it.error.message!!)
+                        is Result.Error->toast(it.toString())
                         is Result.Data->{
-
                             launch<MainActivity>()
                         }
                     }

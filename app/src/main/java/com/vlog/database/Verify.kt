@@ -1,5 +1,6 @@
 package com.vlog.database
 
+import androidx.room.Embedded
 import androidx.room.Entity
 
 @Entity(primaryKeys = ["verifyId"])
@@ -14,5 +15,7 @@ data class Verify(val verifyId:Int, val state:Int, val verifyInfo:String, val us
 
 
 class VerifyWithUser(
+    @Embedded
     val verify:Verify,
+    @Embedded
     val user:User)

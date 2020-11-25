@@ -29,6 +29,8 @@ class Owner private constructor() {
     var description = userFetcher.description
     var avatar = userFetcher.avatar
 
+    var isLogout =true
+
 
 
     companion object {
@@ -40,14 +42,16 @@ class Owner private constructor() {
     fun getUser() = User(userId, username, avatar, description)
 
     fun init(loginResponse: LoginResponse) {
+        isLogout = false
         loginResponse.also {
             userId = it.userId
             token = it.token
             username = it.username
-            avatar = it.avatar
-            userFetcher.token = it.token
+            avatar = it.avatar?:""
+            userFetcher.token = it.token?:""
             userFetcher.userId = it.userId
             userFetcher.username = it.username
+            userFetcher.avatar = it.avatar?:""
         }
     }
 }

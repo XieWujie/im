@@ -21,7 +21,53 @@
       android:layout_width="match_parent"
       android:id="@+id/page2_layout"
       android:layout_height="match_parent"/>
+    <View
+        android:layout_width="match_parent"
+        android:background="#e9e9e9"
+        android:layout_above="@+id/bottom_action_layout"
+        android:layout_height="1px"/>
+    <LinearLayout
+        android:id="@+id/bottom_action_layout"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="#f7f7f7"
+        android:layout_height="55dp">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:text="信息"
+                android:textColor="@android:color/black"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:text="通讯录"
+                android:textColor="@android:color/black"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:text="我"
+                android:textColor="@android:color/black"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
 
-
+    </LinearLayout>
 </RelativeLayout>
 </layout>

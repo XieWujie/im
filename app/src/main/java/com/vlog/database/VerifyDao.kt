@@ -9,8 +9,8 @@ import androidx.room.Query
 @Dao
 interface VerifyDao {
 
-    @Query("select * from verify where userTo=:userTo")
-    fun getFromUserTo(userTo:Int): List<Verify>
+    @Query("select verify.*,user.* from verify,user where userTo=:userTo and userFrom==userId")
+    fun getFromUserTo(userTo:Int): LiveData<List<VerifyWithUser>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(verify: Verify)

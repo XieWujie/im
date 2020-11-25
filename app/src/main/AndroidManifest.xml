@@ -16,7 +16,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".room.RoomAvatarEditActivity"></activity>
+        <activity android:name=".setting.SettingActivity"></activity>
+        <activity android:name=".login.StartActivity" />
+        <activity android:name=".room.RoomAvatarEditActivity" />
         <activity android:name=".room.RoomNameEditActivity" />
         <activity android:name=".user.UserNameEditActivity" />
         <activity android:name=".avatar.UserAvatarActivity" />
@@ -31,7 +33,7 @@
             android:launchMode="singleTask" />
         <activity android:name=".user.UserHomeActivity" />
         <activity android:name=".search.FindActivity" />
-        <activity android:name=".register.RegisterActivity" />
+        <activity android:name=".login.register.RegisterActivity" />
         <activity
             android:name=".login.LoginActivity"
             android:label="@string/title_activity_login" />

@@ -15,7 +15,6 @@ import com.vlog.adapter.MessageListAdapter
 import com.vlog.conversation.room.CovRoomEditActivity
 import com.vlog.database.Friend
 import com.vlog.database.Room
-import com.vlog.database.User
 import com.vlog.databinding.ActivityConversationBinding
 import dibus.app.ConversationActivityCreator
 
@@ -38,7 +37,6 @@ class ConversationActivity :BaseActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_conversation)
         binding.recyclerView.adapter = adapter
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
-        adapter.notifyDataSetChanged()
         init()
     }
 
@@ -54,10 +52,10 @@ class ConversationActivity :BaseActivity() {
 
     private fun init(){
         var conversationId = -1
-        val user = intent.getParcelableExtra<User>("user")
-        if(user != null){
-            conversationId = user.userId
-            binding.titleText.text = user.username
+        val friend = intent.getParcelableExtra<Friend>("friend")
+        if(friend != null){
+            conversationId = friend.conversationId
+            binding.titleText.text = friend.user.username
             isRoom = false
         }else{
             val room = intent.getParcelableExtra<Room>("room")?:throw RuntimeException("传入friend 或者room")
@@ -109,7 +107,7 @@ class ConversationActivity :BaseActivity() {
 
         fun launch(context: Context, friend: Friend){
             val intent = Intent(context,ConversationActivity::class.java)
-            intent.putExtra("user",friend.user)
+            intent.putExtra("friend",friend)
             context.startActivity(intent)
         }
 
@@ -118,5 +116,6 @@ class ConversationActivity :BaseActivity() {
             intent.putExtra("room",room)
             context.startActivity(intent)
         }
+
     }
 }

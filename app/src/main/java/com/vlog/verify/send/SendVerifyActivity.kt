@@ -13,6 +13,7 @@ import com.dibus.AutoWire
 import com.dibus.DiBus
 import com.google.gson.Gson
 import com.vlog.R
+import com.vlog.avatar.load
 import com.vlog.connect.MessageSend
 import com.vlog.database.Message
 
@@ -56,9 +57,7 @@ class SendVerifyActivity :BaseActivity() {
     private fun initView(user: User){
         binding.usernameText.text = user.username
         binding.descriptionText.text = user.description
-        Glide.with(this).load(user.avatar)
-            .placeholder(R.drawable.avater_default)
-            .into(binding.avatarView)
+        binding.avatarView.load(user.avatar)
     }
     companion object{
         fun launch(context: Context,user: User){

@@ -22,7 +22,7 @@ open class BaseActivity :AppCompatActivity(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (!customerBar){
-            Util.setLightBar(this,Color.parseColor("#fff4f5f9"))
+            Util.setLightBar(this,Color.parseColor("#ffededed"))
         }
     }
 

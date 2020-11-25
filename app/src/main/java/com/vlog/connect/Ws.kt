@@ -73,7 +73,9 @@ class WsListener:WebSocketListener() {
         super.onFailure(webSocket, t, response)
         Log.d(TAG,"onFailure:${t.message}")
         t.printStackTrace()
-        connect()
+        if(!Owner().isLogout){
+            connect()
+        }
     }
 
     override fun onMessage(webSocket: WebSocket, text: String) {

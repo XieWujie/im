@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.vlog.R
+import com.vlog.avatar.load
 import com.vlog.database.Friend
 import com.vlog.databinding.RoomCreateSelectedItemBinding
 
@@ -24,7 +25,7 @@ class RoomCreateAdapter:RecyclerView.Adapter<RoomCreateAdapter.ViewHolder>()  {
     inner class ViewHolder(val binding: RoomCreateSelectedItemBinding) :RecyclerView.ViewHolder(binding.root){
 
         fun bind(friend: Friend){
-            Glide.with(itemView).load(friend.user.avatar).placeholder(R.drawable.avater_default).into(binding.avatarView)
+           binding.avatarView.load(friend.user.avatar)
             binding.usernameText.text = friend.user.username
             binding.checkbox.setOnCheckedChangeListener { _, isChecked ->
                 if(isChecked){

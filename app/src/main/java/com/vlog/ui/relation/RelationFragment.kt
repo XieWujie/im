@@ -9,16 +9,16 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.dibus.AutoWire
+import com.dibus.BusEvent
 import com.vlog.R
+import com.vlog.database.Verify
 import com.vlog.verify.list.VerifyListActivity
 import dibus.app.RelationFragmentCreator
 
 class RelationFragment :Fragment(){
 
     lateinit var recyclerView: RecyclerView
-    private lateinit var newFLayout:RelativeLayout
     private val adapter = RelationListAdapter()
-
     @AutoWire
     lateinit var viewModel: RelationViewModel
 
@@ -37,11 +37,23 @@ class RelationFragment :Fragment(){
         return view
     }
 
-    private fun event(){
+    override fun onStart() {
+        super.onStart()
+        fleshList()
+    }
 
+    @BusEvent
+    fun newFriendEvent(verify:Verify){
+
+    }
+
+    private fun fleshList(){
         viewModel.getRelations().observe(viewLifecycleOwner){
 
         }
+    }
+
+    private fun event(){
         viewModel.friendListen().observe(viewLifecycleOwner){
             adapter.setList(it)
         }

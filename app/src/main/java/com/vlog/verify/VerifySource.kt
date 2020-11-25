@@ -19,7 +19,6 @@ import okhttp3.RequestBody.Companion.toRequestBody
 @Service
 class VerifySource {
 
-    private val liveData = MutableLiveData<List<VerifyWithUser>>()
 
     @AutoWire
     lateinit var gson: Gson
@@ -29,6 +28,9 @@ class VerifySource {
 
     @AutoWire
     lateinit var friendDao: FriendDao
+
+    @AutoWire
+    lateinit var userDao: UserDao
 
     @AutoWire lateinit var userSource: UserSource
 
@@ -41,34 +43,24 @@ class VerifySource {
             .build()
         return request.toLiveData(){
             verifyDao.insert(it)
-            if(it.state == Verify.agree){
-                val conversationId = it.verifyInfo.toInt()
-                val friend = Friend(verify.user,conversationId,Owner().userId)
-                friendDao.insert(friend)
-            }
         }
     }
 
-    fun findVerifyMessage(userId: Int): LiveData<Result<List<Verify>>> {
+    fun findVerifyMessage(userId: Int): LiveData<Result<List<VerifyWithUser>>> {
         val url = "$HOST/verify/get?userId=$userId"
         val request = Request.Builder()
             .url(url)
             .get()
             .build()
-        return request.toLiveData(getType(List::class.java, Verify::class.java)){
-            if(it.isNotEmpty())
-            verifyDao.insert(it)
-            obsVerifyList(userId)
+        return request.toLiveData(getType(List::class.java, VerifyWithUser::class.java)){
+            val users = it.map { it.user }
+            userDao.insert(users)
+            val verifyList = it.map { it.verify }
+            verifyDao.insert(verifyList)
         }
     }
 
     fun obsVerifyList(userId: Int):LiveData<List<VerifyWithUser>>{
-        pushExecutors {
-            val newList = verifyDao.getFromUserTo(userId).map {
-                VerifyWithUser(it,userSource.findUser(userId))
-            }
-            liveData.postValue(newList)
-        }
-        return liveData
+        return verifyDao.getFromUserTo(userId)
     }
 }

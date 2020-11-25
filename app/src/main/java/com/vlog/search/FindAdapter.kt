@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.common.ext.launch
 import com.vlog.R
+import com.vlog.avatar.load
 import com.vlog.databinding.FindItemBinding
 import com.vlog.database.User
 import com.vlog.user.Owner
@@ -26,8 +27,7 @@ class FindAdapter : RecyclerView.Adapter<FindAdapter.ViewHolder>() {
     class ViewHolder(val binding: FindItemBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(user: User) {
-            Glide.with(binding.avatarView).load(user.avatar).placeholder(R.drawable.avater_default)
-                .into(binding.avatarView)
+            binding.avatarView.load(user.avatar)
             binding.usernameText.text = user.username
             binding.root.setOnClickListener {
                 if (user.userId != Owner().userId) {

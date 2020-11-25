@@ -9,6 +9,7 @@ import com.common.ext.launch
 import com.vlog.avatar.UserAvatarActivity
 import com.vlog.avatar.load
 import com.vlog.databinding.FragmentMeBinding
+import com.vlog.setting.SettingActivity
 import com.vlog.user.Owner
 import com.vlog.user.UserItemEditActivity
 
@@ -36,6 +37,9 @@ class MeFragment :Fragment(){
         }
         binding.userInfoLayout.setOnClickListener {
             requireContext().launch<UserItemEditActivity>()
+        }
+        binding.settingLayout.setOnClickListener {
+            requireContext().launch<SettingActivity>()
         }
     }
 

@@ -5,6 +5,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import io.reactivex.Flowable
 
 @Dao
 interface MsgDao {
@@ -21,4 +22,7 @@ interface MsgDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(msgs: List<Message>)
+
+    @Query("select * from message where messageId in (select messageId from message where createAt in (select MAX(createAt) from message group by conversationId)) order  by createAt desc")
+    fun getRecentMessage():List<Message>
 }

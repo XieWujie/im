@@ -50,6 +50,9 @@ interface RoomDao {
     @Query("select * from room")
     fun getRooms(): LiveData<List<Room>>
 
+    @Query("select * from room where conversationId=:conversationId")
+    fun getRoom(conversationId: Int):Room?
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(room:Room)
 

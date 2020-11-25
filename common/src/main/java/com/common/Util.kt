@@ -25,7 +25,7 @@ object Util {
         val oneDate = 24*60*60
         val lastDate = Date(timeStamp).time/1000-oneDate
         val p = if(timeStamp>lastDate){
-            "HH:mm:ss"
+            "HH:mm"
         }else{
             "MM-dd HH:mm"
         }

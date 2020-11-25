@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.vlog.R
+import com.vlog.avatar.load
 import com.vlog.database.User
 import com.vlog.database.Verify
 import com.vlog.database.VerifyWithUser
@@ -24,8 +25,7 @@ class VerifyListAdapter(private val mList:ArrayList<VerifyWithUser>,):RecyclerVi
    inner class ViewHolder(private val binding:VerifyListItemBinding):RecyclerView.ViewHolder(binding.root){
 
         fun bind(verify: Verify, user: User,position: Int){
-            Glide.with(itemView).load(user.avatar).placeholder(R.drawable.avater_default)
-                .into(binding.avatarView)
+            binding.avatarView.load(user.avatar)
             binding.usernameText.text = user.username
             binding.verifyMessageText.text = verify.verifyInfo
             when(verify.state){

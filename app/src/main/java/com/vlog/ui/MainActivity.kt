@@ -1,25 +1,26 @@
 package com.vlog.ui
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.*
+import android.view.Menu
+import android.view.MenuItem
 import androidx.databinding.DataBindingUtil
 import com.common.base.BaseActivity
 import com.common.ext.launch
-import com.vlog.user.Owner
 import com.vlog.R
 import com.vlog.databinding.ActivityMainBinding
-import com.vlog.login.LoginActivity
+import com.vlog.login.StartActivity
 import com.vlog.room.RoomCreateActivity
 import com.vlog.search.FindActivity
 import com.vlog.ui.me.MeFragment
+import com.vlog.ui.messageList.MessageListFragment
 import com.vlog.ui.relation.RelationFragment
+import com.vlog.user.Owner
 import dibus.app.WsListenerCreator
 
 class MainActivity :BaseActivity() {
     private lateinit var binding: ActivityMainBinding
 
-    private val adapter = PageAdapter(this, listOf(RelationFragment(),MeFragment()))
+    private val adapter = PageAdapter(this, listOf(MessageListFragment(),RelationFragment(),MeFragment()))
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,11 +29,16 @@ class MainActivity :BaseActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         setSupportActionBar(binding.mainToolbar)
         binding.page2Layout.adapter = adapter
+        dispatchEvent()
+    }
+
+    private fun dispatchEvent(){
+
     }
 
     private fun verify() {
         if (Owner().userId == 0) {
-               launch<LoginActivity>()
+               launch<StartActivity>()
         }else{
             WsListenerCreator.get().connect()
         }

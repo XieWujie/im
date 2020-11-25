@@ -7,13 +7,13 @@
     android:layout_marginTop="5dp"
     android:gravity="center_vertical"
     android:background="@android:color/white"
-    android:layout_height="40dp">
+    android:layout_height="50dp">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/avatar_card"
-        android:layout_width="30dp"
+        android:layout_width="40dp"
         app:cardCornerRadius="4dp"
-        android:layout_height="30dp">
+        android:layout_height="40dp">
         <ImageView
             android:layout_width="match_parent"
             android:scaleType="centerCrop"
@@ -24,7 +24,7 @@
         android:layout_width="wrap_content"
         android:id="@+id/name_text"
         android:textColor="@android:color/black"
-        android:textSize="14sp"
+        android:textSize="15sp"
         android:gravity="center_vertical"
         android:layout_marginStart="12dp"
         android:layout_height="match_parent"/>

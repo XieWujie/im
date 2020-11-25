@@ -3,7 +3,8 @@
     <color name="colorPrimary">#6200EE</color>
     <color name="colorPrimaryDark">#3700B3</color>
     <color name="colorAccent">#03DAC5</color>
-    <color name="main_bar_bg">#fff4f5f9</color>
+<!--    #f4f5f9-->
+    <color name="main_bar_bg">#ffededed</color>
     <color name="blue_bg">#ff2a7dff</color>
     <color name="line_bg">#CFC0C0</color>
     <color name="yellow">#ff07c160</color>

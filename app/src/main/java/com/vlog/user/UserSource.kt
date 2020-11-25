@@ -88,5 +88,14 @@ class UserSource {
         return request.toLiveData()
     }
 
+    fun logout(userId: Int):LiveData<Result<String>>{
+        val url = "$HOST/user/logout?userId=$userId"
+        val request = Request.Builder()
+            .url(url)
+            .get()
+            .build()
+        return request.toLiveData()
+    }
+
 }
 

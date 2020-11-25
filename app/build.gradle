@@ -55,4 +55,5 @@ dependencies {
     implementation project(":common")
     api project(":di-compiler")
     kapt project(":di-compiler")
+    implementation "android.arch.persistence.room:rxjava2:2.2.0"
 }

@@ -18,8 +18,8 @@
         android:id="@+id/cardView"
         android:layout_width="wrap_content"
         android:layout_height="80dp"
-        android:layout_marginStart="64dp"
-        android:layout_marginEnd="64dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
         android:background="@android:color/white"
         app:cardCornerRadius="40dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -30,6 +30,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
+            android:layout_marginStart="32dp"
             android:layout_height="match_parent"
             android:orientation="vertical">
 
@@ -44,13 +45,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_marginStart="20dp"
                     android:src="@drawable/ic_user" />
 
                 <EditText
                     android:id="@+id/user_text"
-                    android:layout_width="250dp"
-                    android:layout_marginStart="40dp"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_centerInParent="true"
                     android:background="@null"
@@ -67,13 +66,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_marginStart="20dp"
                     android:src="@drawable/ic_password" />
 
                 <EditText
                     android:id="@+id/password_text"
                     android:layout_width="250dp"
-                    android:layout_marginStart="40dp"
                     android:layout_height="match_parent"
                     android:layout_centerInParent="true"
                     android:background="@null"
@@ -93,15 +90,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cardView" />
 
-    <TextView
-        android:id="@+id/register_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="注册"
-        android:textColor="#03A9F4"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/login_botton" />
 </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
