@@ -6,6 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:orientation="vertical"
+    android:background="@color/main_bar_bg"
     android:layout_height="match_parent"
     tools:context=".setting.SettingActivity">
     <LinearLayout

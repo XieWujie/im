@@ -1,9 +1,11 @@
 package com.vlog.ui
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.databinding.DataBindingUtil
+import com.common.util.Util
 import com.common.base.BaseActivity
 import com.common.ext.launch
 import com.vlog.R
@@ -22,9 +24,13 @@ class MainActivity :BaseActivity() {
 
     private val adapter = PageAdapter(this, listOf(MessageListFragment(),RelationFragment(),MeFragment()))
 
+    override var customerBar = true
+
+    private var mMenu:Menu? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Util.setLightBar(this,Color.WHITE)
         verify()
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         setSupportActionBar(binding.mainToolbar)
@@ -33,7 +39,25 @@ class MainActivity :BaseActivity() {
     }
 
     private fun dispatchEvent(){
+        binding.bind()
+    }
 
+    private fun ActivityMainBinding.bind(){
+        messageListLayout.setOnClickListener {
+            page2Layout.currentItem = 0
+            title = "vlog"
+            mMenu?.findItem(R.id.action_add)?.isVisible = true
+        }
+        relationLayout.setOnClickListener {
+            page2Layout.currentItem = 1
+            title = "通讯录"
+            mMenu?.findItem(R.id.action_add)?.isVisible = true
+        }
+        meLayout.setOnClickListener {
+            page2Layout.currentItem = 2
+            title = "我"
+            mMenu?.findItem(R.id.action_add)?.isVisible = false
+        }
     }
 
     private fun verify() {
@@ -46,6 +70,7 @@ class MainActivity :BaseActivity() {
 
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        mMenu = menu
         menuInflater.inflate(R.menu.main, menu)
         return true
     }

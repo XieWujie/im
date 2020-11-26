@@ -1,4 +1,4 @@
-package com.common
+package com.common.util
 
 import android.app.Activity
 import android.content.Context

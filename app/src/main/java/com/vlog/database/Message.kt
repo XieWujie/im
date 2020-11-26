@@ -18,6 +18,7 @@ data class Message(
         const val Verify = 3
         const val MESSAGE_WRITE = 12
         const val MESSAGE_TEXT = 11
+        const val MESSAGE_IMAGE = 13
     }
 }
 

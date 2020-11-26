@@ -3,7 +3,7 @@ package com.vlog.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.common.Util
+import com.common.util.Util
 import com.dibus.AutoWire
 import com.dibus.CREATE_PER
 import com.dibus.Service
@@ -11,10 +11,7 @@ import com.google.gson.Gson
 import com.vlog.R
 import com.vlog.database.Message
 import com.vlog.database.MsgWithUser
-import com.vlog.databinding.LeftTextMessageBinding
-import com.vlog.databinding.LeftWriteMessageBinding
-import com.vlog.databinding.RightTextMessageBinding
-import com.vlog.databinding.RightWriteMessageBinding
+import com.vlog.databinding.*
 import com.vlog.user.Owner
 import java.util.*
 import kotlin.collections.ArrayList
@@ -59,7 +56,7 @@ class MessageListAdapter :RecyclerView.Adapter<MessageHolder>(){
             }
             val m:MessageWrap
             if(time-lastTime>haftHour){
-                m = MessageWrap(null,Util.getTime(time))
+                m = MessageWrap(null, Util.getTime(time))
                 lastTime = time
             }else{
                  m = MessageWrap(list[i],null)
@@ -97,6 +94,14 @@ class MessageListAdapter :RecyclerView.Adapter<MessageHolder>(){
                val view = inflater.inflate(R.layout.cov_time_item,parent,false)
                TimeHolder(view)
            }
+           TYPE_LEFT_IMG->{
+               val binding = LeftImgMessageBinding.inflate(inflater,parent,false)
+               ImageHolder.L(binding)
+           }
+           TYPE_RIGHT_IMG->{
+               val binding = RightImgMessageBinding.inflate(inflater,parent,false)
+               ImageHolder.R(binding)
+           }
            else->throw RuntimeException("no such type")
         }
     }
@@ -120,8 +125,12 @@ class MessageListAdapter :RecyclerView.Adapter<MessageHolder>(){
             TYPE_LEFT_WRITE
         }else if(message.sendFrom == ownerId && message.messageType == Message.MESSAGE_TEXT){
              TYPE_RIGHT_TEXT
-         }else{
+         }else if(message.sendFrom != ownerId && message.messageType == Message.MESSAGE_TEXT){
              TYPE_LEFT_TEXT
+         }else if(message.sendFrom == ownerId && message.messageType == Message.MESSAGE_IMAGE){
+             TYPE_RIGHT_IMG
+         }else{
+             TYPE_LEFT_IMG
          }
     }
 
@@ -136,7 +145,8 @@ class MessageListAdapter :RecyclerView.Adapter<MessageHolder>(){
         private const val TYPE_RIGHT_WRITE = 1
         private const val TYPE_LEFT_TEXT = 2
         private const val TYPE_RIGHT_TEXT = 3
-
+        private const val TYPE_RIGHT_IMG = 4
+        private const val TYPE_LEFT_IMG = 5
         private const val TYPE_TIME = 11
 
     }

@@ -1,15 +1,13 @@
 package com.common.base
 
 import android.Manifest
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Bundle
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.common.Util
+import com.common.util.Util
 import com.common.ext.toast
 
 

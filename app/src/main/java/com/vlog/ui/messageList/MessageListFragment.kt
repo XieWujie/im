@@ -5,7 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.dibus.AutoWire
 import com.vlog.conversation.ConversationSource
 import com.vlog.databinding.FragmentMessageListBinding
@@ -45,8 +47,25 @@ class MessageListFragment : Fragment() {
         source.getRecentMessage().observe(viewLifecycleOwner){
             mAdapter.refreshList(it)
         }
-
         refresh()
+        val itemTouchHelper = ItemTouchHelper(object :ItemTouchHelper.SimpleCallback(
+            ItemTouchHelper.LEFT or  ItemTouchHelper.RIGHT, ItemTouchHelper.LEFT or  ItemTouchHelper.RIGHT
+        ){
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                return false
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                mAdapter.removeItem(viewHolder.adapterPosition)
+
+            }
+
+        })
+        itemTouchHelper.attachToRecyclerView(binding.recyclerView)
     }
 
     private fun refresh(){
@@ -54,9 +73,6 @@ class MessageListFragment : Fragment() {
             binding.refreshLayout.isRefreshing = false
         }
     }
-
-    override fun onDestroy() {
-        super.onDestroy()
-    }
+    
 
 }

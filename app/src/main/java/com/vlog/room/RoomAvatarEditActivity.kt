@@ -5,28 +5,21 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
 import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
 import com.bumptech.glide.Glide
 import com.common.Result
-import com.common.Util
+import com.common.util.Util
 import com.common.base.BaseActivity
 import com.common.ext.toast
 import com.common.pushExecutors
-import com.dibus.AutoWire
 import com.dibus.DiBus
 import com.vlog.R
-import com.vlog.avatar.UserAvatarActivity
 import com.vlog.avatar.load
 import com.vlog.database.Room
-import com.vlog.database.User
-import com.vlog.user.Owner
-import com.vlog.user.UserSource
 import dibus.app.RoomEditSourceCreator
-import dibus.app.UserAvatarActivityCreator
 
 class RoomAvatarEditActivity : BaseActivity() {
     private lateinit var imageView: ImageView

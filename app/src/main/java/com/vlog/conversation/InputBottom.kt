@@ -1,31 +1,43 @@
 package com.vlog.conversation
 
+import android.animation.ValueAnimator
 import android.content.Context
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.AttributeSet
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.FrameLayout
-import com.common.Util
+import android.widget.LinearLayout
+import com.common.util.ScreenUtils
+import com.common.util.Util
 import com.dibus.BusEvent
 import com.dibus.DiBus
+import com.vlog.connect.MessageSend
+import com.vlog.conversation.writeMessage.event.WordCacheState
 import com.vlog.database.Message
 import com.vlog.database.MsgWithUser
-import com.vlog.user.Owner
-import com.vlog.connect.MessageSend
-import com.vlog.databinding.BottomInputLayoutBinding
-import com.vlog.conversation.writeMessage.event.WordCacheState
 import com.vlog.database.User
+import com.vlog.databinding.BottomInputLayoutBinding
+import com.vlog.user.Owner
 import dibus.app.InputBottomCreator
 
 class InputBottom : FrameLayout, TextWatcher {
 
+     var softKeyHeight = 0
+
+    private var showListener:((Boolean)->Unit)? = null
+
+
     private var binding: BottomInputLayoutBinding =
         BottomInputLayoutBinding.inflate(LayoutInflater.from(context), this, true)
 
+
     private var conversationId = -1
 
-    private lateinit var user: User
+    private var user: User
 
 
     constructor(context: Context) : super(context)
@@ -35,32 +47,76 @@ class InputBottom : FrameLayout, TextWatcher {
 
     init {
         val owner = Owner()
-        user = User(owner.userId,owner.username,owner.username,owner.description)
+        user = User(owner.userId, owner.username, owner.username, owner.description)
         event()
         InputBottomCreator.inject(this)
     }
 
-    fun setConversationId(id:Int){
+    fun setBottomContentShowListener(action:(Boolean)->Unit){
+        showListener = action
+    }
+
+    fun setConversationId(id: Int){
         this.conversationId = id
         binding.inputWrite.conversationId = id
+    }
+
+    private fun showMore(view: View){
+        val layoutParams = view.layoutParams
+        val height = if(softKeyHeight<100) Util.dp2dx(context,270).toInt() else softKeyHeight
+        val animator = ValueAnimator.ofInt(0, height)
+        animator.duration = 250
+        animator.addUpdateListener {
+            val value = it.animatedValue as Int
+            layoutParams.height = value
+            view.layoutParams= layoutParams
+            if(value == height){
+                showListener?.invoke(true)
+            }
+        }
+        animator.start()
+    }
+
+
+    private fun showWrite(){
+        val p = binding.moreActionLayout.layoutParams.also { it.height = 0 }
+        binding.moreActionLayout.layoutParams = p
+        Util.hideSoftInput(context, this)
+        showMore(binding.writeView)
+    }
+
+    private fun showMoreLayout(){
+        val p = binding.writeView.layoutParams.also { it.height = 0 }
+        binding.writeView.layoutParams= p
+        Util.hideSoftInput(context, this)
+        showMore(binding.moreActionLayout)
+    }
+
+     fun showSoftKey(){
+        val p = binding.moreActionLayout.layoutParams.also { it.height = 0 }
+        binding.moreActionLayout.layoutParams = p
+        val pu = binding.writeView.layoutParams.also { it.height = 0 }
+        binding.writeView.layoutParams= pu
+        Util.showSoftInput(binding.inputText)
     }
 
     fun event() {
         binding.icWrite.setOnClickListener {
             it.isSelected = if (it.isSelected) {
-                binding.writeView.visibility = GONE
+                val p = binding.writeView.layoutParams.also { it.height = 0 }
+                binding.writeView.layoutParams= p
                 binding.inputWrite.visibility = GONE
                 binding.inputText.visibility = VISIBLE
-                Util.showSoftInput(binding.inputText)
+                showSoftKey()
                 false
             } else {
-                binding.writeView.visibility = VISIBLE
+                showWrite()
                 binding.inputWrite.visibility = VISIBLE
                 binding.inputText.visibility = GONE
-                Util.hideSoftInput(context,this)
                 true
             }
         }
+
 
         binding.inputText.addTextChangedListener(this)
         binding.actionSend.setOnClickListener {
@@ -68,13 +124,23 @@ class InputBottom : FrameLayout, TextWatcher {
                 binding.inputWrite.sendWordCache(user)
             }else{
                 val content = binding.inputText.text.toString()
-                val message = Message(0, Owner().userId,conversationId, Message.MESSAGE_TEXT,content,0)
-                DiBus.postEvent(message,MessageSend{
+                val message = Message(
+                    0,
+                    Owner().userId,
+                    conversationId,
+                    Message.MESSAGE_TEXT,
+                    content,
+                    0
+                )
+                DiBus.postEvent(message, MessageSend {
 
                 })
-                DiBus.postEvent(MsgWithUser(message,user))
+                DiBus.postEvent(MsgWithUser(message, user))
                 binding.inputText.setText("")
             }
+        }
+        binding.icMore.setOnClickListener {
+            showMoreLayout()
         }
 
     }

@@ -4,7 +4,7 @@ import android.graphics.Color
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import com.common.Util
+import com.common.util.Util
 import com.common.ext.launch
 import com.vlog.R
 import com.vlog.avatar.UserAvatarActivity
