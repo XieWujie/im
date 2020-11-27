@@ -2,6 +2,7 @@ package com.vlog.conversation
 
 import android.animation.ValueAnimator
 import android.content.Context
+import android.content.Intent
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.AttributeSet
@@ -15,6 +16,7 @@ import com.common.util.ScreenUtils
 import com.common.util.Util
 import com.dibus.BusEvent
 import com.dibus.DiBus
+import com.vlog.avatar.PhotoListActivity
 import com.vlog.connect.MessageSend
 import com.vlog.conversation.writeMessage.event.WordCacheState
 import com.vlog.database.Message
@@ -143,6 +145,10 @@ class InputBottom : FrameLayout, TextWatcher {
             showMoreLayout()
         }
 
+        binding.photoLayout.setOnClickListener {
+            val intent = Intent(it.context,ConversationActivity::class.java)
+            PhotoListActivity.launch(intent,it.context)
+        }
     }
 
     @BusEvent
