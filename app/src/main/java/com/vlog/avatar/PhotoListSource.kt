@@ -7,16 +7,17 @@ import android.provider.MediaStore
 import com.common.pushExecutors
 import java.io.File
 import java.nio.file.Path
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class PhotoListSource {
 
 
 
-     fun getAllPhotoInfo(contentResolver: ContentResolver,callback:(HashMap<String,MutableList<MediaBean>>)->Unit) {
+     fun getAllPhotoInfo(contentResolver: ContentResolver, allPhotosTemp: HashMap<String, MutableList<MediaBean>>,callback:()->Unit) {
         pushExecutors{
             val mediaBeen: MutableList<MediaBean> = ArrayList()
-            val allPhotosTemp: HashMap<String, MutableList<MediaBean>> =
-                HashMap() //所有照片
             val mImageUri: Uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
             val projImage = arrayOf<String>(
                 MediaStore.Images.Media._ID,
@@ -57,9 +58,21 @@ class PhotoListSource {
                 }
                 mCursor.close()
             }
-            callback(allPhotosTemp)
+            callback()
         }
     }
 }
 
-data class MediaBean(val path: String,val size:Int)
+data class MediaBean(val path: String,val size:Int,var selected:Boolean = false){
+    override fun equals(other: Any?): Boolean {
+        return if(other is MediaBean){
+            Objects.equals(path,other.path)
+        }else{
+            false
+        }
+    }
+
+    override fun hashCode(): Int {
+        return path.hashCode()
+    }
+}

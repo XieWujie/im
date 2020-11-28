@@ -1,5 +1,6 @@
 package com.vlog.avatar
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,21 +14,35 @@ class PhotoListAdapter :RecyclerView.Adapter<PhotoListAdapter.ViewHolder>(){
 
     val mList = ArrayList<MediaBean>()
     val selectSets = HashSet<MediaBean>()
+    var selectedNotEmptyListener:((Boolean)->Unit)? = null
 
     inner class ViewHolder(val view:View):RecyclerView.ViewHolder(view){
 
         private val photoView = view.findViewById<ImageView>(R.id.photo_view)
         private val checkBox = view.findViewById<MaterialCheckBox>(R.id.item_check)
 
+
         fun bind(mediaBean: MediaBean){
             Glide.with(photoView).load(mediaBean.path).into(photoView)
-            checkBox.setOnCheckedChangeListener { _, isChecked ->
+            checkBox.setOnCheckedChangeListener(null)
+            checkBox.isChecked = selectSets.contains(mediaBean)
+            checkBox.setOnCheckedChangeListener { view, isChecked ->
+                Log.d("selectedState",checkBox.isChecked.toString()+"listener")
                 if(isChecked){
                     selectSets.add(mediaBean)
+                    mediaBean.selected = true
+                    if(selectSets.size == 1){
+                        selectedNotEmptyListener?.invoke(true)
+                    }
                 }else{
                     selectSets.remove(mediaBean)
+                    mediaBean.selected = false
+                    if(selectSets.size == 0){
+                        selectedNotEmptyListener?.invoke(false)
+                    }
                 }
             }
+            Log.d("selectedState",checkBox.isChecked.toString())
         }
 
     }
@@ -41,7 +56,12 @@ class PhotoListAdapter :RecyclerView.Adapter<PhotoListAdapter.ViewHolder>(){
         holder.bind(mList[position])
     }
 
+
     override fun getItemCount(): Int {
         return mList.size
+    }
+
+    companion object{
+        const val PHOTO_VIEW = 0
     }
 }

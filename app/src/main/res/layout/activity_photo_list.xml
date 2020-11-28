@@ -57,7 +57,7 @@
                         android:layout_width="wrap_content"
                         android:id="@+id/show_state_view"
                         android:layout_centerInParent="true"
-                        android:src="@drawable/ic_up"
+                        android:src="@drawable/ic_back"
                         android:layout_height="wrap_content"/>
                 </RelativeLayout>
             </androidx.cardview.widget.CardView>
@@ -83,7 +83,8 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:visibility="gone"
         android:background="@android:color/transparent"
         android:id="@+id/directory_list"
         android:layout_below="@+id/top_bar" />
@@ -91,13 +92,15 @@
     <RelativeLayout
         android:id="@+id/bottom_action_layout"
         android:layout_width="match_parent"
+        android:background="#ff000000"
         android:layout_alignParentBottom="true"
         android:layout_height="50dp">
         <com.google.android.material.checkbox.MaterialCheckBox
-            android:layout_width="20dp"
+            android:layout_width="wrap_content"
             android:id="@+id/origin_check"
+            android:theme="@style/MyCheckBox"
             android:layout_centerInParent="true"
-            android:layout_height="20dp"/>
+            android:layout_height="wrap_content"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_centerVertical="true"
