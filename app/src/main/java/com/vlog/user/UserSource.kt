@@ -10,7 +10,7 @@ import com.common.pushExecutors
 import com.dibus.AutoWire
 import com.dibus.Service
 import com.google.gson.Gson
-import com.vlog.avatar.ImgSource
+import com.vlog.photo.ImgSource
 import com.vlog.database.Friend
 import com.vlog.database.FriendDao
 import com.vlog.database.User

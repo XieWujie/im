@@ -6,9 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.common.ext.launch
-import com.vlog.avatar.UserAvatarActivity
-import com.vlog.avatar.load
+import com.vlog.photo.UserAvatarActivity
 import com.vlog.databinding.FragmentMeBinding
+import com.vlog.photo.load
 import com.vlog.setting.SettingActivity
 import com.vlog.user.Owner
 import com.vlog.user.UserItemEditActivity

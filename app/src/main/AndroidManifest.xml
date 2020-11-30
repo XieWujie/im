@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
 
     <application
         android:name=".App"
@@ -16,13 +17,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".avatar.PhotoListActivity"></activity>
+        <activity android:name=".photo.PhotoListActivity"></activity>
         <activity android:name=".setting.SettingActivity" />
         <activity android:name=".login.StartActivity" />
         <activity android:name=".room.RoomAvatarEditActivity" />
         <activity android:name=".room.RoomNameEditActivity" />
         <activity android:name=".user.UserNameEditActivity" />
-        <activity android:name=".avatar.UserAvatarActivity" />
+        <activity android:name=".photo.UserAvatarActivity" />
         <activity android:name=".user.UserItemEditActivity" />
         <activity android:name=".ui.relation.RoomListActivity" />
         <activity android:name=".conversation.room.CovRoomEditActivity" />
@@ -45,6 +46,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <service
+            android:name=".conversation.message.MessageService"
+            android:exported="true"
+            android:permission="android.permission.BIND_JOB_SERVICE"
+            />
     </application>
 
 </manifest>

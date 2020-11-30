@@ -7,15 +7,12 @@ import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.common.Result
 import com.common.ext.toast
 import com.dibus.BusEvent
-import com.dibus.DiBus
-import com.vlog.R
-import com.vlog.avatar.load
 import com.vlog.database.Room
 import com.vlog.databinding.CovRoomItemBinding
+import com.vlog.photo.load
 import com.vlog.room.RoomAvatarEditActivity
 import com.vlog.room.RoomNameEditActivity
 import dibus.app.ItemViewHolderCreator

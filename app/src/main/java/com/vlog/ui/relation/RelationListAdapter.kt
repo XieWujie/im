@@ -5,10 +5,9 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.common.ext.launch
 import com.vlog.R
-import com.vlog.avatar.load
+import com.vlog.photo.load
 import com.vlog.conversation.ConversationActivity
 import com.vlog.database.Friend
 import com.vlog.databinding.RelationListItemBinding

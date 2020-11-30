@@ -2,21 +2,16 @@ package com.vlog.conversation
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Rect
 import android.os.Bundle
-import android.util.Log
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.common.base.BaseActivity
-import com.common.util.ScreenUtils
-import com.common.util.Util
 import com.dibus.AutoWire
 import com.dibus.BusEvent
 import com.vlog.R
 import com.vlog.adapter.MessageListAdapter
-import com.vlog.avatar.RecyclerViewAnimator
 import com.vlog.conversation.room.CovRoomEditActivity
 import com.vlog.database.Friend
 import com.vlog.database.Room

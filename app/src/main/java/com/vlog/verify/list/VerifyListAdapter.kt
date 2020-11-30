@@ -3,13 +3,11 @@ package com.vlog.verify.list
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.vlog.R
-import com.vlog.avatar.load
 import com.vlog.database.User
 import com.vlog.database.Verify
 import com.vlog.database.VerifyWithUser
 import com.vlog.databinding.VerifyListItemBinding
+import com.vlog.photo.load
 
 
 class VerifyListAdapter(private val mList:ArrayList<VerifyWithUser>,):RecyclerView.Adapter<VerifyListAdapter.ViewHolder>() {

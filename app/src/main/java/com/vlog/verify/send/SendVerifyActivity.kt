@@ -3,25 +3,18 @@ package com.vlog.verify.send
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.WorkSource
 import android.view.View
 import androidx.databinding.DataBindingUtil
-import com.bumptech.glide.Glide
-import com.common.Result
 import com.common.base.BaseActivity
 import com.dibus.AutoWire
-import com.dibus.DiBus
-import com.google.gson.Gson
 import com.vlog.R
-import com.vlog.avatar.load
-import com.vlog.connect.MessageSend
-import com.vlog.database.Message
 
 import com.vlog.database.User
 import com.vlog.databinding.ActivitySendVerifyBinding
 import com.vlog.user.Owner
 import com.vlog.database.Verify
 import com.vlog.database.VerifyWithUser
+import com.vlog.photo.load
 import com.vlog.verify.VerifySource
 import dibus.app.SendVerifyActivityCreator
 

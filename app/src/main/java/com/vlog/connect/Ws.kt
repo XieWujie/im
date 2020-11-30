@@ -8,7 +8,6 @@ import com.google.gson.Gson
 import com.vlog.database.Message
 import com.vlog.database.MsgDao
 import com.vlog.database.MsgWithUser
-import com.vlog.database.UserDao
 import com.vlog.user.Owner
 import com.vlog.user.UserSource
 import okhttp3.*
@@ -46,7 +45,6 @@ class WsListener:WebSocketListener() {
         val json = gson.toJson(m)
         messageSend.sendState(ws?.send(json)?:false)
     }
-
 
 
     fun connect(){

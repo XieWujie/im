@@ -4,10 +4,10 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.common.util.Util
-import com.vlog.avatar.load
 import com.vlog.conversation.ConversationActivity
 import com.vlog.conversation.MsgConv
 import com.vlog.databinding.MessageListItemBinding
+import com.vlog.photo.load
 
 class MessageListAdapter:RecyclerView.Adapter<MessageListAdapter.ViewHolder>() {
 

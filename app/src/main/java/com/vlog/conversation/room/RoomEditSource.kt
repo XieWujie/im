@@ -10,9 +10,8 @@ import com.common.pushExecutors
 import com.dibus.AutoWire
 import com.dibus.Service
 import com.google.gson.Gson
-import com.vlog.avatar.ImgSource
+import com.vlog.photo.ImgSource
 import com.vlog.database.Room
-import com.vlog.database.User
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 

@@ -1,4 +1,4 @@
-package com.vlog.avatar
+package com.vlog.photo
 
 import android.animation.ObjectAnimator
 import android.content.Context
@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.common.base.BaseActivity
 import com.common.util.Util
 import com.vlog.R
-import com.vlog.database.Message
 import com.vlog.databinding.ActivityPhotoListBinding
 
 class PhotoListActivity : BaseActivity() {

@@ -1,4 +1,4 @@
-package com.vlog.avatar
+package com.vlog.photo
 
 import android.content.ContentResolver
 import android.database.Cursor
@@ -6,7 +6,6 @@ import android.net.Uri
 import android.provider.MediaStore
 import com.common.pushExecutors
 import java.io.File
-import java.nio.file.Path
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap

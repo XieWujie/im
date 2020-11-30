@@ -2,12 +2,18 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "5d37b832e7a92bb355bfdd3d8b455439",
+    "identityHash": "29c6a2f50c4f5c4b29423d09dd31046c",
     "entities": [
       {
         "tableName": "Message",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`messageId` INTEGER NOT NULL, `sendFrom` INTEGER NOT NULL, `conversationId` INTEGER NOT NULL, `messageType` INTEGER NOT NULL, `content` TEXT NOT NULL, `createAt` INTEGER NOT NULL, PRIMARY KEY(`messageId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`sendTime` INTEGER NOT NULL, `messageId` INTEGER NOT NULL, `sendFrom` INTEGER NOT NULL, `conversationId` INTEGER NOT NULL, `messageType` INTEGER NOT NULL, `content` TEXT NOT NULL, `createAt` INTEGER NOT NULL, PRIMARY KEY(`sendTime`))",
         "fields": [
+          {
+            "fieldPath": "sendTime",
+            "columnName": "sendTime",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
           {
             "fieldPath": "messageId",
             "columnName": "messageId",
@@ -47,7 +53,7 @@
         ],
         "primaryKey": {
           "columnNames": [
-            "messageId"
+            "sendTime"
           ],
           "autoGenerate": false
         },
@@ -234,7 +240,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '5d37b832e7a92bb355bfdd3d8b455439')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '29c6a2f50c4f5c4b29423d09dd31046c')"
     ]
   }
 }

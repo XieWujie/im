@@ -3,12 +3,10 @@ package com.vlog.conversation.room
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.common.ext.launch
-import com.vlog.R
-import com.vlog.avatar.load
 import com.vlog.database.User
 import com.vlog.databinding.RUListItemBinding
+import com.vlog.photo.load
 import com.vlog.user.Owner
 import com.vlog.user.UserHomeActivity
 import com.vlog.user.UserItemEditActivity

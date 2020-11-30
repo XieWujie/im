@@ -6,17 +6,13 @@ import android.content.Intent
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.FrameLayout
-import android.widget.LinearLayout
-import com.common.util.ScreenUtils
 import com.common.util.Util
 import com.dibus.BusEvent
 import com.dibus.DiBus
-import com.vlog.avatar.PhotoListActivity
+import com.vlog.photo.PhotoListActivity
 import com.vlog.connect.MessageSend
 import com.vlog.conversation.writeMessage.event.WordCacheState
 import com.vlog.database.Message
@@ -25,6 +21,7 @@ import com.vlog.database.User
 import com.vlog.databinding.BottomInputLayoutBinding
 import com.vlog.user.Owner
 import dibus.app.InputBottomCreator
+import java.util.*
 
 class InputBottom : FrameLayout, TextWatcher {
 

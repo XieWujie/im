@@ -3,7 +3,7 @@ package com.vlog.ui.relation
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.vlog.avatar.load
+import com.vlog.photo.load
 import com.vlog.conversation.ConversationActivity
 import com.vlog.database.Room
 import com.vlog.databinding.RelationListItemBinding

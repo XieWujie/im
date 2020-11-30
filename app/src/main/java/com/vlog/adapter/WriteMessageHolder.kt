@@ -3,12 +3,11 @@ package com.vlog.adapter
 import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
-import com.bumptech.glide.Glide
 import com.common.ext.launch
 import com.dibus.AutoWire
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.vlog.avatar.load
+import com.vlog.photo.load
 import com.vlog.database.Message
 import com.vlog.database.MsgWithUser
 import com.vlog.databinding.LeftWriteMessageBinding

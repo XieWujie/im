@@ -1,10 +1,9 @@
-package com.vlog.avatar
+package com.vlog.photo
 
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.common.HOST
 import com.vlog.R
-import java.net.URL
 
 fun ImageView.load(url:String){
     if(url.isEmpty()) {

@@ -3,9 +3,8 @@ package com.vlog.adapter
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import com.bumptech.glide.Glide
 import com.common.ext.launch
-import com.vlog.avatar.load
+import com.vlog.photo.load
 import com.vlog.database.MsgWithUser
 import com.vlog.databinding.LeftTextMessageBinding
 import com.vlog.databinding.RightTextMessageBinding

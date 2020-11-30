@@ -1,4 +1,4 @@
-package com.vlog.avatar
+package com.vlog.photo
 
 import com.common.HOST
 import com.common.ext.enqueue

@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:background="#ff333333"
     android:layout_height="match_parent"
-    tools:context=".avatar.PhotoListActivity">
+    tools:context=".photo.PhotoListActivity">
     <RelativeLayout
         android:id="@+id/top_bar"
         android:layout_width="match_parent"

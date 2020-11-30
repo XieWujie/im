@@ -17,7 +17,7 @@ import com.common.ext.toast
 import com.common.pushExecutors
 import com.dibus.DiBus
 import com.vlog.R
-import com.vlog.avatar.load
+import com.vlog.photo.load
 import com.vlog.database.Room
 import dibus.app.RoomEditSourceCreator
 

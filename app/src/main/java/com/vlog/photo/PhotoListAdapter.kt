@@ -1,4 +1,4 @@
-package com.vlog.avatar
+package com.vlog.photo
 
 import android.util.Log
 import android.view.LayoutInflater

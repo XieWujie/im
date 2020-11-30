@@ -2,20 +2,16 @@ package com.vlog.user
 
 import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
-import com.bumptech.glide.Glide
-import com.common.Result
 import com.common.base.BaseActivity
 import com.dibus.AutoWire
 import com.vlog.R
-import com.vlog.avatar.load
 import com.vlog.conversation.ConversationActivity
 import com.vlog.database.User
 import com.vlog.databinding.ActivityUserHomeBinding
+import com.vlog.photo.load
 import com.vlog.verify.send.SendVerifyActivity
 import dibus.app.UserHomeActivityCreator
 

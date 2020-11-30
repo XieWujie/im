@@ -3,11 +3,9 @@ package com.vlog.room
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.vlog.R
-import com.vlog.avatar.load
 import com.vlog.database.Friend
 import com.vlog.databinding.RoomCreateSelectedItemBinding
+import com.vlog.photo.load
 
 class RoomCreateAdapter:RecyclerView.Adapter<RoomCreateAdapter.ViewHolder>()  {
 
