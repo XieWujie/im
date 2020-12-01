@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.util.Log
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.common.pushExecutors
 import com.dibus.AutoWire
 import com.dibus.BusEvent
 import com.dibus.DiBus
@@ -13,10 +14,11 @@ import com.google.gson.Gson
 import com.vlog.database.Message
 import com.vlog.database.MsgWithUser
 import com.vlog.user.Owner
-import com.vlog.adapter.WordWriteAdapter
+import com.vlog.conversation.adapter.WordWriteAdapter
 import com.vlog.connect.MessageSend
 import com.vlog.conversation.writeMessage.event.SingleWriteEvent
 import com.vlog.conversation.writeMessage.event.WordCacheState
+import com.vlog.database.MsgDao
 import com.vlog.database.User
 import dibus.app.FinalReadViewListCreator
 
@@ -31,6 +33,9 @@ class FinalReadViewList:RecyclerView {
 
     @AutoWire
     lateinit var gson: Gson
+
+    @AutoWire
+    lateinit var msgDao: MsgDao
 
     constructor(context: Context):super(context)
 
@@ -53,16 +58,15 @@ class FinalReadViewList:RecyclerView {
     }
 
 
-    fun sendWordCache(user: User){
+    fun sendWordCache(){
         val content = gson.toJson(list)
-        val message = Message(0, Owner().userId,conversationId, Message.MESSAGE_WRITE,content,0)
+        val message =Message.obtain(conversationId,Message.MESSAGE_TEXT,content)
+        pushExecutors {
+            msgDao.insert(message)
+        }
         list.clear()
         mAdapter.notifyDataSetChanged()
-        DiBus.postEvent(MsgWithUser(message,user))
-        DiBus.postEvent(message,MessageSend{
 
-        })
-        DiBus.postEvent(WordCacheState(true))
     }
 
 

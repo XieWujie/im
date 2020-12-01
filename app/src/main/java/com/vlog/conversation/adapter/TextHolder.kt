@@ -1,9 +1,11 @@
-package com.vlog.adapter
+package com.vlog.conversation.adapter
 
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import com.common.ext.launch
+import com.dibus.DiBus
+import com.vlog.connect.MessageSend
 import com.vlog.photo.load
 import com.vlog.database.MsgWithUser
 import com.vlog.databinding.LeftTextMessageBinding
@@ -43,10 +45,20 @@ class TextHolder{
 
         override fun bind(m: MsgWithUser) {
             holder.load(binding.contentText,binding.userAvatarView,binding.usernameText,m)
-            if(m.message.messageId == 0){
-                binding.sendIng.visibility = View.VISIBLE
-            }else{
+            val msg = m.message
+            if(msg.isSend){
                 binding.sendIng.visibility = View.GONE
+            }else{
+                binding.sendIng.visibility = View.VISIBLE
+                DiBus.postEvent(msg,MessageSend{
+                    if(it == null){
+                        binding.sendIng.visibility = View.GONE
+                        msg.isSend = true
+                    }else{
+                        binding.errorState.visibility = View.VISIBLE
+                        binding.sendIng.visibility = View.GONE
+                    }
+                })
             }
         }
     }

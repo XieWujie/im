@@ -9,13 +9,16 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
+import com.common.pushExecutors
 import com.common.util.Util
+import com.dibus.AutoWire
 import com.dibus.BusEvent
 import com.dibus.DiBus
 import com.vlog.photo.PhotoListActivity
 import com.vlog.connect.MessageSend
 import com.vlog.conversation.writeMessage.event.WordCacheState
 import com.vlog.database.Message
+import com.vlog.database.MsgDao
 import com.vlog.database.MsgWithUser
 import com.vlog.database.User
 import com.vlog.databinding.BottomInputLayoutBinding
@@ -29,14 +32,15 @@ class InputBottom : FrameLayout, TextWatcher {
 
     private var showListener:((Boolean)->Unit)? = null
 
+    @AutoWire
+    lateinit var msgDao: MsgDao
+
 
     private var binding: BottomInputLayoutBinding =
         BottomInputLayoutBinding.inflate(LayoutInflater.from(context), this, true)
 
 
     private var conversationId = -1
-
-    private var user: User
 
 
     constructor(context: Context) : super(context)
@@ -45,8 +49,6 @@ class InputBottom : FrameLayout, TextWatcher {
 
 
     init {
-        val owner = Owner()
-        user = User(owner.userId, owner.username, owner.username, owner.description)
         event()
         InputBottomCreator.inject(this)
     }
@@ -120,21 +122,13 @@ class InputBottom : FrameLayout, TextWatcher {
         binding.inputText.addTextChangedListener(this)
         binding.actionSend.setOnClickListener {
             if(binding.icWrite.isSelected){
-                binding.inputWrite.sendWordCache(user)
+                binding.inputWrite.sendWordCache()
             }else{
                 val content = binding.inputText.text.toString()
-                val message = Message(
-                    0,
-                    Owner().userId,
-                    conversationId,
-                    Message.MESSAGE_TEXT,
-                    content,
-                    0
-                )
-                DiBus.postEvent(message, MessageSend {
-
-                })
-                DiBus.postEvent(MsgWithUser(message, user))
+                val msg = Message.obtain(conversationId,Message.MESSAGE_TEXT,content)
+                pushExecutors {
+                    msgDao.insert(msg)
+                }
                 binding.inputText.setText("")
             }
         }

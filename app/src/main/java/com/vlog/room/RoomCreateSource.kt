@@ -2,7 +2,7 @@ package com.vlog.room
 
 import android.util.Log
 import androidx.lifecycle.LiveData
-import com.common.HOST
+import com.common.HOST_PORT
 import com.common.Result
 import com.common.ext.toLiveData
 import com.dibus.AutoWire
@@ -32,7 +32,7 @@ class RoomCreateSource {
         map["members"] = members
         val body = gson.toJson(map)
         Log.d("createRoom",body)
-        val url = "$HOST/room/create"
+        val url = "$HOST_PORT/room/create"
         val request = Request.Builder()
             .url(url)
             .post(body.toRequestBody())

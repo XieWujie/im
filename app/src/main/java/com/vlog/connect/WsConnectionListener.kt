@@ -8,5 +8,7 @@ interface WsConnectionListener {
 
     fun onMessage(text:String)
 
+    fun onClose(ws: WsConnection)
+
 
 }

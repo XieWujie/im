@@ -14,7 +14,7 @@ import okhttp3.*
 import okio.ByteString
 
 private const val TAG = "WsListener"
-@Service(createModel = CREATE_SINGLETON)
+//@Service(createModel = CREATE_SINGLETON)
 class WsListener:WebSocketListener() {
 
     @AutoWire
@@ -43,7 +43,6 @@ class WsListener:WebSocketListener() {
     fun handleMessage(m: Message, messageSend: MessageSend){
         ws?:connect()
         val json = gson.toJson(m)
-        messageSend.sendState(ws?.send(json)?:false)
     }
 
 

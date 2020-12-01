@@ -15,8 +15,7 @@ import java.util.concurrent.LinkedBlockingQueue
 @Service(CREATE_SINGLETON)
 class MessageOnTime :Runnable{
 
-    @AutoWire
-    lateinit var ws:WebSocket
+
     @AutoWire
     lateinit var userFetcher: UserFetcher
     @AutoWire
@@ -33,7 +32,6 @@ class MessageOnTime :Runnable{
 
     private fun sendWriteMessage(){
         val json = gson.toJson(message)
-        ws.send(json)
     }
 
     fun readWrite(x:Float,y:Float,type: Int){

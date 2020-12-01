@@ -3,7 +3,6 @@ package com.common.util
 import android.app.Activity
 import android.content.Context
 import android.database.Cursor
-import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
@@ -11,7 +10,6 @@ import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
-import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -22,15 +20,15 @@ object Util {
         return (dp+0.5)*density
     }
 
-    fun getTime(timeStamp:Long):String{
-        val oneDate = 24*60*60
-        val lastDate = Date(timeStamp).time/1000-oneDate
-        val p = if(timeStamp>lastDate){
+    fun getTime(timeMill:Long):String{
+        val oneDate = 24*60*60*1000
+        val lastDate = Date().time-oneDate
+        val p = if(timeMill>lastDate){
             "HH:mm"
         }else{
             "MM-dd HH:mm"
         }
-        val format = SimpleDateFormat(p, Locale.CHINA).format(timeStamp*1000)
+        val format = SimpleDateFormat(p, Locale.CHINA).format(timeMill)
         return format.toString()
     }
 

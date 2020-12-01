@@ -1,7 +1,7 @@
 package com.vlog.login.register
 
 import androidx.lifecycle.LiveData
-import com.common.HOST
+import com.common.HOST_PORT
 import com.common.Result
 import com.common.ext.toLiveData
 import com.dibus.AutoWire
@@ -27,7 +27,7 @@ class RegisterSource {
         val entity = LoginEntity(username,password)
         val body = gson.toJson(entity)
         val request = Request.Builder()
-            .url("$HOST/user/register")
+            .url("$HOST_PORT/user/register")
             .post(body.toRequestBody())
             .build()
         return request.toLiveData(){

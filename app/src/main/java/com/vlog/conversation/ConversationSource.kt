@@ -3,7 +3,7 @@ package com.vlog.conversation
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.room.InvalidationTracker
-import com.common.HOST
+import com.common.HOST_PORT
 import com.common.Result
 import com.common.ext.getType
 import com.common.ext.toLiveData
@@ -36,7 +36,7 @@ class ConversationSource {
    }
 
    fun loadFromNet(before:Long,conversationId: Int):LiveData<Result<List<MsgWithUser>>>{
-      val url = "$HOST/message/get?conversationId=$conversationId&&before=$before&&messageType=10"
+      val url = "$HOST_PORT/message/get?conversationId=$conversationId&&before=$before&&messageType=10"
       val request = Request.Builder()
          .url(url)
          .get()
@@ -44,13 +44,13 @@ class ConversationSource {
       return request.toLiveData(getType(List::class.java,MsgWithUser::class.java)){
          val users = it.map { it.user }
          userDao.insert(users)
-         val messages = it.map { it.message }
+         val messages = it.map { it.message.apply { isSend = true } }
          dao.insert(messages)
       }
    }
 
    fun getRecentMessageByNet(userId:Int):LiveData<Result<List<MsgWithUser>>>{
-      val url = "$HOST/message/recent?userId=$userId"
+      val url = "$HOST_PORT/message/recent?userId=$userId"
       val request = Request.Builder()
          .url(url)
          .get()

@@ -2,7 +2,7 @@ package com.vlog.conversation.room
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.common.HOST
+import com.common.HOST_PORT
 import com.common.Result
 import com.common.ext.sync
 import com.common.ext.toLiveData
@@ -30,7 +30,7 @@ class RoomEditSource {
     }
 
    private fun buildRequest(room: Room):Request{
-        val url = "$HOST/room/update"
+        val url = "$HOST_PORT/room/update"
         val body = gson.toJson(room).toRequestBody()
         return Request.Builder()
             .url(url)

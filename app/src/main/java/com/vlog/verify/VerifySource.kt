@@ -1,17 +1,14 @@
 package com.vlog.verify
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import com.common.HOST
+import com.common.HOST_PORT
 import com.common.Result
 import com.common.ext.getType
 import com.common.ext.toLiveData
-import com.common.pushExecutors
 import com.dibus.AutoWire
 import com.dibus.Service
 import com.google.gson.Gson
 import com.vlog.database.*
-import com.vlog.user.Owner
 import com.vlog.user.UserSource
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -35,7 +32,7 @@ class VerifySource {
     @AutoWire lateinit var userSource: UserSource
 
     fun sendVerify(verify:VerifyWithUser):LiveData<Result<Verify>>{
-        val url = "$HOST/verify/send"
+        val url = "$HOST_PORT/verify/send"
         val json = gson.toJson(verify.verify)
         val request = Request.Builder()
             .url(url)
@@ -47,7 +44,7 @@ class VerifySource {
     }
 
     fun findVerifyMessage(userId: Int): LiveData<Result<List<VerifyWithUser>>> {
-        val url = "$HOST/verify/get?userId=$userId"
+        val url = "$HOST_PORT/verify/get?userId=$userId"
         val request = Request.Builder()
             .url(url)
             .get()

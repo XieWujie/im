@@ -1,5 +1,6 @@
-package com.vlog.adapter
+package com.vlog.conversation.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -41,15 +42,16 @@ class MessageListAdapter :RecyclerView.Adapter<MessageHolder>(){
 
 
 
-    private val haftHour = 60*3
+    private val haftHour = 60*3*1000
     var lastTime = 0L
 
     fun flashList(list: List<MsgWithUser>){
+        Log.d("list",list.toString())
         val lastSize = mList.size
-        val midTime = if(mList.isEmpty()) 0 else mList[mList.size-1].message!!.message.createAt
+        val midTime = if(mList.isEmpty()) 0 else mList[mList.size-1].message!!.message.sendTime
         var i = 0
         while(i<list.size){
-            val time = list[i].message.createAt
+            val time = list[i].message.sendTime
             if(time<=midTime){
                 i++
                 continue

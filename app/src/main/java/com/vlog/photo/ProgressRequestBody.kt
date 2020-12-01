@@ -1,11 +1,12 @@
 package com.vlog.photo
 
+import com.vlog.conversation.message.ProgressListener
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import okio.*
 import java.io.File
 
-class ProgressRequestBody(private val mediaType: MediaType?, private val file: File,private val listener:(Long,Long,Boolean)->Unit) :RequestBody(){
+class ProgressRequestBody(private val mediaType: MediaType?, private val file: File,private val listener:ProgressListener?) :RequestBody(){
 
     override fun contentType(): MediaType? {
         return mediaType
@@ -27,7 +28,7 @@ class ProgressRequestBody(private val mediaType: MediaType?, private val file: F
             while (source.read(buf, 2048).also { readCount = it } != -1L) {
                 sink.write(buf, readCount)
                 writeCount+=readCount
-                listener.invoke(
+                listener?.callback(
                     contentLength ,
                     writeCount,
                     writeCount==contentLength

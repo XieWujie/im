@@ -1,7 +1,7 @@
 package com.vlog.search
 
 import androidx.lifecycle.LiveData
-import com.common.HOST
+import com.common.HOST_PORT
 import com.common.Result
 import com.common.ext.getType
 import com.common.ext.toLiveData
@@ -15,7 +15,7 @@ class FindSource {
 
 
     fun searchUser(key:String):LiveData<Result<List<User>>>{
-        val url = "$HOST/user/find?key=$key"
+        val url = "$HOST_PORT/user/find?key=$key"
         val request = Request.Builder()
             .url(url)
             .get()

@@ -61,4 +61,6 @@ object WsProtocol {
     internal const val CLOSE_CLIENT_GOING_AWAY = 1001
     /** Used when an empty close frame was received (i.e., without a status code). */
     internal const val CLOSE_NO_STATUS_CODE = 1005
+
+
 }

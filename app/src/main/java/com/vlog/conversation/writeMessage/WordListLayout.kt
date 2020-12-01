@@ -4,7 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.vlog.adapter.WordWriteAdapter
+import com.vlog.conversation.adapter.WordWriteAdapter
 
 class WordListLayout :RecyclerView{
 

@@ -10,7 +10,7 @@ import io.reactivex.Flowable
 @Dao
 interface MsgDao {
 
-    @Query("select * from message where conversationId=:destination order by createAt")
+    @Query("select * from message where conversationId=:destination order by sendTime")
     fun getByConversationId(destination:Int):List<Message>
 
     @Query("select message.*,user.* from message,user where conversationId=:conversationId and message.sendFrom==user.userId order by createAt")

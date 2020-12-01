@@ -1,7 +1,7 @@
 package com.vlog.ui.relation
 
 import androidx.lifecycle.LiveData
-import com.common.HOST
+import com.common.HOST_PORT
 import com.common.Result
 import com.common.ext.getType
 import com.common.ext.toLiveData
@@ -20,7 +20,7 @@ class RelationSource {
     lateinit var dao: FriendDao
 
     fun getRelations(userId:Int):LiveData<Result<List<Friend>>>{
-        val url = "$HOST/relation/get?userId=$userId"
+        val url = "$HOST_PORT/relation/get?userId=$userId"
         val request = Request.Builder()
             .url(url)
             .get()

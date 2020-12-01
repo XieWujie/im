@@ -1,4 +1,4 @@
-package com.vlog.adapter
+package com.vlog.conversation.adapter
 
 import android.view.View
 import android.widget.ImageView
@@ -7,9 +7,7 @@ import com.common.ext.launch
 import com.vlog.photo.load
 import com.vlog.database.MsgWithUser
 import com.vlog.databinding.LeftImgMessageBinding
-import com.vlog.databinding.LeftTextMessageBinding
 import com.vlog.databinding.RightImgMessageBinding
-import com.vlog.databinding.RightTextMessageBinding
 import com.vlog.user.Owner
 import com.vlog.user.UserHomeActivity
 import com.vlog.user.UserItemEditActivity

@@ -1,7 +1,7 @@
 package com.vlog.login
 
 import androidx.lifecycle.LiveData
-import com.common.HOST
+import com.common.HOST_PORT
 import com.common.Result
 import com.common.ext.toLiveData
 import com.dibus.AutoWire
@@ -22,7 +22,7 @@ class LoginSource {
         val entity = LoginEntity(username,password)
         val body = gson.toJson(entity)
         val request = Request.Builder()
-            .url("$HOST/user/login")
+            .url("$HOST_PORT/user/login")
             .post(body.toRequestBody())
             .build()
         return request.toLiveData{

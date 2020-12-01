@@ -2,18 +2,12 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "29c6a2f50c4f5c4b29423d09dd31046c",
+    "identityHash": "8991cf6533e4b0537520b6112ea38fed",
     "entities": [
       {
         "tableName": "Message",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`sendTime` INTEGER NOT NULL, `messageId` INTEGER NOT NULL, `sendFrom` INTEGER NOT NULL, `conversationId` INTEGER NOT NULL, `messageType` INTEGER NOT NULL, `content` TEXT NOT NULL, `createAt` INTEGER NOT NULL, PRIMARY KEY(`sendTime`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`messageId` INTEGER NOT NULL, `sendFrom` INTEGER NOT NULL, `conversationId` INTEGER NOT NULL, `messageType` INTEGER NOT NULL, `content` TEXT NOT NULL, `createAt` INTEGER NOT NULL, `sendTime` INTEGER NOT NULL, `isSend` INTEGER NOT NULL, `isRead` INTEGER NOT NULL, PRIMARY KEY(`sendTime`))",
         "fields": [
-          {
-            "fieldPath": "sendTime",
-            "columnName": "sendTime",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
           {
             "fieldPath": "messageId",
             "columnName": "messageId",
@@ -47,6 +41,24 @@
           {
             "fieldPath": "createAt",
             "columnName": "createAt",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sendTime",
+            "columnName": "sendTime",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isSend",
+            "columnName": "isSend",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isRead",
+            "columnName": "isRead",
             "affinity": "INTEGER",
             "notNull": true
           }
@@ -240,7 +252,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '29c6a2f50c4f5c4b29423d09dd31046c')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '8991cf6533e4b0537520b6112ea38fed')"
     ]
   }
 }

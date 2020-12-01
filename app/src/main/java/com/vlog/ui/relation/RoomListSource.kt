@@ -1,7 +1,7 @@
 package com.vlog.ui.relation
 
 import androidx.lifecycle.LiveData
-import com.common.HOST
+import com.common.HOST_PORT
 import com.common.Result
 import com.common.ext.getType
 import com.common.ext.toLiveData
@@ -20,7 +20,7 @@ class RoomListSource {
 
 
     fun requestFromNet(userId:Int):LiveData<Result<List<Room>>>{
-        val url = "$HOST/room/get?userId=$userId"
+        val url = "$HOST_PORT/room/get?userId=$userId"
         val request = Request.Builder()
             .url(url)
             .get()

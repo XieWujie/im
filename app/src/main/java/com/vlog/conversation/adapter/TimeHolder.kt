@@ -1,4 +1,4 @@
-package com.vlog.adapter
+package com.vlog.conversation.adapter
 
 import android.view.View
 import android.widget.TextView

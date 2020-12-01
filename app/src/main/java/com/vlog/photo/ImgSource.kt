@@ -1,6 +1,6 @@
 package com.vlog.photo
 
-import com.common.HOST
+import com.common.HOST_PORT
 import com.common.ext.enqueue
 import com.common.ext.sync
 import com.dibus.Service
@@ -13,7 +13,7 @@ import java.io.File
 class ImgSource {
 
     fun upLoad(path: String,callBack:(String)->Unit,onFail:(Exception)->Unit){
-        val url = "$HOST/file/post"
+        val url = "$HOST_PORT/file/post"
         val file = File(path)
         val body = file.asRequestBody("image/png".toMediaTypeOrNull())
         val request = Request.Builder()
@@ -24,7 +24,7 @@ class ImgSource {
     }
 
     fun upLoad(path: String):String{
-        val url = "$HOST/file/post"
+        val url = "$HOST_PORT/file/post"
         val file = File(path)
         val body = file.asRequestBody("image/png".toMediaTypeOrNull())
         val request = Request.Builder()

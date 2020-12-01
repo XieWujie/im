@@ -1,5 +1,7 @@
 package com.vlog.connect
 
-class MessageSend(val sendState:(isOk:Boolean)->Unit) {
+import java.io.IOException
+
+class MessageSend(val sendState:(e:IOException?)->Unit) {
 
 }

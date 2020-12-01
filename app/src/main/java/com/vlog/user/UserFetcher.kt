@@ -6,9 +6,12 @@ import com.common.string
 import com.dibus.AutoWire
 import com.dibus.CREATE_SINGLETON
 import com.dibus.Service
+import com.vlog.database.DbApp
 import com.vlog.database.User
 import com.vlog.login.LoginResponse
+import dibus.app.DbAppCreator
 import dibus.app.UserFetcherCreator
+import dibus.app.UserSourceCreator
 
 
 class UserFetcher @Service(CREATE_SINGLETON) constructor(private val sharedPreferences: SharedPreferences) {
@@ -23,6 +26,7 @@ class UserFetcher @Service(CREATE_SINGLETON) constructor(private val sharedPrefe
 class Owner private constructor() {
 
     var userFetcher: UserFetcher = UserFetcherCreator.get()
+    private val userDao = DbAppCreator.provideUserDao()
     var token: String? = null
     var userId = userFetcher.userId
     var username = userFetcher.username
@@ -53,6 +57,7 @@ class Owner private constructor() {
             userFetcher.username = it.username
             userFetcher.avatar = it.avatar?:""
         }
+        userDao.insert(getUser())
     }
 }
 

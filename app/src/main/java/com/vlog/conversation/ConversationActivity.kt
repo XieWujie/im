@@ -11,7 +11,7 @@ import com.common.base.BaseActivity
 import com.dibus.AutoWire
 import com.dibus.BusEvent
 import com.vlog.R
-import com.vlog.adapter.MessageListAdapter
+import com.vlog.conversation.adapter.MessageListAdapter
 import com.vlog.conversation.room.CovRoomEditActivity
 import com.vlog.database.Friend
 import com.vlog.database.Room
@@ -39,9 +39,6 @@ class ConversationActivity :BaseActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_conversation)
         binding.recyclerView.adapter = adapter
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
-        binding.recyclerView.itemAnimator = DefaultItemAnimator().apply {
-            addDuration = 500
-        }
         init()
         dispatchEvent()
     }

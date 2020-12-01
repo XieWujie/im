@@ -2,7 +2,7 @@ package com.vlog.user
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.common.HOST
+import com.common.HOST_PORT
 import com.common.Result
 import com.common.ext.sync
 import com.common.ext.toLiveData
@@ -47,8 +47,9 @@ class UserSource {
        }
     }
 
+
     fun findByNet(userId: Int):User{
-        val url  = "$HOST/user/getById?userId=$userId"
+        val url  = "$HOST_PORT/user/getById?userId=$userId"
         val request = Request.Builder()
             .url(url)
             .get()
@@ -76,7 +77,7 @@ class UserSource {
 
     private fun buildUserRequest(user: User):Request{
         val json = gson.toJson(user)
-        val url = "$HOST/user/update"
+        val url = "$HOST_PORT/user/update"
         return Request.Builder()
             .url(url)
             .post(json.toRequestBody())
@@ -89,7 +90,7 @@ class UserSource {
     }
 
     fun logout(userId: Int):LiveData<Result<String>>{
-        val url = "$HOST/user/logout?userId=$userId"
+        val url = "$HOST_PORT/user/logout?userId=$userId"
         val request = Request.Builder()
             .url(url)
             .get()

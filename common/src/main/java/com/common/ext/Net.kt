@@ -80,6 +80,6 @@ inline fun <reified T>Request.sync(type: Type = T::class.java):T{
     if (r.statusCode == 200) {
         return r.data
     } else {
-        throw Exception(r.description)
+        throw IOException(r.description)
     }
 }

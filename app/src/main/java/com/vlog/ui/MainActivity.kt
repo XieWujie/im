@@ -9,6 +9,8 @@ import com.common.util.Util
 import com.common.base.BaseActivity
 import com.common.ext.launch
 import com.vlog.R
+import com.vlog.connect.WsConnectionListener
+import com.vlog.connect.WsConnectionService
 import com.vlog.databinding.ActivityMainBinding
 import com.vlog.login.StartActivity
 import com.vlog.room.RoomCreateActivity
@@ -64,7 +66,8 @@ class MainActivity :BaseActivity() {
         if (Owner().userId == 0) {
                launch<StartActivity>()
         }else{
-            WsListenerCreator.get().connect()
+         // WsListenerCreator.get().connect()
+           WsConnectionService.connect(this,Owner().userId)
         }
     }
 
