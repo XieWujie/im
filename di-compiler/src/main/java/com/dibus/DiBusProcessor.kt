@@ -569,9 +569,6 @@ internal class DiBusProcessor : AbstractProcessor() {
 
     }
 
-
-
-
     private fun fetchFunctionInfo(e: ExecutableElement) {
         val thread = e.getAnnotation(BusEvent::class.java).threadPolicy
         val argsSignature = Utils.getSignature(e)

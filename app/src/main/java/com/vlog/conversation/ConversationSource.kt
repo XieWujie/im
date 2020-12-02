@@ -56,7 +56,7 @@ class ConversationSource {
          .get()
          .build()
       return request.toLiveData(getType(List::class.java,MsgWithUser::class.java)){
-         dao.insert(it.map { it.message })
+         dao.insert(it.map { it.message.apply { isSend = true } })
       }
    }
 
@@ -67,13 +67,16 @@ class ConversationSource {
          val observer = object :InvalidationTracker.Observer(arrayOf("message")){
             override fun onInvalidated(tables: MutableSet<String>) {
                val message = dao.getRecentMessage().map {
-                  val room = roomDao.getRoom(it.conversationId)
-                  val friend = friendDao.getFriendSyn(it.conversationId)
-                  MsgConv(it,friend ,room)
+                  if(it.fromType == Message.FROM_TYPE_ROOM){
+                     val room = roomDao.getRoom(it.conversationId)
+                     MsgConv(it,null ,room)
+                  }else{
+                     val friend = friendDao.getFriendSyn(it.conversationId)
+                     MsgConv(it,friend,null)
+                  }
                }
                postValue(message)
             }
-
          }
          override fun onInactive() {
             if(!hasObservers()) {

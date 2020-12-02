@@ -6,6 +6,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:background="@color/main_bar_bg"
+        android:id="@+id/list_layout"
         android:layout_height="match_parent">
         <RelativeLayout
             android:id="@+id/top_bar"

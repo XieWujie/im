@@ -18,7 +18,8 @@ data class Message(
     var createAt: Long = 0,
     val sendTime:Long = Date().time,
     var isSend:Boolean = false,
-    val isRead:Boolean = false
+    val isRead:Boolean = false,
+    val fromType:Int = FROM_TYPE_FRIEND
 ):Parcelable {
 
     constructor(parcel: Parcel) : this(
@@ -54,6 +55,9 @@ data class Message(
         const val MESSAGE_TEXT = 11
         const val MESSAGE_IMAGE = 13
 
+        const val FROM_TYPE_FRIEND = 1
+        const val FROM_TYPE_ROOM = 2
+
         override fun createFromParcel(parcel: Parcel): Message {
             return Message(parcel)
         }
@@ -62,10 +66,13 @@ data class Message(
             return arrayOfNulls(size)
         }
 
-        fun obtain(conversationId: Int,messageType: Int,content: String):Message{
+        fun obtain(conversationId: Int, messageType: Int, content: String, fromType: Int, sendTime:Long = Date().time):Message{
             Log.d("obtain",conversationId.toString())
-            return Message(0,Owner().userId,conversationId,messageType,content)
+            return Message(0,Owner().userId,conversationId,messageType,content,0,sendTime,false,false,fromType)
         }
+
+
+
     }
 }
 

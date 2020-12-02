@@ -1,5 +1,6 @@
 package com.common.ext
 
+import android.animation.Animator
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -33,6 +34,28 @@ inline fun <reified T,reified R> LiveData<T>.map(crossinline transformer:(T)->R)
     observeForever(r.observer)
     return r
 }
+
+inline fun Animator.animateEnd(crossinline listener:()->Unit){
+    this.addListener(object :Animator.AnimatorListener{
+        override fun onAnimationStart(animation: Animator?) {
+
+        }
+
+        override fun onAnimationEnd(animation: Animator?) {
+           listener.invoke()
+        }
+
+        override fun onAnimationCancel(animation: Animator?) {
+
+        }
+
+        override fun onAnimationRepeat(animation: Animator?) {
+
+        }
+
+    })
+}
+
 
 
 

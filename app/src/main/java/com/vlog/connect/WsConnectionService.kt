@@ -2,6 +2,7 @@ package com.vlog.connect
 
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.util.Log
 import androidx.core.app.JobIntentService
 import com.common.HOST
@@ -9,9 +10,10 @@ import com.common.pushExecutors
 import com.dibus.AutoWire
 import com.dibus.BusEvent
 import com.google.gson.Gson
-import com.vlog.database.Message
-import com.vlog.database.MsgDao
-import com.vlog.database.MsgWithUser
+import com.vlog.connect.notify.Notify
+import com.vlog.connect.notify.ReplyBroadcast
+import com.vlog.conversation.ConversationActivity
+import com.vlog.database.*
 import com.vlog.user.Owner
 import com.vlog.user.UserSource
 import dibus.app.WsConnectionServiceCreator
@@ -21,6 +23,8 @@ class WsConnectionService:JobIntentService(),WsConnectionListener {
     private val connection = WsConnection()
     private var userId = -1
 
+    private lateinit var notify: Notify
+
     @AutoWire
     lateinit var gson: Gson
     @AutoWire
@@ -28,8 +32,22 @@ class WsConnectionService:JobIntentService(),WsConnectionListener {
     @AutoWire
     lateinit var msgDao:MsgDao
 
+    @AutoWire
+    lateinit var roomDao:RoomDao
+
     init {
         WsConnectionServiceCreator.inject(this)
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+        notify = Notify(applicationContext)
+        ReplyBroadcast.register(this)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        ReplyBroadcast.unRegister(this)
     }
 
     override fun onHandleWork(intent: Intent) {
@@ -75,10 +93,26 @@ class WsConnectionService:JobIntentService(),WsConnectionListener {
         connection.connect()
     }
 
-    override fun onMessage(text: String) {
-        val m = gson.fromJson(text, MsgWithUser::class.java)
+    data class MsgWrap(val message:Message,val user:User,val room: Room?)
 
+    override fun onMessage(text: String) {
+        val m = gson.fromJson(text, MsgWrap::class.java)
         pushExecutors {
+            val msg = m.message
+            if(msg.sendFrom != Owner().userId
+                && (ConversationActivity.currentConversationId != msg.conversationId ||!ConversationActivity.isAlive)) {
+                when (m.message.fromType) {
+                    Message.FROM_TYPE_FRIEND -> {
+                        notify.sendNotification(m.user, m.message)
+                    }
+                    Message.FROM_TYPE_ROOM -> {
+                        notify.sendNotification(m.room!!, m.message)
+                    }
+                }
+            }
+            if(m.room != null){
+                roomDao.insert(m.room)
+            }
             userSource.insert(m.user)
             msgDao.insert(m.message.apply { isSend = true })
         }

@@ -6,7 +6,7 @@ import okhttp3.RequestBody
 import okio.*
 import java.io.File
 
-class ProgressRequestBody(private val mediaType: MediaType?, private val file: File,private val listener:ProgressListener?) :RequestBody(){
+class ProgressRequestBody(private val mediaType: MediaType?, private val file: File,private val listener: ProgressListener?) :RequestBody(){
 
     override fun contentType(): MediaType? {
         return mediaType

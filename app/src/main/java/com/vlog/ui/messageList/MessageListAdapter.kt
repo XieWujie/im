@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.common.util.Util
 import com.vlog.conversation.ConversationActivity
 import com.vlog.conversation.MsgConv
+import com.vlog.database.Message
 import com.vlog.databinding.MessageListItemBinding
 import com.vlog.photo.load
 
@@ -28,11 +29,20 @@ class MessageListAdapter:RecyclerView.Adapter<MessageListAdapter.ViewHolder>() {
     class ViewHolder(val binding:MessageListItemBinding):RecyclerView.ViewHolder(binding.root){
 
         fun bind(msgConv: MsgConv){
-            binding.apply {
-
+            val time = Util.getTime(msgConv.message.sendTime)
+            binding.contentText.text = when(msgConv.message.messageType){
+                Message.MESSAGE_IMAGE->{
+                    val content = msgConv.message.content
+                    val index = content.lastIndexOf("/")
+                    "图片：${content.substring(index+1)}"
+                }
+                Message.MESSAGE_WRITE->{
+                    "手写消息"
+                }
+                else->{
+                    msgConv.message.content
+                }
             }
-            val time = Util.getTime(msgConv.message.createAt)
-            binding.contentText.text = msgConv.message.content
             binding.timeText.text = time
             msgConv.friend?.also {
                 binding.apply {

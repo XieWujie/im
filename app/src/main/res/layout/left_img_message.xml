@@ -36,7 +36,7 @@
                     android:layout_width="wrap_content"
                     app:cardBackgroundColor="@android:color/white"
                     app:cardCornerRadius="4dp"
-                    android:padding="10dp"
+                    android:padding="2dp"
                     android:layout_height="wrap_content">
                     <ImageView
                         android:id="@+id/content_img"

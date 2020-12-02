@@ -11,9 +11,17 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.common.base.BaseActivity
+import com.common.pushExecutors
 import com.common.util.Util
+import com.dibus.AutoWire
 import com.vlog.R
+import com.vlog.database.Message
+import com.vlog.database.MsgDao
 import com.vlog.databinding.ActivityPhotoListBinding
+import dibus.app.PhotoListActivityCreator
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class PhotoListActivity : BaseActivity() {
 
@@ -22,7 +30,12 @@ class PhotoListActivity : BaseActivity() {
     private val data = HashMap<String,MutableList<MediaBean>>()
     private val allPhotos = ArrayList<MediaBean>()
     override var customerBar = true
+    private var conversationId = -1
     private val allPhoto = "所有图片"
+    private var fromType = Message.FROM_TYPE_FRIEND
+
+    @AutoWire
+    lateinit var msgDao: MsgDao
 
     private var animatorDuration = 500L
 
@@ -62,6 +75,7 @@ class PhotoListActivity : BaseActivity() {
             animatorDuration = 500L
         }
     }
+
     private val pAdapter = PhotoListAdapter()
     private val dList = ArrayList<DirectoryBean>()
     private val animator = RecyclerViewAnimator()
@@ -70,6 +84,7 @@ class PhotoListActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Util.setDarkBar(this,Color.parseColor("#ff333333"))
+        PhotoListActivityCreator.inject(this)
         binding = DataBindingUtil.setContentView(this,R.layout.activity_photo_list)
         init()
         dispatchEvent()
@@ -83,6 +98,8 @@ class PhotoListActivity : BaseActivity() {
         animator.addDuration = animatorDuration
         animator.removeDuration = animatorDuration
         binding.directoryList.itemAnimator = animator
+        conversationId = intent.getIntExtra("conversationId",-1)
+        fromType = intent.getIntExtra("fromType",Message.FROM_TYPE_FRIEND)
     }
 
 
@@ -117,8 +134,22 @@ class PhotoListActivity : BaseActivity() {
         }
 
         binding.sendBt.setOnClickListener {
-            if(pAdapter.selectSets.isEmpty()){
+            val photos = pAdapter.selectSets
+            if(photos.isEmpty() ||conversationId == -1){
                 return@setOnClickListener
+            }else{
+                var time = Date().time
+                val messages = ArrayList<Message>()
+                for(b in photos){
+                    messages.add(Message.obtain(conversationId,Message.MESSAGE_IMAGE,b.path,fromType,++time))
+                }
+                Log.d("list_",messages.toString())
+                pushExecutors {
+                    msgDao.insert(messages)
+                    runOnUiThread{
+                        onBackPressed()
+                    }
+                }
             }
 
         }
@@ -185,9 +216,10 @@ class PhotoListActivity : BaseActivity() {
 
     companion object{
 
-        fun launch(int: Intent,context: Context){
+        fun launch(conversationId:Int,fromType:Int,context: Context){
             val intent = Intent(context,PhotoListActivity::class.java)
-            intent.putExtra("intent",int)
+            intent.putExtra("conversationId",conversationId)
+            intent.putExtra("fromType",fromType)
             context.startActivity(intent)
         }
     }

@@ -1,5 +1,6 @@
 package com.vlog.conversation.message
 
+import android.os.Parcel
 import android.os.Parcelable
 import com.common.HOST_PORT
 import com.common.ext.sync
@@ -33,6 +34,7 @@ class MessageSource {
         val body = MultipartBody.Builder()
             .addFormDataPart("message",json)
             .addFormDataPart("file",file.name,fileBody)
+            .setType("multipart/form-data".toMediaTypeOrNull()!!)
             .build()
         val url = "$HOST_PORT/message/fileMsg"
         val request = Request.Builder()
@@ -44,10 +46,16 @@ class MessageSource {
 
 }
 
-interface ProgressListener :Parcelable{
-    fun callback(contentLength:Long,upLoadLength:Long,isComplete:Boolean)
+interface ProgressListener{
+
+
+    fun callback(contentLength:Long, upLoadLength:Long, isComplete:Boolean)
+
 }
 
-interface MsgCallback:Parcelable{
-    fun callback(message:Message?,e:IOException?)
+interface MsgCallback{
+
+
+    fun callback(message:Message?, e:IOException?)
+
 }

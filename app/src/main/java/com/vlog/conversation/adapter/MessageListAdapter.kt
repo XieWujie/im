@@ -43,7 +43,7 @@ class MessageListAdapter :RecyclerView.Adapter<MessageHolder>(){
 
 
     private val haftHour = 60*3*1000
-    var lastTime = 0L
+    private var lastTime = 0L
 
     fun flashList(list: List<MsgWithUser>){
         Log.d("list",list.toString())

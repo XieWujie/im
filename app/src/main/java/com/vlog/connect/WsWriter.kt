@@ -45,7 +45,7 @@ import java.util.*
 class WsWriter(
     private val isClient: Boolean,
     val sink: BufferedSink,
-    val random: Random,
+    private val random: Random,
     private val perMessageDeflate: Boolean,
     private val noContextTakeover: Boolean,
     private val minimumDeflateSize: Long

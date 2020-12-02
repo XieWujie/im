@@ -1,36 +1,32 @@
 package com.vlog.conversation
 
+import android.animation.Animator
 import android.animation.ValueAnimator
 import android.content.Context
-import android.content.Intent
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
+import com.common.ext.animateEnd
 import com.common.pushExecutors
 import com.common.util.Util
 import com.dibus.AutoWire
 import com.dibus.BusEvent
-import com.dibus.DiBus
 import com.vlog.photo.PhotoListActivity
-import com.vlog.connect.MessageSend
 import com.vlog.conversation.writeMessage.event.WordCacheState
 import com.vlog.database.Message
 import com.vlog.database.MsgDao
-import com.vlog.database.MsgWithUser
-import com.vlog.database.User
 import com.vlog.databinding.BottomInputLayoutBinding
-import com.vlog.user.Owner
 import dibus.app.InputBottomCreator
-import java.util.*
 
 class InputBottom : FrameLayout, TextWatcher {
 
      var softKeyHeight = 0
 
     private var showListener:((Boolean)->Unit)? = null
+    var fromType = Message.FROM_TYPE_FRIEND
 
     @AutoWire
     lateinit var msgDao: MsgDao
@@ -62,7 +58,7 @@ class InputBottom : FrameLayout, TextWatcher {
         binding.inputWrite.conversationId = id
     }
 
-    private fun showMore(view: View){
+    private fun showMore(view: View):Animator{
         val layoutParams = view.layoutParams
         val height = if(softKeyHeight<100) Util.dp2dx(context,270).toInt() else softKeyHeight
         val animator = ValueAnimator.ofInt(0, height)
@@ -71,26 +67,43 @@ class InputBottom : FrameLayout, TextWatcher {
             val value = it.animatedValue as Int
             layoutParams.height = value
             view.layoutParams= layoutParams
-            if(value == height){
-                showListener?.invoke(true)
-            }
         }
         animator.start()
+        return animator
     }
+
+    private fun hideAnim(view: View):Animator{
+        val layoutParams = view.layoutParams
+        val height = if(softKeyHeight<100) Util.dp2dx(context,270).toInt() else softKeyHeight
+        val animator = ValueAnimator.ofInt(height, 0)
+        animator.duration = 250
+        animator.addUpdateListener {
+            val value = it.animatedValue as Int
+            layoutParams.height = value
+            view.layoutParams= layoutParams
+        }
+        animator.start()
+        return animator
+    }
+
 
 
     private fun showWrite(){
-        val p = binding.moreActionLayout.layoutParams.also { it.height = 0 }
-        binding.moreActionLayout.layoutParams = p
         Util.hideSoftInput(context, this)
-        showMore(binding.writeView)
+        showMore(binding.writeView).animateEnd {
+            val p = binding.moreActionLayout.layoutParams.also { it.height = 0 }
+            binding.moreActionLayout.layoutParams = p
+            showListener?.invoke(true)
+        }
     }
 
     private fun showMoreLayout(){
-        val p = binding.writeView.layoutParams.also { it.height = 0 }
-        binding.writeView.layoutParams= p
         Util.hideSoftInput(context, this)
-        showMore(binding.moreActionLayout)
+        showMore(binding.moreActionLayout).animateEnd {
+            val p = binding.writeView.layoutParams.also { it.height = 0 }
+            binding.writeView.layoutParams= p
+            showListener?.invoke(true)
+        }
     }
 
      fun showSoftKey(){
@@ -99,6 +112,15 @@ class InputBottom : FrameLayout, TextWatcher {
         val pu = binding.writeView.layoutParams.also { it.height = 0 }
         binding.writeView.layoutParams= pu
         Util.showSoftInput(binding.inputText)
+    }
+    fun hide(){
+        if(binding.writeView.height>100){
+            hideAnim(binding.writeView)
+        }
+        if(binding.moreActionLayout.height>100){
+            hideAnim(binding.moreActionLayout)
+        }
+        Util.hideSoftInput(context,this)
     }
 
     fun event() {
@@ -122,10 +144,10 @@ class InputBottom : FrameLayout, TextWatcher {
         binding.inputText.addTextChangedListener(this)
         binding.actionSend.setOnClickListener {
             if(binding.icWrite.isSelected){
-                binding.inputWrite.sendWordCache()
+                binding.inputWrite.sendWordCache(fromType)
             }else{
                 val content = binding.inputText.text.toString()
-                val msg = Message.obtain(conversationId,Message.MESSAGE_TEXT,content)
+                val msg = Message.obtain(conversationId,Message.MESSAGE_TEXT,content,fromType)
                 pushExecutors {
                     msgDao.insert(msg)
                 }
@@ -137,8 +159,7 @@ class InputBottom : FrameLayout, TextWatcher {
         }
 
         binding.photoLayout.setOnClickListener {
-            val intent = Intent(it.context,ConversationActivity::class.java)
-            PhotoListActivity.launch(intent,it.context)
+            PhotoListActivity.launch(conversationId,fromType,it.context)
         }
     }
 

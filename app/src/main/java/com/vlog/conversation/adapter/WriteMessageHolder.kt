@@ -1,12 +1,15 @@
 package com.vlog.conversation.adapter
 
 import android.util.Log
+import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import com.common.ext.launch
 import com.dibus.AutoWire
+import com.dibus.DiBus
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.vlog.connect.MessageSend
 import com.vlog.photo.load
 import com.vlog.database.Message
 import com.vlog.database.MsgWithUser
@@ -66,6 +69,21 @@ class WriteMessageHolder{
         override fun bind(m: MsgWithUser) {
             help.load(binding.userAvatarView,binding.usernameText,m)
             help.handleMessage(m.message,binding.wordListLayout)
+            val msg = m.message
+            if(msg.isSend){
+                binding.sendIng.visibility = View.GONE
+            }else{
+                binding.sendIng.visibility = View.VISIBLE
+                DiBus.postEvent(msg, MessageSend{
+                    if(it == null){
+                        binding.sendIng.visibility = View.GONE
+                        msg.isSend = true
+                    }else{
+                        binding.errorState.visibility = View.VISIBLE
+                        binding.sendIng.visibility = View.GONE
+                    }
+                })
+            }
        }
    }
 

@@ -12,14 +12,10 @@ import com.dibus.DiBus
 import com.dibus.THREAD_POLICY_MAIN
 import com.google.gson.Gson
 import com.vlog.database.Message
-import com.vlog.database.MsgWithUser
-import com.vlog.user.Owner
 import com.vlog.conversation.adapter.WordWriteAdapter
-import com.vlog.connect.MessageSend
 import com.vlog.conversation.writeMessage.event.SingleWriteEvent
 import com.vlog.conversation.writeMessage.event.WordCacheState
 import com.vlog.database.MsgDao
-import com.vlog.database.User
 import dibus.app.FinalReadViewListCreator
 
 private const val TAG = "FinalReadViewList"
@@ -58,9 +54,9 @@ class FinalReadViewList:RecyclerView {
     }
 
 
-    fun sendWordCache(){
+    fun sendWordCache(fromType:Int){
         val content = gson.toJson(list)
-        val message =Message.obtain(conversationId,Message.MESSAGE_TEXT,content)
+        val message =Message.obtain(conversationId,Message.MESSAGE_WRITE,content,fromType)
         pushExecutors {
             msgDao.insert(message)
         }

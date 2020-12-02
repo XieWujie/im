@@ -88,6 +88,9 @@
                 android:background="#CFC0C0" />
         </RelativeLayout>
 
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
         <com.vlog.conversation.writeMessage.WriteView
             android:id="@+id/writeView"
@@ -131,5 +134,6 @@
                     android:layout_height="wrap_content"/>
             </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
+        </FrameLayout>
     </LinearLayout>
 </layout>

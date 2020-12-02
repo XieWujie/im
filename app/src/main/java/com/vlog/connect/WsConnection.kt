@@ -7,7 +7,6 @@ import android.util.Log
 import com.common.HOST
 import com.dibus.Service
 import com.vlog.connect.WsProtocol.OPCODE_TEXT
-import okhttp3.internal.readBomAsCharset
 import okio.*
 import okio.ByteString.Companion.EMPTY
 import okio.ByteString.Companion.encodeUtf8
@@ -84,8 +83,10 @@ class WsConnection : WsReader.FrameCallback,Closeable {
         socket.soTimeout = 0
         listener?.open(this)
         Executors.newScheduledThreadPool(1).scheduleWithFixedDelay({
-            writer?.writePing(EMPTY)
-        },20,30,TimeUnit.SECONDS)
+            msgHandler.post {
+                writer?.writePing(EMPTY)
+            }
+        },20,45,TimeUnit.SECONDS)
         try {
             loopReader()
         }catch (e:IOException){
@@ -107,12 +108,12 @@ class WsConnection : WsReader.FrameCallback,Closeable {
                 return@post
             }
             var ex:IOException? = null
-            try {
+            ex = try {
                 writer?.writeMessageFrame(OPCODE_TEXT, b)
-                ex = null
+                null
             } catch (e: IOException) {
                 e.printStackTrace()
-              ex = e
+                e
             }
             mainHandler.post {
                 listener(ex)
@@ -210,7 +211,7 @@ class WsConnection : WsReader.FrameCallback,Closeable {
    private fun loopReader() {
         while (receivedCloseCode == -1) {
             // This method call results in one or more onRead* methods being called on this thread.
-            reader!!.processNextFrame()
+            reader?.processNextFrame()?:break
         }
     }
 
@@ -229,6 +230,7 @@ class WsConnection : WsReader.FrameCallback,Closeable {
     }
 
     override fun onReadPing(payload: ByteString) {
+        Log.d(TAG,"ping")
         msgHandler.post {
             writer?.writePong(EMPTY)
         }

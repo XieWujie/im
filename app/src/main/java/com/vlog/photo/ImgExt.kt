@@ -9,6 +9,11 @@ fun ImageView.load(url:String){
     if(url.isEmpty()) {
         Glide.with(this).load(R.drawable.avater_default).into(this)
     }else{
-        Glide.with(this).load("$HOST_PORT$url").placeholder(R.drawable.avater_default).into(this)
+        if(url.startsWith("/file/get")){
+            Glide.with(this).load("$HOST_PORT$url").placeholder(R.drawable.avater_default).into(this)
+        }else{
+            Glide.with(this).load(url).placeholder(R.drawable.avater_default).into(this)
+        }
+
     }
 }
