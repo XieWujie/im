@@ -18,6 +18,7 @@ import dibus.app.FindActivityCreator
 class FindActivity : BaseActivity() {
 
     private lateinit var binding:ActivityFindBinding
+    
     @AutoWire
     lateinit var viewModel: FindViewModel
     private val adapter = FindAdapter()

@@ -13,9 +13,10 @@ class ConversationViewModel @ViewModelService(ConversationActivity::class)
   constructor (private val source: ConversationSource):ViewModel(){
 
 
-    fun queryMessage(conversationId:Int) = source.getFromConversation(conversationId)
+    fun queryMessage(conversationId:Int,maxTime:Long) = source.getFromConversation(conversationId,maxTime,25)
 
 
+  fun queryBeforeMessage(conversationId: Int,maxTime: Long) = source.getFromConversation(conversationId,maxTime,40)
 
 
   fun query(before:Long,conversationId: Int): LiveData<Result<List<MsgWithUser>>> {

@@ -1,13 +1,10 @@
 package com.vlog.conversation
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.GestureDetector
-import android.view.MotionEvent
 import androidx.databinding.DataBindingUtil
-import androidx.recyclerview.widget.DefaultItemAnimator
+import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.common.base.BaseActivity
@@ -18,8 +15,10 @@ import com.vlog.conversation.adapter.MessageListAdapter
 import com.vlog.conversation.room.CovRoomEditActivity
 import com.vlog.database.Friend
 import com.vlog.database.Message
+import com.vlog.database.MsgWithUser
 import com.vlog.database.Room
 import com.vlog.databinding.ActivityConversationBinding
+import com.vlog.util.onClick
 import dibus.app.ConversationActivityCreator
 
 class ConversationActivity :BaseActivity() {
@@ -32,6 +31,8 @@ class ConversationActivity :BaseActivity() {
 
     private var isRoom = false
 
+    private var maxTime = Long.MAX_VALUE
+
 
     @AutoWire
     lateinit var viewModel: ConversationViewModel
@@ -41,7 +42,7 @@ class ConversationActivity :BaseActivity() {
         ConversationActivityCreator.inject(this)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_conversation)
         binding.recyclerView.adapter = adapter
-        binding.recyclerView.layoutManager = LinearLayoutManager(this)
+        binding.recyclerView.layoutManager = LinearLayoutManager(this,RecyclerView.VERTICAL,true)
         init()
         dispatchEvent()
     }
@@ -62,57 +63,14 @@ class ConversationActivity :BaseActivity() {
     }
 
 
-    @SuppressLint("ClickableViewAccessibility")
-    private fun listClickEvent(){
-        val gestureDetector = GestureDetector(this,object :GestureDetector.OnGestureListener{
-            override fun onDown(e: MotionEvent?): Boolean {
-                return false
-            }
-
-            override fun onShowPress(e: MotionEvent?) {
-
-            }
-
-            override fun onSingleTapUp(e: MotionEvent?): Boolean {
-                binding.bottomInputLayout.hide()
-                return true
-            }
-
-            override fun onScroll(
-                e1: MotionEvent?,
-                e2: MotionEvent?,
-                distanceX: Float,
-                distanceY: Float
-            ): Boolean {
-                return false
-            }
-
-            override fun onLongPress(e: MotionEvent?) {
-
-            }
-
-            override fun onFling(
-                e1: MotionEvent?,
-                e2: MotionEvent?,
-                velocityX: Float,
-                velocityY: Float
-            ): Boolean {
-               return false
-            }
-
-        })
-        binding.recyclerView.setOnTouchListener { v, event ->
-            gestureDetector.onTouchEvent(event)
-        }
-    }
-
     private fun dispatchEvent(){
         binding.recyclerView.setOnClickListener {
             binding.bottomInputLayout.hide()
         }
 
-        listClickEvent()
-
+        binding.recyclerView.onClick {
+            binding.bottomInputLayout.hide()
+        }
         var minHeight = 0
         binding.listLayout.post {
             minHeight = binding.listLayout.height
@@ -122,7 +80,7 @@ class ConversationActivity :BaseActivity() {
                 binding.bottomInputLayout.softKeyHeight = height
                 binding.bottomInputLayout.showSoftKey()
                 if(adapter.itemCount>0){
-                    binding.recyclerView.scrollToPosition(adapter.itemCount - 1)
+                    binding.recyclerView.scrollToPosition(0)
                 }
                 minHeight = binding.listLayout.height
             }
@@ -134,16 +92,17 @@ class ConversationActivity :BaseActivity() {
         })
         binding.bottomInputLayout.setBottomContentShowListener {
             if(it){
-                binding.recyclerView.scrollToPosition(adapter.itemCount-1)
+                binding.recyclerView.scrollToPosition(0)
             }
         }
 
         adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-                if (positionStart > 0) {
-                    binding.recyclerView.scrollToPosition(adapter.itemCount - 1)
+                if (positionStart <3) {
+                    binding.recyclerView.scrollToPosition(0)
                 }
             }
+
         })
     }
 
@@ -187,7 +146,7 @@ class ConversationActivity :BaseActivity() {
     }
 
    private fun dispatchEvent(conversationId: Int){
-        viewModel.queryMessage(conversationId).observe(this){
+        viewModel.queryMessage(conversationId, maxTime).observe(this){
             adapter.flashList(it)
         }
 
@@ -196,11 +155,24 @@ class ConversationActivity :BaseActivity() {
                super.onScrollStateChanged(recyclerView, newState)
                if (!isLoading && !recyclerView.canScrollVertically(-1)) {
                    isLoading = true
-                   viewModel.query(adapter.getFirstItemBefore(), conversationId)
-                       .observe(this@ConversationActivity) {
-                           isLoading = false
+                   val  originLiveData = viewModel.queryBeforeMessage(conversationId,adapter.getFirstItemBefore())
+                   originLiveData.apply {
+                       observe(this@ConversationActivity){
+                           if(it.isNotEmpty()){
+                               adapter.addBefore(it)
+                           }
+                           if(it.size<15){
+                              val  originNetLiveData =  viewModel.query(adapter.getFirstItemBefore()/1000,conversationId)
+                               originNetLiveData.observe(this@ConversationActivity){
+                                   isLoading = false
+                                  originNetLiveData.removeObservers(this@ConversationActivity)
+                               }
+                           }else{
+                               isLoading = false
+                           }
+                           removeObservers(this@ConversationActivity)
                        }
-
+                   }
                }
            }
        })

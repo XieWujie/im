@@ -46,15 +46,12 @@ class TextHolder{
         override fun bind(m: MsgWithUser) {
             holder.load(binding.contentText,binding.userAvatarView,binding.usernameText,m)
             val msg = m.message
-            if(msg.isSend){
+            if(msg.isSend ||msg.createAt != 0L){
                 binding.sendIng.visibility = View.GONE
             }else{
                 binding.sendIng.visibility = View.VISIBLE
                 DiBus.postEvent(msg,MessageSend{
-                    if(it == null){
-                        binding.sendIng.visibility = View.GONE
-                        msg.isSend = true
-                    }else{
+                    if(it != null){
                         binding.errorState.visibility = View.VISIBLE
                         binding.sendIng.visibility = View.GONE
                     }

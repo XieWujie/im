@@ -58,10 +58,7 @@ class ImageHolder{
                 binding.sendIng.visibility = View.VISIBLE
                 MessageService.sendMessage(itemView.context, msg, object : MsgCallback {
                     override fun callback(message: Message?, e: IOException?) {
-                        binding.sendIng.visibility = View.GONE
-                        if (e == null) {
-                            msg.isSend = true
-                        } else {
+                        if (e != null) {
                             itemView.context.toast(e.message ?: "")
                         }
                     }

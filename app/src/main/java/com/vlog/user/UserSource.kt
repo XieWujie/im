@@ -10,11 +10,9 @@ import com.common.pushExecutors
 import com.dibus.AutoWire
 import com.dibus.Service
 import com.google.gson.Gson
+import com.vlog.App
+import com.vlog.database.*
 import com.vlog.photo.ImgSource
-import com.vlog.database.Friend
-import com.vlog.database.FriendDao
-import com.vlog.database.User
-import com.vlog.database.UserDao
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 
@@ -95,7 +93,10 @@ class UserSource {
             .url(url)
             .get()
             .build()
-        return request.toLiveData()
+        return request.toLiveData{
+            val roomDatabase = DbApp.get(App.get())
+            roomDatabase.clearAllTables()
+        }
     }
 
 }

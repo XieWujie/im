@@ -31,8 +31,8 @@ class ConversationSource {
 
    @AutoWire lateinit var userSource:UserSource
 
-   fun getFromConversation(conversationId:Int):LiveData<List<MsgWithUser>>{
-      return dao.getLiveById(conversationId)
+   fun getFromConversation(conversationId:Int,maxTime:Long,count:Int = 20):LiveData<List<MsgWithUser>>{
+      return dao.getLiveById(conversationId,maxTime,count)
    }
 
    fun loadFromNet(before:Long,conversationId: Int):LiveData<Result<List<MsgWithUser>>>{

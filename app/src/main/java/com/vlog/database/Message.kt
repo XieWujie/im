@@ -34,6 +34,16 @@ data class Message(
     }
 
 
+    override fun equals(other: Any?): Boolean {
+       if(other is Message){
+           if(this.sendTime == other.sendTime && this.createAt == other.createAt){
+               return true
+           }
+       }
+        return false
+    }
+
+
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeInt(messageId)
         parcel.writeInt(sendFrom)
@@ -70,7 +80,6 @@ data class Message(
             Log.d("obtain",conversationId.toString())
             return Message(0,Owner().userId,conversationId,messageType,content,0,sendTime,false,false,fromType)
         }
-
 
 
     }

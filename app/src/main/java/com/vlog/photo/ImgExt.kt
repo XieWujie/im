@@ -10,9 +10,9 @@ fun ImageView.load(url:String){
         Glide.with(this).load(R.drawable.avater_default).into(this)
     }else{
         if(url.startsWith("/file/get")){
-            Glide.with(this).load("$HOST_PORT$url").placeholder(R.drawable.avater_default).into(this)
+            Glide.with(this).load("$HOST_PORT$url").into(this)
         }else{
-            Glide.with(this).load(url).placeholder(R.drawable.avater_default).into(this)
+            Glide.with(this).load(url).into(this)
         }
 
     }
