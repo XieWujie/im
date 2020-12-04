@@ -4,6 +4,9 @@ import android.content.Context
 import android.util.AttributeSet
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.dibus.DiBus
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.vlog.conversation.adapter.WordWriteAdapter
 
 class WordListLayout :RecyclerView{
@@ -29,5 +32,12 @@ class WordListLayout :RecyclerView{
         mList.clear()
         mList.addAll(list)
         mAdapter.notifyDataSetChanged()
+    }
+
+    fun handleWrite(content:String){
+        val gson:Gson = DiBus.load()
+        val token = object : TypeToken<List<MessageWriteWord>>(){}.type
+        val m = gson.fromJson<List<MessageWriteWord>>(content,token)
+        receiveWriteEvent(m)
     }
 }

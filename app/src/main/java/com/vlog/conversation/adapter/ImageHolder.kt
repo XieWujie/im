@@ -23,6 +23,7 @@ class ImageHolder{
 
     fun load(contentView:ImageView,avatarView:ImageView,usernameText:TextView,m: MsgWithUser){
         contentView.load(m.message.content)
+        contentView.setLongClick(m.message,m.user)
         avatarView.load(m.user.avatar)
         usernameText.text = m.user.username
         avatarView.setOnClickListener {
@@ -51,6 +52,7 @@ class ImageHolder{
         override fun bind(m: MsgWithUser) {
             holder.load(binding.contentImg,binding.userAvatarView,binding.usernameText,m)
             val msg = m.message
+            loadCite(msg.citeMessageId,binding.citeLayout)
             if(msg.isSend){
                 binding.sendIng.visibility = View.GONE
                 binding.errorState.visibility = View.GONE

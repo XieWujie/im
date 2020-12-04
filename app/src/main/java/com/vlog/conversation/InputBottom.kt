@@ -4,6 +4,7 @@ import android.animation.Animator
 import android.animation.ValueAnimator
 import android.content.Context
 import android.text.Editable
+import android.text.Html
 import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -16,14 +17,17 @@ import com.dibus.AutoWire
 import com.dibus.BusEvent
 import com.vlog.photo.PhotoListActivity
 import com.vlog.conversation.writeMessage.event.WordCacheState
+import com.vlog.database.CiteEvent
 import com.vlog.database.Message
 import com.vlog.database.MsgDao
 import com.vlog.databinding.BottomInputLayoutBinding
+import com.vlog.photo.load
 import dibus.app.InputBottomCreator
 
 class InputBottom : FrameLayout, TextWatcher {
 
      var softKeyHeight = 0
+    private var citeMessageId = -1
 
     private var showListener:((Boolean)->Unit)? = null
     var fromType = Message.FROM_TYPE_FRIEND
@@ -144,23 +148,54 @@ class InputBottom : FrameLayout, TextWatcher {
         binding.inputText.addTextChangedListener(this)
         binding.actionSend.setOnClickListener {
             if(binding.icWrite.isSelected){
-                binding.inputWrite.sendWordCache(fromType)
+                binding.inputWrite.sendWordCache(fromType,citeMessageId)
             }else{
                 val content = binding.inputText.text.toString()
                 val msg = Message.obtain(conversationId,Message.MESSAGE_TEXT,content,fromType)
+                msg.citeMessageId = citeMessageId
                 pushExecutors {
                     msgDao.insert(msg)
                 }
                 binding.inputText.setText("")
             }
+            if(citeMessageId != -1){
+                citeMessageId = -1
+                binding.citeCard.visibility = GONE
+            }
         }
         binding.icMore.setOnClickListener {
-            showMoreLayout()
+            if(binding.moreActionLayout.height>100){
+                showSoftKey()
+            }else{
+                showMoreLayout()
+            }
         }
 
         binding.photoLayout.setOnClickListener {
             PhotoListActivity.launch(conversationId,fromType,it.context)
         }
+    }
+
+    @BusEvent
+    fun citeEvent(citeEvent: CiteEvent){
+        val r = when(citeEvent.message.messageType){
+            Message.MESSAGE_IMAGE->{
+                binding.citePhoto.visibility = View.VISIBLE
+                binding.citePhoto.load(citeEvent.message.content)
+                "[图片]"
+            }
+            Message.MESSAGE_TEXT->citeEvent.message.content
+            else->return
+        }
+        val content = "${citeEvent.from}:$r"
+        binding.citeCard.visibility = View.VISIBLE
+        binding.citeText.text = content
+        binding.citeDismissCard.setOnClickListener {
+            binding.citeText.clearComposingText()
+            binding.citeCard.visibility = View.GONE
+            citeMessageId = -1
+        }
+        citeMessageId = citeEvent.message.messageId
     }
 
     @BusEvent

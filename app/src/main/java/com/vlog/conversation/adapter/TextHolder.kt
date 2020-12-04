@@ -36,6 +36,7 @@ class TextHolder{
 
         override fun bind(m: MsgWithUser) {
             holder.load(binding.contentText,binding.userAvatarView,binding.usernameText,m)
+            binding.contentCard.setLongClick(m.message,m.user)
         }
     }
 
@@ -45,7 +46,9 @@ class TextHolder{
 
         override fun bind(m: MsgWithUser) {
             holder.load(binding.contentText,binding.userAvatarView,binding.usernameText,m)
+            loadCite(m.message.citeMessageId,binding.citeLayout)
             val msg = m.message
+            binding.contentCard.setLongClick(m.message,m.user)
             if(msg.isSend ||msg.createAt != 0L){
                 binding.sendIng.visibility = View.GONE
             }else{

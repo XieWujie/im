@@ -54,9 +54,10 @@ class FinalReadViewList:RecyclerView {
     }
 
 
-    fun sendWordCache(fromType:Int){
+    fun sendWordCache(fromType:Int,citeMessageId:Int){
         val content = gson.toJson(list)
         val message =Message.obtain(conversationId,Message.MESSAGE_WRITE,content,fromType)
+        message.citeMessageId = citeMessageId
         pushExecutors {
             msgDao.insert(message)
         }

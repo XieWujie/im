@@ -9,6 +9,7 @@ import com.dibus.Service
 import com.google.gson.Gson
 import com.vlog.database.Message
 import com.vlog.database.MsgDao
+import com.vlog.database.MsgWithUser
 import com.vlog.photo.ProgressRequestBody
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -42,6 +43,10 @@ class MessageSource {
             .post(body)
             .build()
         return request.sync()
+    }
+
+    fun getMsgWithUser(messageId:Int):MsgWithUser{
+       return msgDao.getByMessageId(messageId)
     }
 
 }

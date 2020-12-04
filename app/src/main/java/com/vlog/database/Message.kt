@@ -19,7 +19,8 @@ data class Message(
     val sendTime:Long = Date().time,
     var isSend:Boolean = false,
     val isRead:Boolean = false,
-    val fromType:Int = FROM_TYPE_FRIEND
+    val fromType:Int = FROM_TYPE_FRIEND,
+    var citeMessageId:Int = -1
 ):Parcelable {
 
     constructor(parcel: Parcel) : this(
@@ -64,6 +65,7 @@ data class Message(
         const val MESSAGE_WRITE = 12
         const val MESSAGE_TEXT = 11
         const val MESSAGE_IMAGE = 13
+        const val MESSAGE_WITHDRAW = 4
 
         const val FROM_TYPE_FRIEND = 1
         const val FROM_TYPE_ROOM = 2
@@ -89,6 +91,8 @@ data class MsgWithUser(
     @Embedded val message: Message,
     @Embedded  val user: User
 )
+
+data class CiteEvent(val from:String,val message: Message)
 
 
 
