@@ -27,6 +27,7 @@ import dibus.app.InputBottomCreator
 class InputBottom : FrameLayout, TextWatcher {
 
      var softKeyHeight = 0
+    @Volatile
     private var citeMessageId = -1
 
     private var showListener:((Boolean)->Unit)? = null
@@ -158,10 +159,8 @@ class InputBottom : FrameLayout, TextWatcher {
                 }
                 binding.inputText.setText("")
             }
-            if(citeMessageId != -1){
-                citeMessageId = -1
-                binding.citeCard.visibility = GONE
-            }
+            citeMessageId = -1
+            binding.citeCard.visibility = GONE
         }
         binding.icMore.setOnClickListener {
             if(binding.moreActionLayout.height>100){

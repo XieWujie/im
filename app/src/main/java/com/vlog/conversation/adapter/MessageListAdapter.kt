@@ -1,27 +1,20 @@
 package com.vlog.conversation.adapter
 
 import android.util.Log
-import android.util.LongSparseArray
-import android.util.SparseArray
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.util.containsKey
-import androidx.core.util.valueIterator
 import androidx.recyclerview.widget.RecyclerView
 import com.common.util.Util
-import com.dibus.AutoWire
-import com.dibus.CREATE_PER
-import com.dibus.Service
+import com.dibus.*
 import com.google.gson.Gson
 import com.vlog.R
+import com.vlog.conversation.MessageChangeEvent
+import com.vlog.conversation.MessageRemoveEvent
 import com.vlog.database.Message
 import com.vlog.database.MsgWithUser
 import com.vlog.databinding.*
 import com.vlog.user.Owner
-import java.util.*
-import kotlin.Comparator
 import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 private const val TAG = "MessageListAdapter"
 
@@ -33,152 +26,118 @@ class MessageListAdapter : RecyclerView.Adapter<MessageHolder>() {
 
     private val mList = ArrayList<MessageWrap>()
 
-    private val temptList = LinkedList<MessageWrap>()
-
-    private val originMap = LongSparseArray<MsgWithUser>()
-
-
-    private val changeList = ArrayList<MsgWithUser>()
-    private val removeList = ArrayList<MsgWithUser>()
-    private val insertList= ArrayList<MsgWithUser>()
+    private val latestTime = 0L
 
     fun getFirstItemBefore(): Long {
-       return if(mList.isEmpty()) Long.MAX_VALUE else mList[mList.size-1].time
+        return if (mList.isEmpty()) Long.MAX_VALUE else mList[mList.size - 1].time
     }
 
 
-    private val timeSegment = 60 * 3 *1000L
+    private val timeSegment = 60 * 3 * 1000L
 
 
     fun flashList(list: List<MsgWithUser>) {
-       if(mList.isEmpty()){
-           initList(list)
-       }else{
-           findDiff(list)
-           notifyDataChange()
-       }
+        if (mList.isEmpty()) {
+            initList(list)
+        }else{
+            mList.clear()
+            initList(list)
+        }
     }
 
-    fun addBefore(list: List<MsgWithUser>){
+    fun addBefore(list: List<MsgWithUser>) {
         var lastTime = getFirstItemBefore()
-        val newList = list.filter { it.message.createAt*1000<lastTime  }
-        Log.d(TAG,newList.toString())
+        val newList = list.filter { it.message.createAt * 1000 < lastTime }
         val originSize = mList.size
-        for(msg in newList){
-            val time = if(msg.message.createAt == 0L){
+        for (msg in newList) {
+            val time = if (msg.message.createAt == 0L) {
                 msg.message.sendTime
-            }else{
-                msg.message.createAt*1000
+            } else {
+                msg.message.createAt * 1000
             }
-            mList.add(MessageWrap(msg,time))
-            if(lastTime-time>timeSegment){
-                mList.add(MessageWrap(null,time-1))
+
+            mList.add(MessageWrap(msg, time))
+            if (lastTime - time > timeSegment) {
+                mList.add(MessageWrap(null, time - 1))
                 lastTime = time
             }
         }
-        if(newList.isNotEmpty() && mList.isNotEmpty() && mList[mList.size-1].message != null){
-            mList.add(MessageWrap(null,mList[mList.size-1].time-1))
+        if (newList.isNotEmpty() && mList.isNotEmpty() && mList[mList.size - 1].message != null) {
+            mList.add(MessageWrap(null, mList[mList.size - 1].time - 1))
         }
-        notifyItemRangeInserted(originSize,mList.size-originSize)
+        notifyItemRangeInserted(originSize, mList.size - originSize)
 
     }
 
-    private fun initList(newList: List<MsgWithUser>){
+    private fun initList(newList: List<MsgWithUser>) {
         var lastTime = Long.MAX_VALUE
-        for(msg in newList){
-            val time = if(msg.message.createAt == 0L){
+        for (msg in newList) {
+            val time = if (msg.message.createAt == 0L) {
                 msg.message.sendTime
-            }else{
-                msg.message.createAt*1000
+            } else {
+                msg.message.createAt * 1000
             }
-            Log.d(TAG,"init${msg.message.createAt*1000-lastTime}")
-            mList.add(MessageWrap(msg,time))
-            if(lastTime-time>timeSegment){
-                mList.add(MessageWrap(null,time-1))
+            mList.add(MessageWrap(msg, time))
+            if (lastTime - time > timeSegment) {
+                mList.add(MessageWrap(null, time - 1))
                 lastTime = time
             }
         }
-        for(msg in newList){
-            originMap.put(msg.message.sendTime,msg)
+        if (mList.isNotEmpty() && mList[mList.size - 1].message != null) {
+            mList.add(MessageWrap(null, mList[mList.size - 1].time - 1))
         }
-        if(mList.isNotEmpty() && mList[mList.size-1].message != null){
-            mList.add(MessageWrap(null,mList[mList.size-1].time-1))
-        }
-        notifyItemRangeInserted(0,mList.size)
+        notifyItemRangeInserted(0, mList.size)
     }
 
-    private fun findDiff(newList: List<MsgWithUser>){
-        insertList.clear()
-        changeList.clear()
-        removeList.clear()
-        for(msg in newList){
-            val key = msg.message.sendTime
-            val originMsg = originMap.get(key)
-            if(originMsg == null){
-                insertList.add(msg)
+    @BusEvent(threadPolicy = THREAD_POLICY_MAIN)
+    fun messageChange(event: MessageChangeEvent){
+        val msg = event.msg.message
+        val index =
+            mList.indexOfFirst { it.message != null && it.message.message.sendTime == msg.sendTime }
+        if (index != -1) {
+            val time =
+                if (msg.createAt == 0L) msg.sendTime else msg.createAt
+            mList[index] = MessageWrap(event.msg, time)
+            notifyItemChanged(index)
+        }
+    }
+
+    fun messageInsert(msgs: List<MsgWithUser>){
+        val firstTime = mList.first { it.message != null }.message?.message?.sendTime?:-1L
+        val newMsg = msgs.filter { it.message.sendTime>firstTime }
+        for(msg in newMsg) {
+            val time = if (msg.message.createAt == 0L) {
+                msg.message.sendTime
+            } else {
+                msg.message.createAt * 1000
+            }
+            val index = mList.indexOfFirst { it.time < time }
+            Log.d(TAG, "index:$index")
+            val lastTime = mList.first { it -> it.message == null }.time
+            var insertPos = if (index == -1) mList.size else index
+            val startPosition = insertPos
+            mList.add(insertPos, MessageWrap(msg, time))
+            if (time - lastTime > timeSegment) {
+                mList.add(++insertPos, MessageWrap(null, time - 1))
+            }
+            notifyItemRangeInserted(startPosition, insertPos - startPosition + 1)
+        }
+    }
+
+
+
+    @BusEvent(threadPolicy = THREAD_POLICY_MAIN)
+    fun messageRemove(event: MessageRemoveEvent){
+        val sendTime = event.msg.sendTime
+        val index =
+            mList.indexOfFirst { it.message != null && it.message.message.sendTime ==  sendTime }
+        if (index != -1) {
+            mList.removeAt(index)
+            if(index != mList.size-1 && mList[index].message == null){
+                mList.removeAt(index)
+                notifyItemRangeRemoved(index,2)
             }else{
-                if(msg != originMsg){
-                    changeList.add(msg)
-                }
-                originMap.remove(key)
-            }
-        }
-        for(msg in originMap.valueIterator()){
-            removeList.add(msg)
-        }
-        originMap.clear()
-        for(msg in newList){
-            originMap.put(msg.message.sendTime,msg)
-        }
-    }
-
-
-
-    private fun notifyDataChange(){
-        Log.d(TAG,"change:${changeList.toString()}")
-        Log.d(TAG,"remove:${removeList.toString()}")
-        Log.d(TAG,"insert:${insertList.toString()}")
-        if(insertList.isNotEmpty()){
-            for(msg in insertList){
-                val time = if(msg.message.createAt == 0L){
-                    msg.message.sendTime
-                }else{
-                    msg.message.createAt*1000
-                }
-               val index =  mList.indexOfFirst {  it.time<time }
-                val lastTime = mList.first { it->it.message == null }.time
-                Log.d(TAG,"insert:${msg.message.createAt*1000-time}")
-                var insertPos = if(index == -1) mList.size else index
-                val startPosition = insertPos
-                mList.add(insertPos, MessageWrap(msg,time))
-                if(time-lastTime>timeSegment){
-                    mList.add(++insertPos,MessageWrap(null,time-1))
-                }
-                notifyItemRangeInserted(startPosition,insertPos-startPosition+1)
-            }
-        }
-        if(changeList.isNotEmpty()){
-            for(msg in changeList){
-                val index =  mList.indexOfFirst {  it.message!= null && it.message.message.sendTime == msg.message.sendTime }
-                if(index == -1){
-                    continue
-                }else{
-                    val time = if(msg.message.createAt == 0L)msg.message.sendTime else msg.message.createAt
-                    mList[index] = MessageWrap(msg,time)
-                    notifyItemChanged(index)
-                }
-            }
-        }
-
-        if(removeList.isNotEmpty()){
-            for(msg in changeList){
-                val index =  mList.indexOfFirst {  it.message!= null && it.message.message.sendTime == msg.message.sendTime }
-                if(index == -1){
-                    continue
-                }else{
-                   mList.removeAt(index)
-                    notifyItemRemoved(index)
-                }
+                notifyItemRemoved(index)
             }
         }
     }
@@ -215,6 +174,14 @@ class MessageListAdapter : RecyclerView.Adapter<MessageHolder>() {
                 val binding = RightImgMessageBinding.inflate(inflater, parent, false)
                 ImageHolder.R(binding)
             }
+            TYPE_LEFT_WITHDRAW->{
+                val binding = LeftWithdrawMessageBinding.inflate(inflater,parent,false)
+                WithDrawHolder.L(binding)
+            }
+            TYPE_RIGHT_WITHDRAW->{
+                val binding = RightWithdrawMessageBinding.inflate(inflater,parent,false)
+                WithDrawHolder.R(binding)
+            }
             else -> throw RuntimeException("no such type")
         }
     }
@@ -229,26 +196,29 @@ class MessageListAdapter : RecyclerView.Adapter<MessageHolder>() {
     }
 
     override fun getItemViewType(position: Int): Int {
-
         val message = mList[position].message?.message ?: return TYPE_TIME
         val ownerId = Owner().userId
-        return if (message.sendFrom == ownerId && message.messageType == Message.MESSAGE_WRITE) {
-            TYPE_RIGHT_WRITE
-        } else if (message.sendFrom != ownerId && message.messageType == Message.MESSAGE_WRITE) {
-            TYPE_LEFT_WRITE
-        } else if (message.sendFrom == ownerId && message.messageType == Message.MESSAGE_TEXT) {
-            TYPE_RIGHT_TEXT
-        } else if (message.sendFrom != ownerId && message.messageType == Message.MESSAGE_TEXT) {
-            TYPE_LEFT_TEXT
-        } else if (message.sendFrom == ownerId && message.messageType == Message.MESSAGE_IMAGE) {
-            TYPE_RIGHT_IMG
+        return if (message.sendFrom == ownerId) {
+            when (message.messageType) {
+                Message.MESSAGE_IMAGE -> TYPE_RIGHT_IMG
+                Message.MESSAGE_TEXT -> TYPE_RIGHT_TEXT
+                Message.MESSAGE_WRITE -> TYPE_RIGHT_WRITE
+                Message.MESSAGE_WITHDRAW -> TYPE_RIGHT_WITHDRAW
+                else -> TYPE_RIGHT_TEXT
+            }
         } else {
-            TYPE_LEFT_IMG
+            when (message.messageType) {
+                Message.MESSAGE_IMAGE -> TYPE_LEFT_IMG
+                Message.MESSAGE_TEXT -> TYPE_LEFT_TEXT
+                Message.MESSAGE_WRITE -> TYPE_LEFT_WRITE
+                Message.MESSAGE_WITHDRAW -> TYPE_LEFT_WITHDRAW
+                else -> TYPE_RIGHT_TEXT
+            }
         }
     }
 
     override fun getItemCount(): Int {
-        return mList.size + temptList.size
+        return mList.size
     }
 
 
@@ -260,7 +230,9 @@ class MessageListAdapter : RecyclerView.Adapter<MessageHolder>() {
         private const val TYPE_RIGHT_IMG = 4
         private const val TYPE_LEFT_IMG = 5
         private const val TYPE_TIME = 11
-        private val TAG = "MessageListAdapter"
+        private const val TYPE_LEFT_WITHDRAW = 6
+        private const val TYPE_RIGHT_WITHDRAW = 7
+        private const val TAG = "MessageListAdapter"
 
     }
 

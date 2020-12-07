@@ -21,7 +21,7 @@ import com.vlog.databinding.ActivityConversationBinding
 import com.vlog.util.onClick
 import dibus.app.ConversationActivityCreator
 
-class ConversationActivity :BaseActivity() {
+class ConversationActivity : BaseActivity() {
 
     private lateinit var binding: ActivityConversationBinding
     private var isLoading = false
@@ -42,7 +42,9 @@ class ConversationActivity :BaseActivity() {
         ConversationActivityCreator.inject(this)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_conversation)
         binding.recyclerView.adapter = adapter
-        binding.recyclerView.layoutManager = LinearLayoutManager(this,RecyclerView.VERTICAL,true)
+        binding.recyclerView.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, true).apply {
+            stackFromEnd = true
+        }
         init()
         dispatchEvent()
     }
@@ -58,12 +60,12 @@ class ConversationActivity :BaseActivity() {
     }
 
     @BusEvent
-    fun roomChangeEvent(room: Room){
+    fun roomChangeEvent(room: Room) {
         binding.titleText.text = room.roomName
     }
 
 
-    private fun dispatchEvent(){
+    private fun dispatchEvent() {
         binding.recyclerView.setOnClickListener {
             binding.bottomInputLayout.hide()
         }
@@ -75,37 +77,39 @@ class ConversationActivity :BaseActivity() {
         binding.listLayout.post {
             minHeight = binding.listLayout.height
         }
-        SoftKeyBoardListener.setListener(this,object :SoftKeyBoardListener.OnSoftKeyBoardChangeListener{
-            override fun keyBoardShow(height: Int) {
-                binding.bottomInputLayout.softKeyHeight = height
-                binding.bottomInputLayout.showSoftKey()
-                if(adapter.itemCount>0){
-                    binding.recyclerView.scrollToPosition(0)
+
+
+        SoftKeyBoardListener.setListener(this,
+            object : SoftKeyBoardListener.OnSoftKeyBoardChangeListener {
+                override fun keyBoardShow(height: Int) {
+                    binding.bottomInputLayout.softKeyHeight = height
+                    binding.bottomInputLayout.showSoftKey()
+                    if (adapter.itemCount > 0) {
+                        binding.recyclerView.scrollToPosition(0)
+                    }
+                    minHeight = binding.listLayout.height
                 }
-                minHeight = binding.listLayout.height
-            }
 
-            override fun keyBoardHide(height: Int) {
+                override fun keyBoardHide(height: Int) {
 
-            }
+                }
 
-        })
+            })
         binding.bottomInputLayout.setBottomContentShowListener {
-            if(it){
+            if (it) {
                 binding.recyclerView.scrollToPosition(0)
             }
         }
 
         adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-                if (positionStart <3) {
+                if (positionStart < 3) {
                     binding.recyclerView.scrollToPosition(0)
                 }
             }
 
         })
     }
-
 
 
     override fun onNewIntent(intent: Intent?) {
@@ -113,85 +117,103 @@ class ConversationActivity :BaseActivity() {
         init()
     }
 
-    private fun init(){
+    @BusEvent
+    fun imageLoadFinishEvent(event:ImageLoadFinish){
+        binding.recyclerView.scrollToPosition(0)
+    }
+
+    private fun init() {
         var conversationId = -1
         val friend = intent.getParcelableExtra<Friend>("friend")
-        if(friend != null){
+        if (friend != null) {
             conversationId = friend.conversationId
             binding.titleText.text = friend.user.username
             isRoom = false
-        }else{
-            val room = intent.getParcelableExtra<Room>("room")?:throw RuntimeException("传入friend 或者room")
+        } else {
+            val room =
+                intent.getParcelableExtra<Room>("room") ?: throw RuntimeException("传入friend 或者room")
             isRoom = true
             conversationId = room.conversationId
             binding.titleText.text = room.roomName
             binding.moreActionView.setOnClickListener {
-               CovRoomEditActivity.launch(this, room)
+                CovRoomEditActivity.launch(this, room)
             }
         }
-        if(isRoom){
+        if (isRoom) {
             binding.bottomInputLayout.fromType = Message.FROM_TYPE_ROOM
-        }else{
+        } else {
             binding.bottomInputLayout.fromType = Message.FROM_TYPE_FRIEND
         }
 
         binding.icBack.setOnClickListener {
             onBackPressed()
         }
-        if(conversationId != -1){
+        if (conversationId != -1) {
             binding.bottomInputLayout.setConversationId(conversationId)
         }
         currentConversationId = conversationId
         dispatchEvent(conversationId)
     }
 
-   private fun dispatchEvent(conversationId: Int){
-        viewModel.queryMessage(conversationId, maxTime).observe(this){
-            adapter.flashList(it)
+    private fun dispatchEvent(conversationId: Int) {
+        viewModel.queryMessage(conversationId, maxTime).apply {
+            observe(this@ConversationActivity) {
+                adapter.flashList(it)
+                removeObservers(this@ConversationActivity)
+                viewModel.getLatest(conversationId).observe(this@ConversationActivity){
+                    if(it != null){
+                        adapter.messageInsert(it)
+                    }
+                }
+            }
         }
 
-       binding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-           override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-               super.onScrollStateChanged(recyclerView, newState)
-               if (!isLoading && !recyclerView.canScrollVertically(-1)) {
-                   isLoading = true
-                   val  originLiveData = viewModel.queryBeforeMessage(conversationId,adapter.getFirstItemBefore())
-                   originLiveData.apply {
-                       observe(this@ConversationActivity){
-                           if(it.isNotEmpty()){
-                               adapter.addBefore(it)
-                           }
-                           if(it.size<15){
-                              val  originNetLiveData =  viewModel.query(adapter.getFirstItemBefore()/1000,conversationId)
-                               originNetLiveData.observe(this@ConversationActivity){
-                                   isLoading = false
-                                  originNetLiveData.removeObservers(this@ConversationActivity)
-                               }
-                           }else{
-                               isLoading = false
-                           }
-                           removeObservers(this@ConversationActivity)
-                       }
-                   }
-               }
-           }
-       })
+        binding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if (!isLoading && !recyclerView.canScrollVertically(-1)) {
+                    isLoading = true
+                    val originLiveData =
+                        viewModel.queryBeforeMessage(conversationId, adapter.getFirstItemBefore())
+                    originLiveData.apply {
+                        observe(this@ConversationActivity) {
+                            if (it.isNotEmpty()) {
+                                adapter.addBefore(it)
+                            }
+                            if (it.size < 15) {
+                                val originNetLiveData = viewModel.query(
+                                    adapter.getFirstItemBefore() / 1000,
+                                    conversationId
+                                )
+                                originNetLiveData.observe(this@ConversationActivity) {
+                                    isLoading = false
+                                    originNetLiveData.removeObservers(this@ConversationActivity)
+                                }
+                            } else {
+                                isLoading = false
+                            }
+                            removeObservers(this@ConversationActivity)
+                        }
+                    }
+                }
+            }
+        })
 
     }
 
-    companion object{
+    companion object {
 
         var isAlive = false
         var currentConversationId = -1
 
 
-        fun launch(context: Context, friend: Friend){
+        fun launch(context: Context, friend: Friend) {
             val intent = Intent(context, ConversationActivity::class.java)
             intent.putExtra("friend", friend)
             context.startActivity(intent)
         }
 
-        fun launch(context: Context, room: Room){
+        fun launch(context: Context, room: Room) {
             val intent = Intent(context, ConversationActivity::class.java)
             intent.putExtra("room", room)
             context.startActivity(intent)

@@ -1,63 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
-    <RelativeLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:background="@color/main_bar_bg"
         android:id="@+id/list_layout"
         android:layout_height="match_parent">
+
         <RelativeLayout
             android:id="@+id/top_bar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize">
+            android:layout_height="?attr/actionBarSize"
+            app:layout_constraintBottom_toTopOf="@+id/recyclerView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0">
+
             <ImageView
                 android:id="@+id/ic_back"
                 android:layout_width="wrap_content"
-                android:src="@drawable/ic_back"
+                android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginStart="10dp"
-                android:layout_height="wrap_content"/>
+                android:src="@drawable/ic_back" />
+
             <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_centerInParent="true"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true">
+
                 <ProgressBar
-                    android:layout_width="24dp"
-                    android:visibility="gone"
                     android:id="@+id/progress_bar"
-                    android:layout_height="24dp"/>
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:visibility="gone" />
+
                 <TextView
-                    android:layout_width="wrap_content"
                     android:id="@+id/title_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:textColor="@android:color/black"
-                    android:textSize="16sp"
-                    android:layout_height="wrap_content"/>
+                    android:textSize="16sp" />
             </LinearLayout>
 
             <ImageView
                 android:id="@+id/more_action_view"
                 android:layout_width="wrap_content"
-                android:src="@drawable/ic_list"
-                android:layout_centerVertical="true"
+                android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
                 android:layout_marginEnd="5dp"
-                android:layout_height="wrap_content"/>
+                android:src="@drawable/ic_list" />
         </RelativeLayout>
 
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
-            android:layout_below="@+id/top_bar"
+            android:layout_height="0dp"
             android:layout_marginBottom="5dp"
-            android:layout_above="@+id/bottom_input_layout"
-            android:layout_height="match_parent" />
+            app:layout_constraintBottom_toTopOf="@+id/bottom_input_layout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/top_bar"
+            app:layout_constraintVertical_bias="0.0" />
+
         <com.vlog.conversation.InputBottom
             android:id="@+id/bottom_input_layout"
-            android:layout_alignParentBottom="true"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-    </RelativeLayout>
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/recyclerView"
+            app:layout_constraintVertical_bias="1.0" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

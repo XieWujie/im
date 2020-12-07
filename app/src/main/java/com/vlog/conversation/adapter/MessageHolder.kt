@@ -9,15 +9,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.common.ext.toast
 import com.common.pushExecutors
 import com.common.pushMainThread
 import com.common.util.ScreenUtils
 import com.common.util.Util
 import com.dibus.DiBus
 import com.vlog.R
-import com.vlog.conversation.writeMessage.FinalReadViewList
+import com.vlog.connect.MessageSend
 import com.vlog.conversation.writeMessage.WordListLayout
 import com.vlog.database.CiteEvent
 import com.vlog.database.Message
@@ -26,8 +27,8 @@ import com.vlog.database.User
 import com.vlog.databinding.CiteMessageLayoutBinding
 import com.vlog.databinding.MsgLongClickLayoutBinding
 import com.vlog.photo.load
+import com.vlog.photo.loadWithMaxSize
 import dibus.app.MessageSourceCreator
-import java.lang.IllegalArgumentException
 
 open class MessageHolder(view:View) :RecyclerView.ViewHolder(view){
 
@@ -37,7 +38,11 @@ open class MessageHolder(view:View) :RecyclerView.ViewHolder(view){
 
     open fun bindTime(time:String){}
 
+    private val dp100 = Util.dp2dx(view.context,100).toInt()
+
     protected fun loadCite(citeMessageId:Int,viewGroup: ViewGroup){
+        viewGroup.removeAllViews()
+        viewGroup.visibility = View.GONE
         if(citeMessageId == -1)return
         val context = itemView.context
         pushExecutors {
@@ -47,33 +52,33 @@ open class MessageHolder(view:View) :RecyclerView.ViewHolder(view){
                 e.printStackTrace()
                 return@pushExecutors
             }
-            val msg = msgWrap.message
+            val msg = msgWrap?.message?:return@pushExecutors
             pushMainThread {
                 val binding = CiteMessageLayoutBinding.inflate(LayoutInflater.from(context),null,false)
                 binding.apply {
                     usernameText.text = msgWrap.user.username
                     timeText.text = Util.getTime(msg.createAt*1000)
                 }
-                val view = when(msg.messageType){
+                binding.citeContentText.removeAllViews()
+                viewGroup.visibility = View.VISIBLE
+                viewGroup.addView(binding.root)
+                 when(msg.messageType){
                     Message.MESSAGE_TEXT->TextView(context).apply {
                         text = msg.content
                         textSize = 10f
                         setTextColor(Color.BLACK)
+                        binding.citeContentText.addView(this)
                     }
                     Message.MESSAGE_IMAGE->ImageView(context).apply {
-                        scaleType = ImageView.ScaleType.CENTER_CROP
-                          load(msg.content)
+                        scaleType = ImageView.ScaleType.FIT_XY
+                        binding.citeContentText.addView(this,dp100.toInt(),ViewGroup.LayoutParams.WRAP_CONTENT)
+                        loadWithMaxSize(msg.content,dp100)
                     }
                     Message.MESSAGE_WRITE->WordListLayout(context).apply {
                         this.handleWrite(msg.content)
                     }
                     else->return@pushMainThread
                 }
-                binding.citeContentText.removeAllViews()
-                binding.citeContentText.addView(view)
-                viewGroup.visibility = View.VISIBLE
-                viewGroup.removeAllViews()
-                viewGroup.addView(binding.root)
             }
         }
     }
@@ -108,11 +113,21 @@ internal fun View.setLongClick(message: Message,fromUser: User){
             }
 
             Log.d("Dialog","x:${location[0]},y:${location[1]}")
+
             attributes = p
         }
         binding.citeText.setOnClickListener {
             DiBus.postEvent(CiteEvent(fromUser.username,message))
             dialog.dismiss()
+        }
+        binding.withdrawText.setOnClickListener {
+            val message = Message.obtain(message.conversationId,Message.MESSAGE_WITHDRAW,message.messageId.toString(),message.fromType)
+            DiBus.postEvent(message,MessageSend{
+                if(it != null){
+                    context.toast(it.toString())
+                }
+                dialog.dismiss()
+            })
         }
         dialog.show()
         dialog.window?.setGravity(Gravity.START or Gravity.TOP)

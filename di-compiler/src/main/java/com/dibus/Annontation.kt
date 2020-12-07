@@ -78,6 +78,10 @@ annotation class Register(val createStrategy:Int = CREATE_SCOPE)
 @Retention(AnnotationRetention.BINARY)
 annotation class LifeCycle(val scope:String = "")
 
+@Target(AnnotationTarget.CLASS)
+@Inherited
+@Retention(AnnotationRetention.BINARY)
+annotation class Activity(val scope:String = "")
 
 const val THREAD_POLICY_MAIN = 1
 const val THREAD_POLICY_DEFAULT = 0

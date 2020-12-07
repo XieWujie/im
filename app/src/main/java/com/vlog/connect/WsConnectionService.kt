@@ -2,17 +2,19 @@ package com.vlog.connect
 
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.util.Log
 import androidx.core.app.JobIntentService
 import com.common.HOST
 import com.common.pushExecutors
 import com.dibus.AutoWire
 import com.dibus.BusEvent
+import com.dibus.DiBus
 import com.google.gson.Gson
 import com.vlog.connect.notify.Notify
 import com.vlog.connect.notify.ReplyBroadcast
 import com.vlog.conversation.ConversationActivity
+import com.vlog.conversation.MessageChangeEvent
+import com.vlog.conversation.MessageRemoveEvent
 import com.vlog.database.*
 import com.vlog.user.Owner
 import com.vlog.user.UserSource
@@ -99,17 +101,19 @@ class WsConnectionService:JobIntentService(),WsConnectionListener {
         val m = gson.fromJson(text, MsgWrap::class.java)
         pushExecutors {
             val msg = m.message
-            if(msg.sendFrom != Owner().userId
-                && (ConversationActivity.currentConversationId != msg.conversationId ||!ConversationActivity.isAlive)) {
-                when (m.message.fromType) {
-                    Message.FROM_TYPE_FRIEND -> {
-                        notify.sendNotification(m.user, m.message)
-                    }
-                    Message.FROM_TYPE_ROOM -> {
-                        notify.sendNotification(m.room!!, m.message)
-                    }
-                }
+            if(msg.messageType == Message.MESSAGE_WITHDRAW){
+                DiBus.postEvent(MessageRemoveEvent(msg))
+                msgDao.delete(msg)
+                return@pushExecutors
             }
+            if(msg.sendFrom == Owner().userId){
+                if(msg.messageType != Message.MESSAGE_IMAGE) {
+                    DiBus.postEvent(MessageChangeEvent(MsgWithUser(m.message, m.user)))
+                }
+                msgDao.insert(m.message.apply { isSend = true })
+                return@pushExecutors
+            }
+            notifyEvent(m)
             if(m.room != null){
                 roomDao.insert(m.room)
             }
@@ -117,6 +121,21 @@ class WsConnectionService:JobIntentService(),WsConnectionListener {
             msgDao.insert(m.message.apply { isSend = true })
         }
         Log.d(TAG,"onMessage:$text")
+    }
+
+    fun notifyEvent(m:MsgWrap){
+        val msg = m.message
+        if(msg.sendFrom != Owner().userId
+            && (ConversationActivity.currentConversationId != msg.conversationId ||!ConversationActivity.isAlive)) {
+            when (m.message.fromType) {
+                Message.FROM_TYPE_FRIEND -> {
+                    notify.sendNotification(m.user, m.message)
+                }
+                Message.FROM_TYPE_ROOM -> {
+                    notify.sendNotification(m.room!!, m.message)
+                }
+            }
+        }
     }
 
     override fun onClose(ws: WsConnection) {

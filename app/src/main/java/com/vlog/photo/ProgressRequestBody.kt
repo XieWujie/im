@@ -25,7 +25,7 @@ class ProgressRequestBody(private val mediaType: MediaType?, private val file: F
             var writeCount = 0L
             var contentLength= contentLength()
             var readCount: Long
-            while (source.read(buf, 2048).also { readCount = it } != -1L) {
+            while (source.read(buf, 128).also { readCount = it } != -1L) {
                 sink.write(buf, readCount)
                 writeCount+=readCount
                 listener?.callback(

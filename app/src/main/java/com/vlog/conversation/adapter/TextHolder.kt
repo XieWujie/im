@@ -32,6 +32,7 @@ class TextHolder{
 
     class L(private val binding:LeftTextMessageBinding):MessageHolder(binding.root){
 
+
         private val holder = TextHolder()
 
         override fun bind(m: MsgWithUser) {

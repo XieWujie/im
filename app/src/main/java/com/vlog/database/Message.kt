@@ -37,7 +37,7 @@ data class Message(
 
     override fun equals(other: Any?): Boolean {
        if(other is Message){
-           if(this.sendTime == other.sendTime && this.createAt == other.createAt){
+           if(this.sendTime == other.sendTime && this.createAt == other.createAt && this.messageType == other.messageType){
                return true
            }
        }

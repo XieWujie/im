@@ -34,6 +34,7 @@ class MessageOnTime :Runnable{
         val json = gson.toJson(message)
     }
 
+
     fun readWrite(x:Float,y:Float,type: Int){
         if(started){
             queue.offer(p.copy(x,y,type))

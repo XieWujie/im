@@ -1,8 +1,10 @@
 package com.dibus
 
+import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
+import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import androidx.lifecycle.LifecycleOwner
@@ -145,6 +147,36 @@ class DiBus private constructor():Fetcher,EventDispatcher{
         addObjectSingle(Application::class.java.canonicalName!!,context)
         val sharedPreferences = context.getSharedPreferences(context.packageName,Context.MODE_PRIVATE)
         addObjectSingle(SharedPreferences::class.java.canonicalName!!,sharedPreferences)
+        context.registerActivityLifecycleCallbacks(object :Application.ActivityLifecycleCallbacks{
+            override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
+
+            }
+
+            override fun onActivityStarted(activity: Activity) {
+
+            }
+
+            override fun onActivityResumed(activity: Activity) {
+
+            }
+
+            override fun onActivityPaused(activity: Activity) {
+
+            }
+
+            override fun onActivityStopped(activity: Activity) {
+
+            }
+
+            override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {
+
+            }
+
+            override fun onActivityDestroyed(activity: Activity) {
+
+            }
+
+        })
     }
 
     inline fun<reified T:LifecycleOwner> scope(kClass: KClass<T>):T{

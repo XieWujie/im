@@ -10,16 +10,19 @@ import com.vlog.database.MsgWithUser
 import com.vlog.user.Owner
 
 class ConversationViewModel @ViewModelService(ConversationActivity::class)
-  constructor (private val source: ConversationSource):ViewModel(){
+constructor(private val source: ConversationSource) : ViewModel() {
 
 
-    fun queryMessage(conversationId:Int,maxTime:Long) = source.getFromConversation(conversationId,maxTime,25)
+    fun queryMessage(conversationId: Int, maxTime: Long) =
+        source.getFromConversation(conversationId, maxTime, 250)
 
 
-  fun queryBeforeMessage(conversationId: Int,maxTime: Long) = source.getFromConversation(conversationId,maxTime,40)
+    fun queryBeforeMessage(conversationId: Int, maxTime: Long) =
+        source.getFromConversation(conversationId, maxTime, 250)
 
+    fun getLatest(conversationId: Int) = source.dao.getLatestMessage(conversationId)
 
-  fun query(before:Long,conversationId: Int): LiveData<Result<List<MsgWithUser>>> {
-    return source.loadFromNet(before, conversationId)
-  }
+    fun query(before: Long, conversationId: Int): LiveData<Result<List<MsgWithUser>>> {
+        return source.loadFromNet(before, conversationId)
+    }
 }
