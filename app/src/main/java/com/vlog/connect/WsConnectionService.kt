@@ -27,6 +27,8 @@ class WsConnectionService:JobIntentService(),WsConnectionListener {
 
     private lateinit var notify: Notify
 
+
+
     @AutoWire
     lateinit var gson: Gson
     @AutoWire
@@ -101,6 +103,8 @@ class WsConnectionService:JobIntentService(),WsConnectionListener {
         val m = gson.fromJson(text, MsgWrap::class.java)
         pushExecutors {
             val msg = m.message
+
+            //撤回消息，发送事件并删除
             if(msg.messageType == Message.MESSAGE_WITHDRAW){
                 DiBus.postEvent(MessageRemoveEvent(msg))
                 msgDao.delete(msg)
@@ -123,7 +127,7 @@ class WsConnectionService:JobIntentService(),WsConnectionListener {
         Log.d(TAG,"onMessage:$text")
     }
 
-    fun notifyEvent(m:MsgWrap){
+    private fun notifyEvent(m:MsgWrap){
         val msg = m.message
         if(msg.sendFrom != Owner().userId
             && (ConversationActivity.currentConversationId != msg.conversationId ||!ConversationActivity.isAlive)) {

@@ -8,6 +8,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.common.Result
+import com.common.ext.launch
 import com.common.ext.toast
 import com.dibus.BusEvent
 import com.vlog.database.Room
@@ -15,9 +16,15 @@ import com.vlog.databinding.CovRoomItemBinding
 import com.vlog.photo.load
 import com.vlog.room.RoomAvatarEditActivity
 import com.vlog.room.RoomNameEditActivity
+import com.vlog.room.RoomSource
+import com.vlog.ui.MainActivity
+import com.vlog.user.Owner
 import dibus.app.ItemViewHolderCreator
+import dibus.app.RoomSourceCreator
 
 class CovREditAdapter(private val lifecycleOwner: LifecycleOwner,private var room:Room):RecyclerView.Adapter<CovREditAdapter.ViewHolder>() {
+
+    private val source: RoomSource = RoomSourceCreator.get()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return when(viewType){
@@ -52,8 +59,7 @@ class CovREditAdapter(private val lifecycleOwner: LifecycleOwner,private var roo
     }
 
    inner class RUViewHolder(view:RecyclerView):ViewHolder(view){
-        val source = RoomMembersSource()
-        private val adapter = RUserListAdapter()
+        private val adapter = RUserListAdapter(room.conversationId)
         init {
             view.setBackgroundColor(Color.WHITE)
             view.layoutManager = GridLayoutManager(itemView.context,6)
@@ -83,6 +89,16 @@ class CovREditAdapter(private val lifecycleOwner: LifecycleOwner,private var roo
             }
             binding.roomNameLayout.setOnClickListener {
                 RoomNameEditActivity.launch(it.context,room)
+            }
+            binding.quitRoomLayout.setOnClickListener {view->
+                source.quitRoom(room,Owner().userId).observe(lifecycleOwner){
+                    when(it){
+                        is Result.Error->view.context.toast(it.toString())
+                        is Result.Data->{
+                            view.context.launch<MainActivity>()
+                        }
+                    }
+                }
             }
         }
 

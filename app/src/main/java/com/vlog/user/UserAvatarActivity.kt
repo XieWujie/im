@@ -1,4 +1,4 @@
-package com.vlog.photo
+package com.vlog.user
 
 import android.app.Activity
 import android.content.Context
@@ -18,8 +18,7 @@ import com.common.pushExecutors
 import com.dibus.AutoWire
 import com.vlog.R
 import com.vlog.database.User
-import com.vlog.user.Owner
-import com.vlog.user.UserSource
+import com.vlog.photo.load
 import dibus.app.UserAvatarActivityCreator
 
 class UserAvatarActivity : BaseActivity() {
@@ -122,7 +121,7 @@ class UserAvatarActivity : BaseActivity() {
 
     companion object{
         fun launch(context: Context,user: User){
-            val intent = Intent(context,UserAvatarActivity::class.java)
+            val intent = Intent(context, UserAvatarActivity::class.java)
             intent.putExtra("user",user)
             context.startActivity(intent)
         }

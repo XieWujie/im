@@ -65,9 +65,16 @@ class Notify(private val context: Context) {
             .load("$HOST_PORT$avatar")
             .submit()
             .get()
+        val content = when(message.messageType){
+            Message.MESSAGE_IMAGE->"[图片]"
+            Message.Agree->"${title}已同意添加你为好友"
+            Message.Verify->"${title}请求添加你为好友"
+            Message.MESSAGE_WRITE->"[手写]"
+            else->message.content
+        }
         val notify = NotificationCompat.Builder(context, channelId)
             .setContentTitle(title)
-            .setContentText(message.content)
+            .setContentText(content)
             .setDefaults(NotificationCompat.DEFAULT_LIGHTS)
             .setAutoCancel(true)
             .setDefaults(NotificationCompat.DEFAULT_SOUND)

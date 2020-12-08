@@ -58,4 +58,7 @@ interface RoomDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(rooms:List<Room>)
+
+    @Delete
+    fun delete(room:Room)
 }

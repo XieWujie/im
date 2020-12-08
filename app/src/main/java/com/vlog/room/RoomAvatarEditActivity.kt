@@ -10,6 +10,7 @@ import android.provider.MediaStore
 import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
 import com.bumptech.glide.Glide
+import com.common.HOST_PORT
 import com.common.Result
 import com.common.util.Util
 import com.common.base.BaseActivity
@@ -19,6 +20,9 @@ import com.dibus.DiBus
 import com.vlog.R
 import com.vlog.photo.load
 import com.vlog.database.Room
+import com.vlog.photo.PhotoDownloadTarget
+import com.vlog.photo.TransformationOfMaxSize
+import com.vlog.photo.loadWithMaxSize
 import dibus.app.RoomEditSourceCreator
 
 class RoomAvatarEditActivity : BaseActivity() {
@@ -58,20 +62,12 @@ class RoomAvatarEditActivity : BaseActivity() {
                         }
                     }
                     1-> {
-                        pushExecutors {
-                            try {
-                                Glide.with(this).load(imageView.drawable)
-                                    .downloadOnly(200, 200).get()
-                                runOnUiThread {
-                                    toast("下载成功")
-                                }
-
-                            }catch (e :Exception){
-                                runOnUiThread {
-                                    toast("下载失败：${e.message}")
-                                }
-                            }
+                        val realUrl = if (room.roomAvatar.startsWith("/file/get")) {
+                            "$HOST_PORT${room.roomAvatar}"
+                        } else {
+                            room.roomAvatar
                         }
+                        Glide.with(this).asFile().load(realUrl).into(PhotoDownloadTarget(this))
                     }
                 }
             }.show()

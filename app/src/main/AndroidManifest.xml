@@ -5,8 +5,8 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WAKE_LOCK"/>
-    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
         android:name=".App"
@@ -18,13 +18,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".photo.PhotoListActivity"></activity>
+        <activity android:name=".room.MemberAddActivity"></activity>
+        <activity android:name=".photo.PhotoListActivity" />
         <activity android:name=".setting.SettingActivity" />
         <activity android:name=".login.StartActivity" />
         <activity android:name=".room.RoomAvatarEditActivity" />
         <activity android:name=".room.RoomNameEditActivity" />
         <activity android:name=".user.UserNameEditActivity" />
-        <activity android:name=".photo.UserAvatarActivity" />
+        <activity android:name=".user.UserAvatarActivity" />
         <activity android:name=".user.UserItemEditActivity" />
         <activity android:name=".ui.relation.RoomListActivity" />
         <activity android:name=".conversation.room.CovRoomEditActivity" />
@@ -40,24 +41,22 @@
         <activity
             android:name=".login.LoginActivity"
             android:label="@string/title_activity_login" />
-        <activity android:name=".ui.MainActivity">
+        <activity android:name=".ui.MainActivity" android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <service
             android:name=".conversation.message.MessageService"
             android:exported="true"
-            android:permission="android.permission.BIND_JOB_SERVICE"
-            />
-
+            android:permission="android.permission.BIND_JOB_SERVICE" />
         <service
             android:name=".connect.WsConnectionService"
             android:exported="true"
-            android:permission="android.permission.BIND_JOB_SERVICE"
-            />
+            android:permission="android.permission.BIND_JOB_SERVICE" />
     </application>
 
 </manifest>

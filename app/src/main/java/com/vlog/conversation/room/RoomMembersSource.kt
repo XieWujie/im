@@ -11,14 +11,7 @@ import okhttp3.Request
 
 class RoomMembersSource {
 
-    fun getMembers(conversationId:Int):LiveData<Result<List<User>>>{
-        val url = "$HOST_PORT/conversation/getMembers?conversationId=$conversationId"
-        val request = Request.Builder()
-            .url(url)
-            .get()
-            .build()
-        return request.toLiveData(getType(List::class.java,User::class.java))
-    }
+
 
 
 }

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".room.MemberAddActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:id="@+id/top_bar"
+        android:gravity="center_vertical"
+        android:layout_height="?attr/actionBarSize">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:src="@drawable/ic_back"
+            android:layout_marginStart="10dp"
+            android:id="@+id/ic_back_view"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:textColor="@android:color/black"
+            android:text="选择联系人"
+            android:layout_marginStart="5dp"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:background="@android:color/white"
+        android:id="@+id/recyclerView"
+        android:layout_below="@+id/top_bar"
+        android:layout_above="@+id/bottom_layout"
+        android:layout_height="match_parent"/>
+    <RelativeLayout
+        android:id="@+id/bottom_layout"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:background="#f7f7f7"
+        android:layout_height="50dp">
+        <Button
+            android:layout_width="45dp"
+            android:text="完成"
+            android:id="@+id/submit_bt"
+            android:textColor="@color/grey_text"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="15dp"
+            android:background="@drawable/grey_bt_rectangle"
+            android:layout_height="28dp"/>
+    </RelativeLayout>
+</RelativeLayout>
+</layout>

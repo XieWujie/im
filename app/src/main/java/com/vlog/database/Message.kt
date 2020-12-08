@@ -66,6 +66,7 @@ data class Message(
         const val MESSAGE_TEXT = 11
         const val MESSAGE_IMAGE = 13
         const val MESSAGE_WITHDRAW = 4
+        const val Agree = 2
 
         const val FROM_TYPE_FRIEND = 1
         const val FROM_TYPE_ROOM = 2

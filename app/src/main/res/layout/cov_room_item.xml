@@ -4,14 +4,15 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:background="@android:color/white"
+    android:background="@color/grey_bg"
     android:orientation="vertical"
     android:layout_marginTop="10dp"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:id="@+id/avatar_layout"
+        android:background="@android:color/white"
         android:layout_height="60dp">
         <TextView
             android:layout_width="wrap_content"
@@ -46,6 +47,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:id="@+id/room_name_layout"
+        android:background="@android:color/white"
         android:layout_height="50dp">
         <TextView
             android:layout_width="wrap_content"
@@ -70,6 +72,15 @@
             android:id="@+id/room_name_text"
             android:layout_height="wrap_content"/>
     </RelativeLayout>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_marginTop="5dp"
+        android:text="删除并退出"
+        android:background="@android:color/white"
+        android:textColor="@android:color/holo_red_dark"
+        android:id="@+id/quit_room_layout"
+        android:layout_height="50dp"/>
 </LinearLayout>
 
 </layout>

@@ -7,7 +7,6 @@ import androidx.databinding.DataBindingUtil
 import com.common.util.Util
 import com.common.ext.launch
 import com.vlog.R
-import com.vlog.photo.UserAvatarActivity
 import com.vlog.database.User
 import com.vlog.databinding.ActivityUserItemEditBinding
 import com.vlog.photo.load
@@ -16,6 +15,7 @@ class UserItemEditActivity : AppCompatActivity() {
 
     lateinit var binding:ActivityUserItemEditBinding
     private lateinit var user:User
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,6 +30,9 @@ class UserItemEditActivity : AppCompatActivity() {
         user = Owner().getUser()
         binding.usernameText.text = user.username
         binding.avatarView.load(user.avatar)
+        binding.icBackView.setOnClickListener {
+            onBackPressed()
+        }
     }
 
     override fun onStart() {

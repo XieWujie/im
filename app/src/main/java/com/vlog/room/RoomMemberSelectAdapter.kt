@@ -4,15 +4,18 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.vlog.database.Friend
+import com.vlog.database.User
 import com.vlog.databinding.RoomCreateSelectedItemBinding
 import com.vlog.photo.load
 
-class RoomCreateAdapter:RecyclerView.Adapter<RoomCreateAdapter.ViewHolder>()  {
+class RoomMemberSelectAdapter:RecyclerView.Adapter<RoomMemberSelectAdapter.ViewHolder>()  {
 
-    private val mList = ArrayList<Friend>()
+    private val mList = ArrayList<User>()
     val checkList = HashSet<Int>()
 
-    fun setList(list:List<Friend>){
+    var checkListStateListener:((Boolean)->Unit)? = null
+
+    fun setList(list:List<User>){
         mList.clear()
         mList.addAll(list)
         notifyDataSetChanged()
@@ -22,14 +25,20 @@ class RoomCreateAdapter:RecyclerView.Adapter<RoomCreateAdapter.ViewHolder>()  {
 
     inner class ViewHolder(val binding: RoomCreateSelectedItemBinding) :RecyclerView.ViewHolder(binding.root){
 
-        fun bind(friend: Friend){
-           binding.avatarView.load(friend.user.avatar)
-            binding.usernameText.text = friend.user.username
+        fun bind(user: User){
+           binding.avatarView.load(user.avatar)
+            binding.usernameText.text = user.username
             binding.checkbox.setOnCheckedChangeListener { _, isChecked ->
                 if(isChecked){
-                    checkList.add(friend.user.userId)
+                    checkList.add(user.userId)
+                    if(checkList.size == 1){
+                        checkListStateListener?.invoke(true)
+                    }
                 }else{
-                    checkList.remove(friend.user.userId)
+                    checkList.remove(user.userId)
+                    if(checkList.isEmpty()){
+                        checkListStateListener?.invoke(false)
+                    }
                 }
             }
         }

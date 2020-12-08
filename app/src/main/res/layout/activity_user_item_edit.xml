@@ -17,6 +17,7 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:id="@+id/ic_back_view"
             android:layout_marginStart="10dp"
             android:src="@drawable/ic_back"/>
         <TextView
@@ -75,6 +76,7 @@
             android:layout_centerVertical="true"
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="10dp"
+            android:src="@drawable/ic_right"
             android:id="@+id/username_right"
             android:layout_height="wrap_content"/>
         <TextView

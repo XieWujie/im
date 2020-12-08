@@ -19,6 +19,7 @@ import com.vlog.databinding.LeftImgMessageBinding
 import com.vlog.databinding.RightImgMessageBinding
 import com.vlog.photo.load
 import com.vlog.photo.loadWithMaxSize
+import com.vlog.photo.showBigView
 import com.vlog.user.Owner
 import com.vlog.user.UserHomeActivity
 import com.vlog.user.UserItemEditActivity
@@ -43,6 +44,9 @@ class ImageHolder {
         }
         contentView.layoutParams = l
         contentView.loadWithMaxSize(m.message.content,dp200)
+        contentView.setOnClickListener {
+            contentView.showBigView(m.message.content)
+        }
         contentView.setLongClick(m.message, m.user)
         avatarView.load(m.user.avatar)
         usernameText.text = m.user.username

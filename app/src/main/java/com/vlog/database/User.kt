@@ -11,7 +11,7 @@ data class User(val userId:Int, val username:String, val avatar:String, val desc
         parcel.readInt(),
         parcel.readString()!!,
         parcel.readString()!!,
-        parcel.readString()!!
+        parcel.readString()?:""
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {

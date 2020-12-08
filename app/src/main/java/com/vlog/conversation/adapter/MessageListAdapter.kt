@@ -103,7 +103,12 @@ class MessageListAdapter : RecyclerView.Adapter<MessageHolder>() {
     }
 
     fun messageInsert(msgs: List<MsgWithUser>){
-        val firstTime = mList.first { it.message != null }.message?.message?.sendTime?:-1L
+        val firstTime =
+            try {
+                mList.first { it.message != null }.message?.message?.sendTime?:-1L
+            }catch (e:Exception){
+                return
+            }
         val newMsg = msgs.filter { it.message.sendTime>firstTime }
         for(msg in newMsg) {
             val time = if (msg.message.createAt == 0L) {

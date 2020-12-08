@@ -54,15 +54,15 @@ class VerifyListActivity : BaseActivity() {
             onBackPressed()
         }
 
-        adapter.registerAgreeAction { verify, postion ->
+        adapter.registerAgreeAction { verify, position ->
             binding.loadBar.visibility = View.VISIBLE
             viewModel.sendVerify(verify).observe(this) {
                 binding.loadBar.visibility = View.GONE
                 when (it) {
                     is Result.Error -> toast(it.toString())
                     is Result.Data -> {
-                        mList[postion] = verify
-                        adapter.notifyItemRangeChanged(postion,1)
+                        mList[position] = verify
+                        adapter.notifyItemChanged(position)
                     }
                 }
             }

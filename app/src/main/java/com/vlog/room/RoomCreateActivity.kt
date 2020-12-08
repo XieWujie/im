@@ -19,10 +19,10 @@ class RoomCreateActivity : AppCompatActivity() {
 
 
     private lateinit var binding:ActivityRoomCreateBinding
-    private val adapter = RoomCreateAdapter()
+    private val adapter = RoomMemberSelectAdapter()
 
     @AutoWire
-    lateinit var source: RoomCreateSource
+    lateinit var source: RoomSource
 
     @AutoWire
     lateinit var friendDao: FriendDao
@@ -38,8 +38,8 @@ class RoomCreateActivity : AppCompatActivity() {
         val recyclerView = binding.recyclerView
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
-        friendDao.getFriend(Owner().userId).observe(this){
-            adapter.setList(it)
+        friendDao.getFriend(Owner().userId).observe(this){ list ->
+            adapter.setList(list.map { it.user })
         }
         binding.nextBt.setOnClickListener {
             source.create(Room(0,"","",Owner().userId),adapter.checkList.toList())
