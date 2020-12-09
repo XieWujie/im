@@ -1,5 +1,6 @@
 package com.vlog.ui
 
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.view.Menu
@@ -40,6 +41,12 @@ class MainActivity :BaseActivity() {
         dispatchEvent()
     }
 
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        verify()
+    }
+
     private fun dispatchEvent(){
         binding.bind()
     }
@@ -63,11 +70,13 @@ class MainActivity :BaseActivity() {
     }
 
     private fun verify() {
-        if (Owner().userId == 0) {
+        val owner = Owner()
+        if (owner.userId <0) {
                launch<StartActivity>()
         }else{
-         // WsListenerCreator.get().connect()
-           WsConnectionService.connect(this,Owner().userId)
+            if(owner.isLogout) {
+                WsConnectionService.connect(this, Owner().userId)
+            }
         }
     }
 

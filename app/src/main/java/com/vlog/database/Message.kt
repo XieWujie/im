@@ -20,7 +20,8 @@ data class Message(
     var isSend:Boolean = false,
     val isRead:Boolean = false,
     val fromType:Int = FROM_TYPE_FRIEND,
-    var citeMessageId:Int = -1
+    var citeMessageId:Int = -1,
+    var notify:Boolean = true
 ):Parcelable {
 
     constructor(parcel: Parcel) : this(

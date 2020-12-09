@@ -10,14 +10,14 @@ interface MsgDao {
     @Query("select * from message where conversationId=:destination and messageType>10 order by sendTime")
     fun getByConversationId(destination:Int):List<Message>
 
-    @Query("select message.*,user.* from message,user where conversationId=:conversationId and message.sendFrom==user.userId and sendTime<:maxTime order by sendTime desc limit 0,:count")
+    @Query("select message.*,user.* from message,user where conversationId=:conversationId and message.sendFrom==user.userId and sendTime<:maxTime and messageType>10 order by sendTime desc limit 0,:count")
     fun getLiveById(conversationId:Int,maxTime:Long,count:Int = 20):LiveData<List<MsgWithUser>>
 
     @Query("select message.*,user.* from message,user where messageId=:messageId and userId=message.sendFrom")
     fun getByMessageId(messageId:Int):MsgWithUser
 
 
-    @Query("select message.*,user.* from message,user where conversationId=:conversationId and message.sendFrom==user.userId order by sendTime desc limit 5")
+    @Query("select message.*,user.* from message,user where conversationId=:conversationId and message.sendFrom==user.userId and messageType>10 order by sendTime desc limit 5")
     fun getLatestMessage(conversationId: Int):LiveData<List<MsgWithUser>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

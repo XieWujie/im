@@ -141,6 +141,9 @@ class WsConnection : WsReader.FrameCallback,Closeable {
         val headers: Map<String, String>
     )
 
+    fun logout(){
+        writer?.close()
+    }
 
     @Throws(IOException::class)
     fun firstRequest(

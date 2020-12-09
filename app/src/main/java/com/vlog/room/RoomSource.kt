@@ -86,4 +86,20 @@ class RoomSource {
             .build()
         return request.toLiveData(getType(List::class.java, User::class.java))
     }
+
+    fun roomNotify(room: Room, notify:Boolean,ownerId:Int):LiveData<Result<Any?>>{
+        val map = HashMap<String,Any>()
+        map["conversationId"] = room.conversationId
+        map["notify"] = notify
+        map["ownerId"] = ownerId
+        val json = gson.toJson(map)
+        val request  = Request.Builder()
+            .url("$HOST_PORT/room/notify")
+            .post(json.toRequestBody())
+            .build()
+        return request.toLiveData(){
+            val newRoom = room.copy(notify = notify)
+            roomDao.insert(newRoom)
+        }
+    }
 }

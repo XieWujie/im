@@ -25,4 +25,6 @@ constructor(private val source: ConversationSource) : ViewModel() {
     fun query(before: Long, conversationId: Int): LiveData<Result<List<MsgWithUser>>> {
         return source.loadFromNet(before, conversationId)
     }
+
+    fun roomChangeListen(conversationId: Int) = source.roomDao.getRoomById(conversationId)
 }

@@ -26,8 +26,6 @@ class MessageListAdapter : RecyclerView.Adapter<MessageHolder>() {
 
     private val mList = ArrayList<MessageWrap>()
 
-    private val latestTime = 0L
-
     fun getFirstItemBefore(): Long {
         return if (mList.isEmpty()) Long.MAX_VALUE else mList[mList.size - 1].time
     }
@@ -107,7 +105,7 @@ class MessageListAdapter : RecyclerView.Adapter<MessageHolder>() {
             try {
                 mList.first { it.message != null }.message?.message?.sendTime?:-1L
             }catch (e:Exception){
-                return
+                0L
             }
         val newMsg = msgs.filter { it.message.sendTime>firstTime }
         for(msg in newMsg) {
@@ -118,7 +116,11 @@ class MessageListAdapter : RecyclerView.Adapter<MessageHolder>() {
             }
             val index = mList.indexOfFirst { it.time < time }
             Log.d(TAG, "index:$index")
-            val lastTime = mList.first { it -> it.message == null }.time
+            val lastTime = try {
+                mList.first { it -> it.message == null }.time
+            }catch (e:Exception){
+                0L
+            }
             var insertPos = if (index == -1) mList.size else index
             val startPosition = insertPos
             mList.add(insertPos, MessageWrap(msg, time))

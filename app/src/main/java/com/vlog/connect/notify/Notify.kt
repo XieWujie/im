@@ -20,17 +20,19 @@ import com.vlog.database.Message
 import com.vlog.database.Room
 import com.vlog.database.User
 import com.vlog.user.Owner
+import com.vlog.verify.list.VerifyListActivity
 
 
 class Notify(private val context: Context) {
 
-   private val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    private val manager =
+        context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-    private  val channelId = "chat"
+    private val channelId = "chat"
 
 
-    fun sendNotification(room: Room, msg: Message){
-       checkChanel()
+    fun sendNotification(room: Room, msg: Message) {
+        checkChanel()
         pushExecutors {
             val intent = Intent(context, ConversationActivity::class.java)
             intent.putExtra("room", room)
@@ -39,7 +41,7 @@ class Notify(private val context: Context) {
 
     }
 
-    private fun checkChanel(){
+    private fun checkChanel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 channelId,
@@ -50,27 +52,31 @@ class Notify(private val context: Context) {
         }
     }
 
-    fun sendNotification(user: User, msg: Message){
+    fun sendNotification(user: User, msg: Message) {
         checkChanel()
         pushExecutors {
-            val intent = Intent(context, ConversationActivity::class.java)
-            intent.putExtra("friend", Friend(user, msg.conversationId, Owner().userId))
+            val intent = when (msg.messageType) {
+                Message.Verify -> Intent(context, VerifyListActivity::class.java)
+                else -> Intent(context, ConversationActivity::class.java).apply {
+                    putExtra("friend", Friend(user, msg.conversationId, Owner().userId))
+                }
+            }
             sendNotification(user.username, msg, user.avatar, intent)
         }
     }
 
-    private fun sendNotification(title: String, message: Message, avatar: String, intent: Intent){
-        val  myBitmap = Glide.with(context)
+    private fun sendNotification(title: String, message: Message, avatar: String, intent: Intent) {
+        val myBitmap = Glide.with(context)
             .asBitmap()
             .load("$HOST_PORT$avatar")
             .submit()
             .get()
-        val content = when(message.messageType){
-            Message.MESSAGE_IMAGE->"[图片]"
-            Message.Agree->"${title}已同意添加你为好友"
-            Message.Verify->"${title}请求添加你为好友"
-            Message.MESSAGE_WRITE->"[手写]"
-            else->message.content
+        val content = when (message.messageType) {
+            Message.MESSAGE_IMAGE -> "[图片]"
+            Message.Agree -> "${title}已同意添加你为好友"
+            Message.Verify -> "${title}请求添加你为好友"
+            Message.MESSAGE_WRITE -> "[手写]"
+            else -> message.content
         }
         val notify = NotificationCompat.Builder(context, channelId)
             .setContentTitle(title)
@@ -90,7 +96,7 @@ class Notify(private val context: Context) {
             )
             .setSmallIcon(R.drawable.ic_message)
             .setLargeIcon(myBitmap)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH && message.messageType != Message.Verify) {
             val action = getRemoveAction(message)
             notify.addAction(action)
         }
@@ -104,9 +110,9 @@ class Notify(private val context: Context) {
             .build()
 
         //添加一个 pendingIntent 的广播
-        val intent =  Intent("com.vlog.message.reply")
-        intent.putExtra("message",message)
-      //  intent.setPackage("android");
+        val intent = Intent("com.vlog.message.reply")
+        intent.putExtra("message", message)
+        //  intent.setPackage("android");
 
         val replyPi = PendingIntent.getBroadcast(
             context, 2,

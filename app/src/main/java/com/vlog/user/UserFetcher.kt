@@ -15,7 +15,7 @@ import dibus.app.UserSourceCreator
 
 
 class UserFetcher @Service(CREATE_SINGLETON) constructor(private val sharedPreferences: SharedPreferences) {
-    var userId: Int by sharedPreferences.int()
+    var userId: Int by sharedPreferences.int(defaultValue = -1)
     var token by sharedPreferences.string()
     var username by sharedPreferences.string()
     var description by sharedPreferences.string()
@@ -33,7 +33,7 @@ class Owner private constructor() {
     var description = userFetcher.description
     var avatar = userFetcher.avatar
 
-    var isLogout =true
+    @Volatile var isLogout =true
 
 
 
@@ -46,7 +46,6 @@ class Owner private constructor() {
     fun getUser() = User(userId, username, avatar, description)
 
     fun init(loginResponse: LoginResponse) {
-        isLogout = false
         loginResponse.also {
             userId = it.userId
             token = it.token
@@ -58,6 +57,20 @@ class Owner private constructor() {
             userFetcher.avatar = it.avatar?:""
         }
         userDao.insert(getUser())
+    }
+
+    fun logout(){
+        isLogout = true
+        userId = -1
+        token = ""
+        username = ""
+        avatar = ""
+        userFetcher.apply {
+            token = ""
+            userId = -1
+            username = ""
+            avatar = ""
+        }
     }
 }
 

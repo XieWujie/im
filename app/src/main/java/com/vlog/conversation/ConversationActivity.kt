@@ -59,11 +59,6 @@ class ConversationActivity : BaseActivity() {
         isAlive = false
     }
 
-    @BusEvent
-    fun roomChangeEvent(room: Room) {
-        binding.titleText.text = room.roomName
-    }
-
 
     private fun dispatchEvent() {
         binding.recyclerView.setOnClickListener {
@@ -117,10 +112,6 @@ class ConversationActivity : BaseActivity() {
         init()
     }
 
-    @BusEvent
-    fun imageLoadFinishEvent(event:ImageLoadFinish){
-        binding.recyclerView.scrollToPosition(0)
-    }
 
     private fun init() {
         var conversationId = -1
@@ -135,8 +126,12 @@ class ConversationActivity : BaseActivity() {
             isRoom = true
             conversationId = room.conversationId
             binding.titleText.text = room.roomName
-            binding.moreActionView.setOnClickListener {
-                CovRoomEditActivity.launch(this, room)
+
+            viewModel.roomChangeListen(room.conversationId).observe(this){r->
+                binding.moreActionView.setOnClickListener {
+                    CovRoomEditActivity.launch(this, r)
+                }
+                title = r.roomName
             }
         }
         if (isRoom) {
@@ -157,8 +152,8 @@ class ConversationActivity : BaseActivity() {
 
     private fun dispatchEvent(conversationId: Int) {
         viewModel.queryMessage(conversationId, maxTime).apply {
-            observe(this@ConversationActivity) {
-                adapter.flashList(it)
+            observe(this@ConversationActivity) { list ->
+                adapter.flashList(list)
                 removeObservers(this@ConversationActivity)
                 viewModel.getLatest(conversationId).observe(this@ConversationActivity){
                     if(it != null){

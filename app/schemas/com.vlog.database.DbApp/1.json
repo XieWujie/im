@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "7a18ad7f41fa94e7ddfc1e9eb406b026",
+    "identityHash": "62f04546484c44700accabc8468b2396",
     "entities": [
       {
         "tableName": "Message",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`messageId` INTEGER NOT NULL, `sendFrom` INTEGER NOT NULL, `conversationId` INTEGER NOT NULL, `messageType` INTEGER NOT NULL, `content` TEXT NOT NULL, `createAt` INTEGER NOT NULL, `sendTime` INTEGER NOT NULL, `isSend` INTEGER NOT NULL, `isRead` INTEGER NOT NULL, `fromType` INTEGER NOT NULL, `citeMessageId` INTEGER NOT NULL, PRIMARY KEY(`sendTime`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`messageId` INTEGER NOT NULL, `sendFrom` INTEGER NOT NULL, `conversationId` INTEGER NOT NULL, `messageType` INTEGER NOT NULL, `content` TEXT NOT NULL, `createAt` INTEGER NOT NULL, `sendTime` INTEGER NOT NULL, `isSend` INTEGER NOT NULL, `isRead` INTEGER NOT NULL, `fromType` INTEGER NOT NULL, `citeMessageId` INTEGER NOT NULL, `notify` INTEGER NOT NULL, PRIMARY KEY(`sendTime`))",
         "fields": [
           {
             "fieldPath": "messageId",
@@ -71,6 +71,12 @@
           {
             "fieldPath": "citeMessageId",
             "columnName": "citeMessageId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "notify",
+            "columnName": "notify",
             "affinity": "INTEGER",
             "notNull": true
           }
@@ -224,7 +230,7 @@
       },
       {
         "tableName": "Room",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`conversationId` INTEGER NOT NULL, `roomName` TEXT NOT NULL, `roomAvatar` TEXT NOT NULL, `roomMasterId` INTEGER NOT NULL, PRIMARY KEY(`conversationId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`conversationId` INTEGER NOT NULL, `roomName` TEXT NOT NULL, `roomAvatar` TEXT NOT NULL, `roomMasterId` INTEGER NOT NULL, `notify` INTEGER NOT NULL, `background` TEXT, PRIMARY KEY(`conversationId`))",
         "fields": [
           {
             "fieldPath": "conversationId",
@@ -249,6 +255,18 @@
             "columnName": "roomMasterId",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "notify",
+            "columnName": "notify",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "background",
+            "columnName": "background",
+            "affinity": "TEXT",
+            "notNull": false
           }
         ],
         "primaryKey": {
@@ -264,7 +282,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '7a18ad7f41fa94e7ddfc1e9eb406b026')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '62f04546484c44700accabc8468b2396')"
     ]
   }
 }

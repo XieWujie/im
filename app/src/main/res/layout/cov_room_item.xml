@@ -61,15 +61,60 @@
             android:layout_centerVertical="true"
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="10dp"
-            android:id="@+id/username_right"
+            android:src="@drawable/ic_right"
+            android:id="@+id/room_name_right"
             android:layout_height="wrap_content"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_centerVertical="true"
+            android:layout_marginEnd="5dp"
+            android:layout_toStartOf="@+id/room_name_right"
+            android:id="@+id/room_name_text"
+            android:layout_height="wrap_content"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:id="@+id/message_notify_layout"
+        android:background="@android:color/white"
+        android:layout_height="50dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:text="消息免打扰"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="10dp"
+            android:textColor="@android:color/black"
+            android:layout_height="wrap_content"/>
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:layout_width="wrap_content"
+            android:layout_centerVertical="true"
+            android:id="@+id/notify_switch"
+            android:layout_alignParentEnd="true"
+            app:switchMinWidth="30dp"
+            android:layout_marginEnd="10dp"
+            android:layout_height="wrap_content"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:id="@+id/room_background_layout"
+        android:background="@android:color/white"
+        android:layout_height="50dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:text="设置当前聊天背景"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="10dp"
+            android:textColor="@android:color/black"
+            android:layout_height="wrap_content"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_centerVertical="true"
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="10dp"
-            android:layout_toStartOf="@+id/username_right"
-            android:id="@+id/room_name_text"
+            android:src="@drawable/ic_right"
+            android:id="@+id/background_right"
             android:layout_height="wrap_content"/>
     </RelativeLayout>
 

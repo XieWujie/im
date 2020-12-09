@@ -25,9 +25,12 @@ class WsConnectionService:JobIntentService(),WsConnectionListener {
     private val connection = WsConnection()
     private var userId = -1
 
+
     private lateinit var notify: Notify
 
 
+    @AutoWire
+    lateinit var friendDao: FriendDao
 
     @AutoWire
     lateinit var gson: Gson
@@ -88,13 +91,15 @@ class WsConnectionService:JobIntentService(),WsConnectionListener {
     }
 
     override fun open(ws: WsConnection) {
-
+        Owner().isLogout = false
     }
 
     override fun failure(ws: WsConnection, t: Exception) {
         Log.d(TAG,"failure")
         t.printStackTrace()
-        connection.connect()
+        if(!Owner().isLogout){
+            connection.connect()
+        }
     }
 
     data class MsgWrap(val message:Message,val user:User,val room: Room?)
@@ -104,12 +109,13 @@ class WsConnectionService:JobIntentService(),WsConnectionListener {
         pushExecutors {
             val msg = m.message
 
-            //撤回消息，发送事件并删除
+            //撤回消息，发送事件并删除数据库的消息
             if(msg.messageType == Message.MESSAGE_WITHDRAW){
                 DiBus.postEvent(MessageRemoveEvent(msg))
                 msgDao.delete(msg)
                 return@pushExecutors
             }
+            //自己发送的消息，更新数据库并发送数据更新事件
             if(msg.sendFrom == Owner().userId){
                 if(msg.messageType != Message.MESSAGE_IMAGE) {
                     DiBus.postEvent(MessageChangeEvent(MsgWithUser(m.message, m.user)))
@@ -117,6 +123,12 @@ class WsConnectionService:JobIntentService(),WsConnectionListener {
                 msgDao.insert(m.message.apply { isSend = true })
                 return@pushExecutors
             }
+            //通过好友认证，数据库插入联系人
+            if(msg.messageType == Message.Agree){
+                val friend = Friend(m.user,msg.conversationId,Owner().userId)
+                friendDao.insert(friend)
+            }
+            //消息通知
             notifyEvent(m)
             if(m.room != null){
                 roomDao.insert(m.room)
@@ -144,6 +156,8 @@ class WsConnectionService:JobIntentService(),WsConnectionListener {
 
     override fun onClose(ws: WsConnection) {
         Log.d(TAG,"onClosed")
+        if(!Owner().isLogout){
+            connection.connect()
+        }
     }
-
 }

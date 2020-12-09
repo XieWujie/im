@@ -12,6 +12,7 @@ import com.dibus.Service
 import com.google.gson.Gson
 import com.vlog.photo.ImgSource
 import com.vlog.database.Room
+import com.vlog.database.RoomDao
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 
@@ -23,6 +24,9 @@ class RoomEditSource {
 
     @AutoWire
     lateinit var imgSource:ImgSource
+
+    @AutoWire
+    lateinit var roomDao: RoomDao
 
     fun update(room: Room):LiveData<Result<Room>>{
         val request = buildRequest(room)
@@ -46,6 +50,7 @@ class RoomEditSource {
                 val newRoom = room.copy(roomAvatar = url)
                 val request = buildRequest(newRoom)
                 val room = request.sync<Room>()
+                roomDao.insert(room)
                 liveData.postValue(Result.Data(room))
             }catch (e :Exception){
                 liveData.postValue(Result.Error(e))

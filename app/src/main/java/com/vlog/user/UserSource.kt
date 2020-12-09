@@ -8,6 +8,7 @@ import com.common.ext.sync
 import com.common.ext.toLiveData
 import com.common.pushExecutors
 import com.dibus.AutoWire
+import com.dibus.DiBus
 import com.dibus.Service
 import com.google.gson.Gson
 import com.vlog.App
@@ -44,6 +45,8 @@ class UserSource {
            userDao.insert(it)
        }
     }
+
+
 
 
     fun findByNet(userId: Int):User{
@@ -93,6 +96,7 @@ class UserSource {
             .url(url)
             .get()
             .build()
+        Owner().logout()
         return request.toLiveData{
             val roomDatabase = DbApp.get(App.get())
             roomDatabase.clearAllTables()

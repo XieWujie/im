@@ -22,9 +22,13 @@ import com.vlog.user.Owner
 import dibus.app.ItemViewHolderCreator
 import dibus.app.RoomSourceCreator
 
-class CovREditAdapter(private val lifecycleOwner: LifecycleOwner,private var room:Room):RecyclerView.Adapter<CovREditAdapter.ViewHolder>() {
+class CovREditAdapter(private val lifecycleOwner: LifecycleOwner,private val conversationId:Int):RecyclerView.Adapter<CovREditAdapter.ViewHolder>() {
 
     private val source: RoomSource = RoomSourceCreator.get()
+    private lateinit var room: Room
+
+
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return when(viewType){
@@ -82,13 +86,27 @@ class CovREditAdapter(private val lifecycleOwner: LifecycleOwner,private var roo
 
     inner class ItemViewHolder(private val binding:CovRoomItemBinding):ViewHolder(binding.root){
         init {
-            ItemViewHolderCreator.inject(this)
             bind()
             binding.avatarLayout.setOnClickListener {
                 RoomAvatarEditActivity.launch(it.context,room)
             }
             binding.roomNameLayout.setOnClickListener {
                 RoomNameEditActivity.launch(it.context,room)
+            }
+            binding.notifySwitch.context.toast("room.notify:${room.notify}")
+            binding.notifySwitch.setOnCheckedChangeListener { view, isChecked ->
+                source.roomNotify(room,!isChecked,Owner().userId).observe(lifecycleOwner){
+                    when(it){
+                        is Result.Error->{
+                            view.context.toast(it.toString())
+                            binding.notifySwitch.isChecked = isChecked
+                        }
+                        is Result.Data->{
+                            room.notify = !isChecked
+                            view.context.toast("更新成功")
+                        }
+                    }
+                }
             }
             binding.quitRoomLayout.setOnClickListener {view->
                 source.quitRoom(room,Owner().userId).observe(lifecycleOwner){
