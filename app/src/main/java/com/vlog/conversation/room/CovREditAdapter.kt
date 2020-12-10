@@ -1,6 +1,8 @@
 package com.vlog.conversation.room
 
+import android.content.Intent
 import android.graphics.Color
+import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,23 +12,22 @@ import androidx.recyclerview.widget.RecyclerView
 import com.common.Result
 import com.common.ext.launch
 import com.common.ext.toast
-import com.dibus.BusEvent
 import com.vlog.database.Room
 import com.vlog.databinding.CovRoomItemBinding
 import com.vlog.photo.load
 import com.vlog.room.RoomAvatarEditActivity
 import com.vlog.room.RoomNameEditActivity
-import com.vlog.room.RoomSource
 import com.vlog.ui.MainActivity
 import com.vlog.user.Owner
-import dibus.app.ItemViewHolderCreator
 import dibus.app.RoomSourceCreator
 
-class CovREditAdapter(private val lifecycleOwner: LifecycleOwner,private val conversationId:Int):RecyclerView.Adapter<CovREditAdapter.ViewHolder>() {
+class CovREditAdapter(private val lifecycleOwner: LifecycleOwner,private val room: Room):RecyclerView.Adapter<CovREditAdapter.ViewHolder>() {
 
-    private val source: RoomSource = RoomSourceCreator.get()
-    private lateinit var room: Room
 
+
+    private val source = RoomSourceCreator.get()
+
+    var changeRoomBackgroundListener:(()->Unit)? = null
 
 
 
@@ -93,7 +94,7 @@ class CovREditAdapter(private val lifecycleOwner: LifecycleOwner,private val con
             binding.roomNameLayout.setOnClickListener {
                 RoomNameEditActivity.launch(it.context,room)
             }
-            binding.notifySwitch.context.toast("room.notify:${room.notify}")
+
             binding.notifySwitch.setOnCheckedChangeListener { view, isChecked ->
                 source.roomNotify(room,!isChecked,Owner().userId).observe(lifecycleOwner){
                     when(it){
@@ -118,15 +119,13 @@ class CovREditAdapter(private val lifecycleOwner: LifecycleOwner,private val con
                     }
                 }
             }
-        }
-
-        @BusEvent
-        fun roomUpdateEvent(r: Room){
-            room = r
-            bind()
+            binding.roomBackgroundLayout.setOnClickListener {
+               changeRoomBackgroundListener?.invoke()
+            }
         }
 
         override fun bind(){
+            binding.notifySwitch.isChecked = !room.notify
             binding.roomNameText.text = room.roomName
             binding.avatarView.load(room.roomAvatar)
         }

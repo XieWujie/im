@@ -28,7 +28,9 @@ import com.vlog.databinding.CiteMessageLayoutBinding
 import com.vlog.databinding.MsgLongClickLayoutBinding
 import com.vlog.photo.load
 import com.vlog.photo.loadWithMaxSize
+import com.vlog.user.Owner
 import dibus.app.MessageSourceCreator
+import java.util.*
 
 open class MessageHolder(view:View) :RecyclerView.ViewHolder(view){
 
@@ -94,6 +96,14 @@ internal fun View.setLongClick(message: Message,fromUser: User){
         getLocationInWindow(location)
         val dialog = Dialog(context,R.style.long_click_dialog)
         val binding = MsgLongClickLayoutBinding.inflate(LayoutInflater.from(context),null,false)
+        if(message.sendFrom != Owner().userId){
+            binding.withdrawText.visibility = View.GONE
+        }else{
+            val threeMinutes = Date().time-3*60*1000
+            if(message.sendTime<threeMinutes){
+                binding.withdrawText.visibility = View.GONE
+            }
+        }
         val root = binding.root
         dialog.apply {
             setContentView(root)

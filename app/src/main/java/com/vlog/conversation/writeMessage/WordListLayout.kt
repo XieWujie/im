@@ -20,14 +20,15 @@ class WordListLayout :RecyclerView{
 
     init {
         this.adapter = mAdapter
+
     }
 
 
-    fun receiveWriteEvent(list:List<MessageWriteWord>){
+    private fun receiveWriteEvent(list:List<MessageWriteWord>){
         layoutManager = if(list.size>7){
             GridLayoutManager(context,7)
         }else{
-            GridLayoutManager(context,list.size)
+            GridLayoutManager(context,if(list.isEmpty())5 else list.size)
         }
         mList.clear()
         mList.addAll(list)

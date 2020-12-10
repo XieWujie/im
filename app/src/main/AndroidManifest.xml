@@ -34,7 +34,7 @@
         <activity android:name=".verify.send.SendVerifyActivity" />
         <activity
             android:name=".conversation.ConversationActivity"
-            android:launchMode="singleTask" />
+            android:launchMode="singleTop" />
         <activity android:name=".user.UserHomeActivity" />
         <activity android:name=".search.FindActivity" />
         <activity android:name=".login.register.RegisterActivity" />

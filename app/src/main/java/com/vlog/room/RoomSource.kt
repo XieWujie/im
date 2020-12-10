@@ -14,8 +14,12 @@ import com.vlog.database.Room
 import com.vlog.database.RoomDao
 import com.vlog.database.User
 import com.vlog.user.Owner
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
 import okhttp3.Request
+import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
+import java.io.File
 
 @Service
 class RoomSource {
@@ -45,6 +49,27 @@ class RoomSource {
             .post(body.toRequestBody())
             .build()
         return request.toLiveData()
+    }
+
+    fun updateCustomerRoomBg(userId: Int, room: Room,file:File):LiveData<Result<HashMap<String,String>>>{
+        val body = file.asRequestBody(contentType = "image/png".toMediaTypeOrNull())
+        val map = HashMap<String,Any>()
+        map["userId"] = userId
+        map["conversationId"] =room.conversationId
+        val json = gson.toJson(map)
+        val url = "$HOST_PORT/user/roomBg"
+        val requestBody = MultipartBody.Builder()
+            .addFormDataPart("file",file.name,body)
+            .addFormDataPart("json",json)
+            .setType("multipart/form-data".toMediaTypeOrNull()!!)
+            .build()
+        val req = Request.Builder()
+            .url(url)
+            .post(requestBody)
+            .build()
+        return req.toLiveData {
+            roomDao.insert(room.copy(background = it["background"]))
+        }
     }
 
     fun addUser(conversationId:Int,users: List<Int>):LiveData<Result<Any?>>{

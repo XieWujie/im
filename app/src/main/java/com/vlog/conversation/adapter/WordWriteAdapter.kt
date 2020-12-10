@@ -22,12 +22,6 @@ class WordWriteAdapter(private val mList:ArrayList<MessageWriteWord>) :RecyclerV
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.word_view,parent,false)
-        view.setOnDragListener { v, event ->
-            when(event.action){
-                DragEvent.ACTION_DRAG_EXITED->Log.d("WordWriteAdapter","drag_exit")
-            }
-            true
-        }
         return ViewHolder(view.findViewById(R.id.word_view))
     }
 

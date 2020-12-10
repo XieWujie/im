@@ -32,18 +32,40 @@
       <LinearLayout
           android:layout_width="wrap_content"
           android:orientation="vertical"
-          android:gravity="right"
+          android:gravity="end"
+          android:layout_marginEnd="10dp"
           android:layout_height="wrap_content">
         <TextView
             android:id="@+id/username_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
-        <com.vlog.conversation.writeMessage.WordListLayout
-            android:id="@+id/word_list_layout"
-            android:layout_gravity="end"
-            android:layout_width="wrap_content"
-            app:reverse="true"
-            android:layout_height="wrap_content"/>
+          <androidx.cardview.widget.CardView
+              android:layout_width="wrap_content"
+              app:cardCornerRadius="4dp"
+              android:id="@+id/content_card"
+              app:cardBackgroundColor="@color/yellow"
+              android:layout_height="wrap_content">
+              <LinearLayout
+                  android:layout_width="wrap_content"
+                  android:orientation="vertical"
+                  android:layout_height="wrap_content">
+                  <FrameLayout
+                      android:id="@+id/cite_layout"
+                      android:layout_marginStart="10dp"
+                      android:layout_marginEnd="10dp"
+                      android:layout_marginTop="10dp"
+                      android:visibility="gone"
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"/>
+                  <com.vlog.conversation.writeMessage.WordListLayout
+                      android:id="@+id/word_list_layout"
+                      android:layout_gravity="end"
+                      android:layout_margin="10dp"
+                      android:layout_width="wrap_content"
+                      app:reverse="true"
+                      android:layout_height="wrap_content"/>
+              </LinearLayout>
+          </androidx.cardview.widget.CardView>
       </LinearLayout>
       <androidx.cardview.widget.CardView
           android:layout_width="40dp"

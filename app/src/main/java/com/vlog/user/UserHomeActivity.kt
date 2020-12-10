@@ -33,7 +33,7 @@ class UserHomeActivity : BaseActivity() {
             if(relation != null) {
                 binding.addFriendBt.visibility = View.GONE
                 binding.sendMessageBt.setOnClickListener {
-                    user.also { ConversationActivity.launch(this, relation) }
+                    ConversationActivity.launch(this, relation)
                 }
             }
 

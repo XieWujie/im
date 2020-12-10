@@ -33,11 +33,8 @@ class WriteMessageHolder{
 
 
 
-    fun handleMessage(message: Message, layout:WordListLayout){
-        val token = object :TypeToken<List<MessageWriteWord>>(){}.type
-        val m = gson.fromJson<List<MessageWriteWord>>(message.content,token)
-        layout.receiveWriteEvent(m)
-        Log.d("writeSize","size:${m.size}")
+    fun handleMessage(m: MsgWithUser, layout:WordListLayout){
+        layout.handleWrite(m.message.content)
     }
 
 
@@ -59,7 +56,9 @@ class WriteMessageHolder{
 
        override fun bind(m: MsgWithUser) {
            help.load(binding.userAvatarView,binding.usernameText,m)
-           help.handleMessage(m.message,binding.wordListLayout)
+           help.handleMessage(m,binding.wordListLayout)
+           loadCite(m.message.citeMessageId,binding.citeLayout)
+           binding.contentCard.setLongClick(m.message,m.user)
        }
     }
 
@@ -68,8 +67,10 @@ class WriteMessageHolder{
 
         override fun bind(m: MsgWithUser) {
             help.load(binding.userAvatarView,binding.usernameText,m)
-            help.handleMessage(m.message,binding.wordListLayout)
+            help.handleMessage(m,binding.wordListLayout)
             val msg = m.message
+            loadCite(msg.citeMessageId,binding.citeLayout)
+            binding.contentCard.setLongClick(m.message,m.user)
             if(msg.isSend){
                 binding.sendIng.visibility = View.GONE
             }else{

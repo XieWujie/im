@@ -3,6 +3,7 @@ package com.common.util
 import android.app.Activity
 import android.content.Context
 import android.database.Cursor
+import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
@@ -15,12 +16,12 @@ import java.util.*
 
 object Util {
 
-    fun dp2dx(context: Context,dp:Int):Double{
+    fun dp2dx(context: Context, dp: Int):Double{
        val density =  context.resources.displayMetrics.density
         return (dp+0.5)*density
     }
 
-    fun getTime(timeMill:Long):String{
+    fun getTime(timeMill: Long):String{
         val oneDate = 24*60*60*1000
         val lastDate = Date().time-oneDate
         val p = if(timeMill>lastDate){
@@ -45,10 +46,10 @@ object Util {
         }
     }
 
-    fun showSoftInput(editText:EditText){
+    fun showSoftInput(editText: EditText){
         editText.requestFocus()
         val imm = editText.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.showSoftInput(editText,0)
+        imm.showSoftInput(editText, 0)
     }
 
     fun getRealPathFromURI(context: Context, contentUri: Uri): String? {
@@ -72,7 +73,7 @@ object Util {
         }
     }
 
-    fun setLightBar(activity: Activity, color:Int) {
+    fun setLightBar(activity: Activity, color: Int) {
         if (Build.VERSION.SDK_INT >= 21) {
             val window = activity.window
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
@@ -82,13 +83,25 @@ object Util {
         }
     }
 
-    fun setDarkBar(activity: Activity, color:Int) {
+    fun setDarkBar(activity: Activity, color: Int) {
         if (Build.VERSION.SDK_INT >= 21) {
             val window = activity.window
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
             window.decorView.systemUiVisibility =  window.decorView.systemUiVisibility and  View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR.inc()
             window.statusBarColor = color
+        }
+    }
+
+    fun setFullScreen(activity: Activity){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            val window= activity.window
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+            window.decorView
+                .setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE)
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+            window.decorView.systemUiVisibility =  window.decorView.systemUiVisibility or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+            window.statusBarColor = Color.TRANSPARENT
         }
     }
 }

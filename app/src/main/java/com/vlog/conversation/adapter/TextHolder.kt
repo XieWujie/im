@@ -38,6 +38,7 @@ class TextHolder{
         override fun bind(m: MsgWithUser) {
             holder.load(binding.contentText,binding.userAvatarView,binding.usernameText,m)
             binding.contentCard.setLongClick(m.message,m.user)
+            loadCite(m.message.citeMessageId,binding.citeLayout)
         }
     }
 

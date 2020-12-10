@@ -30,7 +30,9 @@ class RoomEditSource {
 
     fun update(room: Room):LiveData<Result<Room>>{
         val request = buildRequest(room)
-        return request.toLiveData()
+        return request.toLiveData(){
+            roomDao.insert(it)
+        }
     }
 
    private fun buildRequest(room: Room):Request{

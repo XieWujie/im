@@ -33,6 +33,10 @@ class MessageListAdapter : RecyclerView.Adapter<MessageHolder>() {
 
     private val timeSegment = 60 * 3 * 1000L
 
+    fun clearData(){
+        mList.clear()
+        notifyDataSetChanged()
+    }
 
     fun flashList(list: List<MsgWithUser>) {
         if (mList.isEmpty()) {

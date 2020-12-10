@@ -3,11 +3,14 @@ package com.vlog.conversation
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.common.base.BaseActivity
+import com.common.util.Util
 import com.dibus.AutoWire
 import com.dibus.BusEvent
 import com.vlog.R
@@ -18,6 +21,7 @@ import com.vlog.database.Message
 import com.vlog.database.MsgWithUser
 import com.vlog.database.Room
 import com.vlog.databinding.ActivityConversationBinding
+import com.vlog.photo.setBg
 import com.vlog.util.onClick
 import dibus.app.ConversationActivityCreator
 
@@ -30,6 +34,7 @@ class ConversationActivity : BaseActivity() {
     lateinit var adapter: MessageListAdapter
 
     private var isRoom = false
+    override var customerBar = true
 
     private var maxTime = Long.MAX_VALUE
 
@@ -39,6 +44,7 @@ class ConversationActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Util.setFullScreen(this)
         ConversationActivityCreator.inject(this)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_conversation)
         binding.recyclerView.adapter = adapter
@@ -68,10 +74,7 @@ class ConversationActivity : BaseActivity() {
         binding.recyclerView.onClick {
             binding.bottomInputLayout.hide()
         }
-        var minHeight = 0
-        binding.listLayout.post {
-            minHeight = binding.listLayout.height
-        }
+
 
 
         SoftKeyBoardListener.setListener(this,
@@ -82,7 +85,6 @@ class ConversationActivity : BaseActivity() {
                     if (adapter.itemCount > 0) {
                         binding.recyclerView.scrollToPosition(0)
                     }
-                    minHeight = binding.listLayout.height
                 }
 
                 override fun keyBoardHide(height: Int) {
@@ -104,11 +106,43 @@ class ConversationActivity : BaseActivity() {
             }
 
         })
+
+        binding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if (!isLoading && !recyclerView.canScrollVertically(-1)) {
+                    isLoading = true
+                    val originLiveData =
+                        viewModel.queryBeforeMessage(currentConversationId, adapter.getFirstItemBefore())
+                    originLiveData.apply {
+                        observe(this@ConversationActivity) {
+                            if (it.isNotEmpty()) {
+                                adapter.addBefore(it)
+                            }
+                            if (it.size < 15) {
+                                val originNetLiveData = viewModel.query(
+                                    adapter.getFirstItemBefore() / 1000,
+                                    currentConversationId
+                                )
+                                originNetLiveData.observe(this@ConversationActivity) {
+                                    isLoading = false
+                                    originNetLiveData.removeObservers(this@ConversationActivity)
+                                }
+                            } else {
+                                isLoading = false
+                            }
+                            removeObservers(this@ConversationActivity)
+                        }
+                    }
+                }
+            }
+        })
     }
 
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
+        adapter.clearData()
         init()
     }
 
@@ -126,12 +160,14 @@ class ConversationActivity : BaseActivity() {
             isRoom = true
             conversationId = room.conversationId
             binding.titleText.text = room.roomName
-
             viewModel.roomChangeListen(room.conversationId).observe(this){r->
                 binding.moreActionView.setOnClickListener {
                     CovRoomEditActivity.launch(this, r)
                 }
                 title = r.roomName
+                if(!r.background.isNullOrEmpty()){
+                    window.decorView.setBg(r.background)
+                }
             }
         }
         if (isRoom) {
@@ -148,6 +184,7 @@ class ConversationActivity : BaseActivity() {
         }
         currentConversationId = conversationId
         dispatchEvent(conversationId)
+
     }
 
     private fun dispatchEvent(conversationId: Int) {
@@ -155,44 +192,18 @@ class ConversationActivity : BaseActivity() {
             observe(this@ConversationActivity) { list ->
                 adapter.flashList(list)
                 removeObservers(this@ConversationActivity)
-                viewModel.getLatest(conversationId).observe(this@ConversationActivity){
-                    if(it != null){
-                        adapter.messageInsert(it)
-                    }
-                }
-            }
-        }
-
-        binding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-                if (!isLoading && !recyclerView.canScrollVertically(-1)) {
-                    isLoading = true
-                    val originLiveData =
-                        viewModel.queryBeforeMessage(conversationId, adapter.getFirstItemBefore())
-                    originLiveData.apply {
-                        observe(this@ConversationActivity) {
-                            if (it.isNotEmpty()) {
-                                adapter.addBefore(it)
-                            }
-                            if (it.size < 15) {
-                                val originNetLiveData = viewModel.query(
-                                    adapter.getFirstItemBefore() / 1000,
-                                    conversationId
-                                )
-                                originNetLiveData.observe(this@ConversationActivity) {
-                                    isLoading = false
-                                    originNetLiveData.removeObservers(this@ConversationActivity)
-                                }
-                            } else {
-                                isLoading = false
-                            }
-                            removeObservers(this@ConversationActivity)
+                viewModel.getLatest(conversationId).apply {
+                    observe(this@ConversationActivity){
+                        if(conversationId != currentConversationId){
+                            return@observe
+                        }
+                        if(it != null){
+                            adapter.messageInsert(it)
                         }
                     }
                 }
             }
-        })
+        }
 
     }
 

@@ -66,6 +66,8 @@ class ImageHolder {
 
         override fun bind(m: MsgWithUser) {
             holder.load(binding.contentImg, binding.userAvatarView, binding.usernameText, m)
+            val msg = m.message
+            loadCite(msg.citeMessageId, binding.citeLayout)
         }
     }
 
