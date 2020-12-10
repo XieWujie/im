@@ -12,6 +12,7 @@ abstract class AndroidEventExecutor<T>(private val threadPolicy:Int):EventExecut
 
 
     override fun execute(receiver:T,vararg args:Any) {
+        if(null == receiver)return
         when(threadPolicy){
             THREAD_POLICY_MAIN->handler.post { realExecutor(receiver,*args) }
             THREAD_POLICY_DEFAULT->realExecutor(receiver,*args)

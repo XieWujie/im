@@ -2,6 +2,8 @@ package com.vlog.conversation
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.WindowManager
 import androidx.databinding.DataBindingUtil
@@ -154,6 +156,7 @@ class ConversationActivity : BaseActivity() {
             conversationId = friend.conversationId
             binding.titleText.text = friend.user.username
             isRoom = false
+            window.decorView.setBg(R.drawable.cov_default_bg)
         } else {
             val room =
                 intent.getParcelableExtra<Room>("room") ?: throw RuntimeException("传入friend 或者room")
@@ -167,6 +170,8 @@ class ConversationActivity : BaseActivity() {
                 title = r.roomName
                 if(!r.background.isNullOrEmpty()){
                     window.decorView.setBg(r.background)
+                }else{
+                    window.decorView.setBg(R.drawable.cov_default_bg)
                 }
             }
         }

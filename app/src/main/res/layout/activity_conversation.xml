@@ -70,6 +70,7 @@
         <com.vlog.conversation.InputBottom
             android:id="@+id/bottom_input_layout"
             android:layout_width="match_parent"
+            android:background="@color/main_bar_bg"
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

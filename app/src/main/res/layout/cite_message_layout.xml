@@ -41,7 +41,7 @@
             app:layout_constraintTop_toTopOf="@+id/username_text" />
 
         <FrameLayout
-            android:id="@+id/cite_content_text"
+            android:id="@+id/cite_content_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"

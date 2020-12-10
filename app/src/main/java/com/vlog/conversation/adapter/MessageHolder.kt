@@ -61,7 +61,7 @@ open class MessageHolder(view:View) :RecyclerView.ViewHolder(view){
                     usernameText.text = msgWrap.user.username
                     timeText.text = Util.getTime(msg.createAt*1000)
                 }
-                binding.citeContentText.removeAllViews()
+                binding.citeContentLayout.removeAllViews()
                 viewGroup.visibility = View.VISIBLE
                 viewGroup.addView(binding.root)
                  when(msg.messageType){
@@ -69,15 +69,16 @@ open class MessageHolder(view:View) :RecyclerView.ViewHolder(view){
                         text = msg.content
                         textSize = 10f
                         setTextColor(Color.BLACK)
-                        binding.citeContentText.addView(this)
+                        binding.citeContentLayout.addView(this)
                     }
                     Message.MESSAGE_IMAGE->ImageView(context).apply {
                         scaleType = ImageView.ScaleType.FIT_XY
-                        binding.citeContentText.addView(this,dp100.toInt(),ViewGroup.LayoutParams.WRAP_CONTENT)
+                        binding.citeContentLayout.addView(this,dp100.toInt(),ViewGroup.LayoutParams.WRAP_CONTENT)
                         loadWithMaxSize(msg.content,dp100)
                     }
                     Message.MESSAGE_WRITE->WordListLayout(context).apply {
                         this.handleWrite(msg.content)
+                        binding.citeContentLayout.addView(this,ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT)
                     }
                     else->return@pushMainThread
                 }

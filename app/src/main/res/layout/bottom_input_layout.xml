@@ -73,6 +73,13 @@
                             android:visibility="gone"
                             android:id="@+id/cite_photo"
                             android:layout_height="20dp"/>
+                        <com.vlog.conversation.writeMessage.WordListLayout
+                            android:layout_width="wrap_content"
+                            android:visibility="gone"
+                            android:id="@+id/word_list_layout"
+                            android:layout_toEndOf="@id/cite_text"
+                            android:layout_marginStart="5dp"
+                            android:layout_height="20dp"/>
 
                         <androidx.cardview.widget.CardView
                             android:layout_width="16dp"
@@ -99,7 +106,7 @@
                     android:layout_marginBottom="5dp"
                     android:layout_marginTop="5dp"
                     android:layout_weight="16"
-                    app:cardBackgroundColor="@android:color/white"
+                    app:cardBackgroundColor="#fefefe"
                     app:cardCornerRadius="4dp">
 
                     <EditText

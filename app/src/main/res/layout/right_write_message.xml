@@ -38,6 +38,7 @@
         <TextView
             android:id="@+id/username_text"
             android:layout_width="wrap_content"
+            android:textColor="@android:color/black"
             android:layout_height="wrap_content"/>
           <androidx.cardview.widget.CardView
               android:layout_width="wrap_content"
@@ -59,10 +60,9 @@
                       android:layout_height="wrap_content"/>
                   <com.vlog.conversation.writeMessage.WordListLayout
                       android:id="@+id/word_list_layout"
-                      android:layout_gravity="end"
                       android:layout_margin="10dp"
+                      app:stackFromEnd="true"
                       android:layout_width="wrap_content"
-                      app:reverse="true"
                       android:layout_height="wrap_content"/>
               </LinearLayout>
           </androidx.cardview.widget.CardView>

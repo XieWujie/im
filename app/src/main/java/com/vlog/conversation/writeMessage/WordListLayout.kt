@@ -20,9 +20,9 @@ class WordListLayout :RecyclerView{
 
     init {
         this.adapter = mAdapter
-
     }
 
+    fun isEmpty() = mList.isEmpty()
 
     private fun receiveWriteEvent(list:List<MessageWriteWord>){
         layoutManager = if(list.size>7){

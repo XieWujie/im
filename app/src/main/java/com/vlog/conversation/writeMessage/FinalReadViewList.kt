@@ -27,6 +27,8 @@ class FinalReadViewList:RecyclerView {
     var conversationId = -1
 
 
+    fun isEmpty() = list.isEmpty()
+
     @AutoWire
     lateinit var gson: Gson
 
@@ -63,7 +65,7 @@ class FinalReadViewList:RecyclerView {
         }
         list.clear()
         mAdapter.notifyDataSetChanged()
-
+        DiBus.postEvent(WordCacheState(true))
     }
 
 

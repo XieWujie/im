@@ -10,6 +10,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
+import com.common.ext.afterTextChanged
 import com.common.ext.animateEnd
 import com.common.pushExecutors
 import com.common.util.Util
@@ -24,7 +25,7 @@ import com.vlog.databinding.BottomInputLayoutBinding
 import com.vlog.photo.load
 import dibus.app.InputBottomCreator
 
-class InputBottom : FrameLayout, TextWatcher {
+class InputBottom : FrameLayout{
 
      var softKeyHeight = 0
     @Volatile
@@ -129,15 +130,30 @@ class InputBottom : FrameLayout, TextWatcher {
     }
 
     fun event() {
-        binding.icWrite.setOnClickListener {
+        binding.icWrite.setOnClickListener {it->
+
             it.isSelected = if (it.isSelected) {
                 val p = binding.writeView.layoutParams.also { it.height = 0 }
                 binding.writeView.layoutParams= p
                 binding.inputWrite.visibility = GONE
                 binding.inputText.visibility = VISIBLE
+                if(binding.inputText.text.isNullOrEmpty()){
+                    binding.icMore.visibility = VISIBLE
+                    binding.actionSend.visibility = GONE
+                }else{
+                    binding.icMore.visibility = GONE
+                    binding.actionSend.visibility = VISIBLE
+                }
                 showSoftKey()
                 false
             } else {
+                if(binding.inputWrite.isEmpty()){
+                    binding.icMore.visibility = VISIBLE
+                    binding.actionSend.visibility = GONE
+                }else{
+                    binding.icMore.visibility = GONE
+                    binding.actionSend.visibility = VISIBLE
+                }
                 showWrite()
                 binding.inputWrite.visibility = VISIBLE
                 binding.inputText.visibility = GONE
@@ -146,7 +162,15 @@ class InputBottom : FrameLayout, TextWatcher {
         }
 
 
-        binding.inputText.addTextChangedListener(this)
+        binding.inputText.afterTextChanged {
+            if (it.isEmpty()) {
+                binding.icMore.visibility = VISIBLE
+                binding.actionSend.visibility = GONE
+            } else {
+                binding.icMore.visibility = GONE
+                binding.actionSend.visibility = VISIBLE
+            }
+        }
         binding.actionSend.setOnClickListener {
             if(binding.icWrite.isSelected){
                 binding.inputWrite.sendWordCache(fromType,citeMessageId)
@@ -177,24 +201,35 @@ class InputBottom : FrameLayout, TextWatcher {
 
     @BusEvent
     fun citeEvent(citeEvent: CiteEvent){
+        citeMessageId = citeEvent.message.messageId
+        binding.citeCard.visibility = View.VISIBLE
         val r = when(citeEvent.message.messageType){
             Message.MESSAGE_IMAGE->{
                 binding.citePhoto.visibility = View.VISIBLE
+                binding.wordListLayout.visibility = View.GONE
                 binding.citePhoto.load(citeEvent.message.content)
                 "[图片]"
             }
-            Message.MESSAGE_TEXT->citeEvent.message.content
+            Message.MESSAGE_TEXT->{
+                binding.citePhoto.visibility = View.GONE
+                binding.wordListLayout.visibility = View.GONE
+                citeEvent.message.content
+            }
+            Message.MESSAGE_WRITE->{
+                binding.citePhoto.visibility = View.GONE
+                binding.wordListLayout.visibility = View.VISIBLE
+                binding.wordListLayout.handleWrite(citeEvent.message.content)
+                "[手写]"
+            }
             else->return
         }
         val content = "${citeEvent.from}:$r"
-        binding.citeCard.visibility = View.VISIBLE
         binding.citeText.text = content
         binding.citeDismissCard.setOnClickListener {
             binding.citeText.clearComposingText()
             binding.citeCard.visibility = View.GONE
             citeMessageId = -1
         }
-        citeMessageId = citeEvent.message.messageId
     }
 
     @BusEvent
@@ -203,24 +238,6 @@ class InputBottom : FrameLayout, TextWatcher {
             binding.icMore.visibility = VISIBLE
             binding.actionSend.visibility = GONE
         }else{
-            binding.icMore.visibility = GONE
-            binding.actionSend.visibility = VISIBLE
-        }
-    }
-
-    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
-    }
-
-    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-
-    }
-
-    override fun afterTextChanged(s: Editable) {
-        if (s.isEmpty()) {
-            binding.icMore.visibility = VISIBLE
-            binding.actionSend.visibility = GONE
-        } else {
             binding.icMore.visibility = GONE
             binding.actionSend.visibility = VISIBLE
         }
