@@ -27,4 +27,6 @@ constructor(private val source: ConversationSource) : ViewModel() {
     }
 
     fun roomChangeListen(conversationId: Int) = source.roomDao.getRoomById(conversationId)
+
+    fun friendUpdateListen(conversationId: Int) = source.friendDao.getFriendByCovId(conversationId)
 }

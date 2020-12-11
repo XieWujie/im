@@ -24,10 +24,10 @@ class PhotoListAdapter :RecyclerView.Adapter<PhotoListAdapter.ViewHolder>(){
 
         fun bind(mediaBean: MediaBean){
             Glide.with(photoView).load(mediaBean.path).into(photoView)
+            photoView.showBigView(mediaBean.path)
             checkBox.setOnCheckedChangeListener(null)
             checkBox.isChecked = selectSets.contains(mediaBean)
             checkBox.setOnCheckedChangeListener { view, isChecked ->
-                Log.d("selectedState",checkBox.isChecked.toString()+"listener")
                 if(isChecked){
                     selectSets.add(mediaBean)
                     mediaBean.selected = true

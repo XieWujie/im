@@ -12,7 +12,8 @@ data class Room(
     val roomAvatar: String,
     val roomMasterId: Int,
     var notify:Boolean = true,
-    val background:String? = ""
+    val background:String? = "",
+    var markName:String? = null
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readInt(),
@@ -20,7 +21,8 @@ data class Room(
         parcel.readString()?:"",
         parcel.readInt(),
         parcel.readByte() != 0.toByte(),
-        parcel.readString()?:""
+        parcel.readString(),
+        parcel.readString()
     ) {
     }
 
@@ -31,6 +33,7 @@ data class Room(
         parcel.writeInt(roomMasterId)
         parcel.writeByte(if (notify) 1 else 0)
         parcel.writeString(background)
+        parcel.writeString(markName)
     }
 
     override fun describeContents(): Int {

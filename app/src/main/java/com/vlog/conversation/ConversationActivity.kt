@@ -17,6 +17,7 @@ import com.dibus.AutoWire
 import com.dibus.BusEvent
 import com.vlog.R
 import com.vlog.conversation.adapter.MessageListAdapter
+import com.vlog.conversation.friend.FriendEditActivity
 import com.vlog.conversation.room.CovRoomEditActivity
 import com.vlog.database.Friend
 import com.vlog.database.Message
@@ -149,25 +150,35 @@ class ConversationActivity : BaseActivity() {
     }
 
 
+
     private fun init() {
         var conversationId = -1
         val friend = intent.getParcelableExtra<Friend>("friend")
         if (friend != null) {
             conversationId = friend.conversationId
-            binding.titleText.text = friend.user.username
             isRoom = false
-            window.decorView.setBg(R.drawable.cov_default_bg)
+            viewModel.friendUpdateListen(conversationId).observe(this){
+                if(it == null)return@observe
+                binding.titleText.text = it.markName?:it.user.username
+                if(!it.background.isNullOrEmpty()){
+                    window.decorView.setBg(it.background!!)
+                }else{
+                    window.decorView.setBg(R.drawable.cov_default_bg)
+                }
+                binding.moreActionView.setOnClickListener {
+                    FriendEditActivity.launch(friend,this)
+                }
+            }
         } else {
             val room =
                 intent.getParcelableExtra<Room>("room") ?: throw RuntimeException("传入friend 或者room")
             isRoom = true
             conversationId = room.conversationId
-            binding.titleText.text = room.roomName
             viewModel.roomChangeListen(room.conversationId).observe(this){r->
                 binding.moreActionView.setOnClickListener {
                     CovRoomEditActivity.launch(this, r)
                 }
-                title = r.roomName
+                binding.titleText.text = r.roomName
                 if(!r.background.isNullOrEmpty()){
                     window.decorView.setBg(r.background)
                 }else{

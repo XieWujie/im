@@ -131,7 +131,7 @@ class WsConnectionService:JobIntentService(),WsConnectionListener {
             //消息通知
             notifyEvent(m)
             if(m.room != null){
-                roomDao.insert(m.room)
+                //roomDao.insert(m.room)
             }
             userSource.insert(m.user)
             msgDao.insert(m.message.apply { isSend = true })
@@ -141,7 +141,7 @@ class WsConnectionService:JobIntentService(),WsConnectionListener {
 
     private fun notifyEvent(m:MsgWrap){
         val msg = m.message
-        if(msg.sendFrom != Owner().userId
+        if(msg.sendFrom != Owner().userId &&msg.notify
             && (ConversationActivity.currentConversationId != msg.conversationId ||!ConversationActivity.isAlive)) {
             when (m.message.fromType) {
                 Message.FROM_TYPE_FRIEND -> {

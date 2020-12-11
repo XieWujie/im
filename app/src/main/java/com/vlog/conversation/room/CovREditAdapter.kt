@@ -16,6 +16,7 @@ import com.vlog.database.Room
 import com.vlog.databinding.CovRoomItemBinding
 import com.vlog.photo.load
 import com.vlog.room.RoomAvatarEditActivity
+import com.vlog.room.RoomMarkNameActivity
 import com.vlog.room.RoomNameEditActivity
 import com.vlog.ui.MainActivity
 import com.vlog.user.Owner
@@ -122,12 +123,17 @@ class CovREditAdapter(private val lifecycleOwner: LifecycleOwner,private val roo
             binding.roomBackgroundLayout.setOnClickListener {
                changeRoomBackgroundListener?.invoke()
             }
+
+            binding.roomMarkNameLayout.setOnClickListener {
+                RoomMarkNameActivity.launch(room,it.context)
+            }
         }
 
         override fun bind(){
             binding.notifySwitch.isChecked = !room.notify
             binding.roomNameText.text = room.roomName
             binding.avatarView.load(room.roomAvatar)
+            binding.roomMarkNameText.text = room.markName?:""
         }
     }
 

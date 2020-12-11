@@ -112,6 +112,21 @@ class RoomSource {
         return request.toLiveData(getType(List::class.java, User::class.java))
     }
 
+    fun updateRoomMarkNameOfMe(ownerId: Int,room: Room):LiveData<Result<Any?>>{
+        val  map = HashMap<String,Any>()
+        map["ownerId"] = ownerId
+        map["conversationId"] = room.conversationId
+        map["markName"] = room.markName!!
+        val url = "$HOST_PORT/room/markName"
+        val req = Request.Builder()
+            .url(url)
+            .post(gson.toJson(map).toRequestBody())
+            .build()
+        return req.toLiveData {
+            roomDao.insert(room)
+        }
+    }
+
     fun roomNotify(room: Room, notify:Boolean,ownerId:Int):LiveData<Result<Any?>>{
         val map = HashMap<String,Any>()
         map["conversationId"] = room.conversationId

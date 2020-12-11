@@ -1,5 +1,6 @@
 package com.vlog.ui.relation
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import com.common.HOST_PORT
 import com.common.Result
@@ -30,6 +31,7 @@ class RelationSource {
                 it.ownerId = Owner().userId
             }
             dao.insert(list)
+            Log.d("relationShip",list.toString())
         }
     }
 
