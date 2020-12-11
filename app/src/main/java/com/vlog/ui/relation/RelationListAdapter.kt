@@ -18,8 +18,6 @@ class RelationListAdapter :RecyclerView.Adapter<RecyclerView.ViewHolder>(){
 
     private val mList = ArrayList<Friend>()
 
-
-
     fun setList(list:List<Friend>){
         mList.clear()
         mList.addAll(list)
@@ -29,7 +27,7 @@ class RelationListAdapter :RecyclerView.Adapter<RecyclerView.ViewHolder>(){
 
         fun bind(friend: Friend){
             binding.avatarView.load(friend.user.avatar)
-            binding.nameText.text = friend.user.username
+            binding.nameText.text = if(friend.markName.isNullOrEmpty()) friend.user.username else friend.markName
             binding.root.setOnClickListener {
                 ConversationActivity.launch(it.context,friend)
             }

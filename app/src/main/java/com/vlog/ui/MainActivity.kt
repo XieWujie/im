@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.databinding.DataBindingUtil
+import androidx.viewpager2.widget.ViewPager2
 import com.common.util.Util
 import com.common.base.BaseActivity
 import com.common.ext.launch
@@ -49,23 +50,26 @@ class MainActivity :BaseActivity() {
 
     private fun dispatchEvent(){
         binding.bind()
+        val ids = arrayListOf(R.id.message_list_layout,R.id.relation_layout,R.id.me_layout)
+        val titles = arrayListOf("vlog","通讯录","我")
+        binding.page2Layout.registerOnPageChangeCallback(object :ViewPager2.OnPageChangeCallback(){
+
+            override fun onPageSelected(position: Int) {
+               binding.bottomActionLayout.selectedItemId = ids[position]
+                title = titles[position]
+            }
+        })
     }
 
     private fun ActivityMainBinding.bind(){
-        messageListLayout.setOnClickListener {
-            page2Layout.currentItem = 0
-            title = "vlog"
-            mMenu?.findItem(R.id.action_add)?.isVisible = true
-        }
-        relationLayout.setOnClickListener {
-            page2Layout.currentItem = 1
-            title = "通讯录"
-            mMenu?.findItem(R.id.action_add)?.isVisible = true
-        }
-        meLayout.setOnClickListener {
-            page2Layout.currentItem = 2
-            title = "我"
-            mMenu?.findItem(R.id.action_add)?.isVisible = false
+        val page = binding.page2Layout
+        bottomActionLayout.setOnNavigationItemSelectedListener {item->
+            when(item.itemId){
+                R.id.message_list_layout-> page.currentItem = 0
+                R.id.relation_layout->page.currentItem = 1
+                R.id.me_layout->page.currentItem = 2
+            }
+            true
         }
     }
 

@@ -88,6 +88,9 @@ open class MessageHolder(view:View) :RecyclerView.ViewHolder(view){
 }
 
 internal fun View.setLongClick(message: Message,fromUser: User){
+    if(message.createAt<1000L){
+        return
+    }
     val dp30 = Util.dp2dx(context,30).toInt()
     val dp70 = Util.dp2dx(context,70).toInt()
     val screenHeight = ScreenUtils.getScreenHeight(context)

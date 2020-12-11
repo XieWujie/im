@@ -99,7 +99,9 @@ class MessageListAdapter : RecyclerView.Adapter<MessageHolder>() {
         if (index != -1) {
             val time =
                 if (msg.createAt == 0L) msg.sendTime else msg.createAt
-            mList[index] = MessageWrap(event.msg, time)
+            val originMsg = mList[index]
+            val newMsg = msg.copy(content = originMsg.message!!.message.content)
+            mList[index] = MessageWrap(MsgWithUser(newMsg,event.msg.user), time)
             notifyItemChanged(index)
         }
     }

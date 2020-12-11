@@ -38,7 +38,6 @@
                     app:cardBackgroundColor="@android:color/white"
                     app:cardCornerRadius="4dp"
                     android:id="@+id/content_card"
-                    android:padding="10dp"
                     android:layout_height="wrap_content">
                     <LinearLayout
                         android:layout_width="wrap_content"

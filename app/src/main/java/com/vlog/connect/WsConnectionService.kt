@@ -117,9 +117,7 @@ class WsConnectionService:JobIntentService(),WsConnectionListener {
             }
             //自己发送的消息，更新数据库并发送数据更新事件
             if(msg.sendFrom == Owner().userId){
-                if(msg.messageType != Message.MESSAGE_IMAGE) {
-                    DiBus.postEvent(MessageChangeEvent(MsgWithUser(m.message, m.user)))
-                }
+                DiBus.postEvent(MessageChangeEvent(MsgWithUser(m.message, m.user)))
                 msgDao.insert(m.message.apply { isSend = true })
                 return@pushExecutors
             }

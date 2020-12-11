@@ -7,6 +7,8 @@ import com.common.ext.toLiveData
 import com.dibus.AutoWire
 import com.dibus.Service
 import com.google.gson.Gson
+import com.vlog.conversation.ConversationSource
+import com.vlog.ui.relation.RoomListSource
 import com.vlog.user.Owner
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -16,6 +18,12 @@ class LoginSource {
     
     @AutoWire
     lateinit var gson: Gson
+
+    @AutoWire
+    lateinit var roomListSource: RoomListSource
+
+    @AutoWire
+    lateinit var conversationSource: ConversationSource
 
 
     fun login(username:String, password:String):LiveData<Result<LoginResponse>>{
@@ -27,6 +35,12 @@ class LoginSource {
             .build()
         return request.toLiveData{
             Owner().init(it)
+            try {
+                roomListSource.requestRoomListSyn(it.userId)
+                conversationSource.getRecentMessageByNet(it.userId)
+            }catch (e:Exception){
+                e.printStackTrace()
+            }
         }
     }
 

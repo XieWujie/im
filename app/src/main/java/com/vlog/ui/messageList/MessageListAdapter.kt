@@ -46,7 +46,7 @@ class MessageListAdapter:RecyclerView.Adapter<MessageListAdapter.ViewHolder>() {
             binding.timeText.text = time
             msgConv.friend?.also {
                 binding.apply {
-                    titleText.text = it.user.username
+                    titleText.text = if(it.markName.isNullOrEmpty()) it.user.username else it.markName
                     avatarView.load(it.user.avatar)
                     root.setOnClickListener {view->
                         ConversationActivity.launch(view.context,it)

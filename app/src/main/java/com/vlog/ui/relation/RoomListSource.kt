@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import com.common.HOST_PORT
 import com.common.Result
 import com.common.ext.getType
+import com.common.ext.sync
 import com.common.ext.toLiveData
 import com.dibus.AutoWire
 import com.dibus.Service
@@ -28,6 +29,16 @@ class RoomListSource {
         return request.toLiveData(getType(List::class.java,Room::class.java)) {
             roomDao.insert(it)
         }
+    }
+
+    fun requestRoomListSyn(userId: Int){
+        val url = "$HOST_PORT/room/get?userId=$userId"
+        val request = Request.Builder()
+            .url(url)
+            .get()
+            .build()
+        val list =  request.sync<List<Room>>(getType(List::class.java,Room::class.java))
+        roomDao.insert(list)
     }
 
     fun obsRooms(userId: Int) = roomDao.getRooms()
