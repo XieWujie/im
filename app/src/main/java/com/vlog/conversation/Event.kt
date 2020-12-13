@@ -10,3 +10,5 @@ data class MessageChangeEvent(val msg: MsgWithUser)
 data class MessageInsertEvent(val msg: MsgWithUser)
 
  class ImageLoadFinish()
+
+data class EmoAddEvent(val source:String)

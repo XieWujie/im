@@ -40,9 +40,11 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-runtime:2.2.0'
     api 'com.google.code.gson:gson:2.8.6'
     api 'com.squareup.okhttp3:okhttp:4.9.0'
+    api 'com.github.bumptech.glide:glide:4.11.0'
 
     api group: 'com.squareup.retrofit2', name: 'retrofit', version: '2.9.0'
     api group: 'com.squareup.retrofit2', name: 'converter-gson', version: '2.9.0'
+
 
     api "androidx.room:room-runtime:$room_version"
     kapt "androidx.room:room-compiler:$room_version"

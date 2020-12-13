@@ -4,6 +4,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import com.common.ext.launch
+import com.common.ext.setEmotionText
 import com.dibus.DiBus
 import com.vlog.connect.MessageSend
 import com.vlog.photo.load
@@ -17,7 +18,7 @@ import com.vlog.user.UserItemEditActivity
 class TextHolder{
 
     fun load(contentView:TextView,avatarView:ImageView,usernameText:TextView,m: MsgWithUser){
-        contentView.text = m.message.content
+        contentView.setEmotionText(m.message.content)
         avatarView.load(m.user.avatar)
         usernameText.text = m.user.username
         avatarView.setOnClickListener {

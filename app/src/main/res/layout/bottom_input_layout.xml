@@ -132,13 +132,15 @@
             </LinearLayout>
 
 
-            <FrameLayout
+            <LinearLayout
                 android:id="@+id/ic_action_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
                 android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/input_layout"
@@ -146,21 +148,18 @@
                 app:layout_constraintVertical_bias="1.0">
 
                 <ImageView
-                    android:id="@+id/ic_more"
+                    android:id="@+id/ic_emo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_more" />
+                    android:src="@drawable/ic_emoji" />
 
-                <Button
-                    android:id="@+id/action_send"
-                    android:layout_width="45dp"
-                    android:layout_height="30dp"
-                    android:background="@drawable/button_rectangle"
-                    android:text="发 送"
-                    android:textColor="#ffffff"
-                    android:textSize="13sp"
-                    android:visibility="gone" />
-            </FrameLayout>
+                <ImageView
+                    android:id="@+id/action_bt"
+                    android:layout_marginStart="5dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/input_action_send_more" />
+            </LinearLayout>
 
 
 
@@ -178,6 +177,10 @@
             <com.vlog.conversation.writeMessage.WriteView
                 android:id="@+id/writeView"
                 android:layout_width="match_parent"
+                android:layout_height="0dp"/>
+            <com.vlog.conversation.emo.EmoContainerView
+                android:layout_width="match_parent"
+                android:id="@+id/emo_container"
                 android:layout_height="0dp"/>
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
