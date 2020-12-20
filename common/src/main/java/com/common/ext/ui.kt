@@ -4,6 +4,9 @@ import android.animation.Animator
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.GestureDetector
+import android.view.MotionEvent
+import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.lifecycle.LiveData
@@ -34,6 +37,7 @@ inline fun <reified T,reified R> LiveData<T>.map(crossinline transformer:(T)->R)
     observeForever(r.observer)
     return r
 }
+
 
 inline fun Animator.animateEnd(crossinline listener:()->Unit){
     this.addListener(object :Animator.AnimatorListener{

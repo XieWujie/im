@@ -25,6 +25,16 @@ open class BaseActivity :AppCompatActivity(){
     }
 
 
+    private val micPermission = arrayOf<String>(
+        Manifest.permission.MODIFY_AUDIO_SETTINGS,
+        Manifest.permission.RECORD_AUDIO
+    )
+
+   protected fun checkMic(callback:()->Unit){
+       reqPermission(micPermission,callback)
+   }
+
+
     private var permission = arrayOf<String>(
          Manifest.permission.WRITE_EXTERNAL_STORAGE,
         Manifest.permission.READ_EXTERNAL_STORAGE
@@ -36,13 +46,13 @@ open class BaseActivity :AppCompatActivity(){
 
 
     //授权服务
-   protected fun checkPermission(callback:()->Unit) {
+   protected fun reqPermission(p: Array<String> = permission,callback:()->Unit) {
         this.callback = callback
-        for (i in permission.indices) {
-            if (ContextCompat.checkSelfPermission(this, permission[i]
+        for (i in p.indices) {
+            if (ContextCompat.checkSelfPermission(this, p[i]
                 ) !== PackageManager.PERMISSION_GRANTED
             ) {
-                mPermissionList.add(permission[i])
+                mPermissionList.add(p[i])
             }
         }
         if (mPermissionList.isEmpty()) { //未授予的权限为空，表示都授予了
@@ -54,6 +64,8 @@ open class BaseActivity :AppCompatActivity(){
             ActivityCompat.requestPermissions(this, permissions, 1)
         }
     }
+
+
 
     override fun onRequestPermissionsResult(
         requestCode: Int,

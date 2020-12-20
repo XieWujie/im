@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
 import androidx.databinding.DataBindingUtil
@@ -45,7 +44,7 @@ class FriendEditActivity : BaseActivity() {
         binding.notifySwitch.isChecked = !friend.notify
         binding.markNameText.text = friend.markName?:""
         binding.changeBackgroundLayout.setOnClickListener {
-            checkPermission {
+            reqPermission {
                 val photoPickerIntent = Intent(Intent.ACTION_PICK, null)
                 photoPickerIntent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*")
                 startActivityForResult(photoPickerIntent, 1)

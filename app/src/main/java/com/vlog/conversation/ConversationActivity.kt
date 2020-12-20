@@ -58,6 +58,12 @@ class ConversationActivity : BaseActivity() {
         dispatchEvent()
     }
 
+    fun reqMic(){
+        binding.bottomInputLayout.micPermission = {
+            checkMic(it)
+        }
+    }
+
     override fun onStart() {
         super.onStart()
         isAlive = true
@@ -73,6 +79,7 @@ class ConversationActivity : BaseActivity() {
         binding.recyclerView.setOnClickListener {
             binding.bottomInputLayout.hide()
         }
+        reqMic()
 
         binding.recyclerView.onClick {
             binding.bottomInputLayout.hide()

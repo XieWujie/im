@@ -2,22 +2,26 @@ package com.vlog.conversation
 
 import android.animation.Animator
 import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Rect
+import android.graphics.RectF
 import android.text.Editable
 import android.text.Html
 import android.text.TextWatcher
 import android.util.AttributeSet
 import android.util.Log
+import android.view.GestureDetector
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.widget.FrameLayout
-import com.common.ext.afterTextChanged
-import com.common.ext.animateEnd
-import com.common.ext.setEmotionText
+import com.common.ext.*
 import com.common.pushExecutors
 import com.common.util.Util
 import com.dibus.AutoWire
 import com.dibus.BusEvent
+import com.vlog.conversation.record.RecordHelper
 import com.vlog.photo.PhotoListActivity
 import com.vlog.conversation.writeMessage.event.WordCacheState
 import com.vlog.database.CiteEvent
@@ -39,6 +43,9 @@ class InputBottom : FrameLayout {
 
     @AutoWire
     lateinit var msgDao: MsgDao
+
+    var micPermission:((callback:()->Unit)->Unit)? = null
+    private var micCanUser = false
 
 
     private var binding: BottomInputLayoutBinding =
@@ -155,17 +162,15 @@ class InputBottom : FrameLayout {
         binding.icWrite.setOnClickListener { it ->
 
             it.isSelected = if (it.isSelected) {
-                val p = binding.writeView.layoutParams.also { it.height = 0 }
-                binding.writeView.layoutParams = p
-                binding.inputWrite.visibility = GONE
                 binding.inputText.visibility = VISIBLE
+                binding.recordDesText.visibility = GONE
                 binding.actionBt.isSelected = binding.inputText.text.isNotEmpty()
                 showSoftKey()
                 false
             } else {
-                binding.actionBt.isSelected = !binding.inputWrite.isEmpty()
-                showWrite()
-                binding.inputWrite.visibility = VISIBLE
+                binding.actionBt.isSelected = false
+                binding.recordDesText.visibility = VISIBLE
+                binding.recordDesText.text = "按住 说话"
                 binding.inputText.visibility = GONE
                 true
             }
@@ -208,7 +213,71 @@ class InputBottom : FrameLayout {
         binding.photoLayout.setOnClickListener {
             PhotoListActivity.launch(conversationId, fromType, it.context)
         }
+
+        recordEvent()
+
     }
+
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun recordEvent(){
+        val rect = Rect()
+        binding.inputEditCard.getHitRect(rect)
+        val recorder = RecordHelper(context)
+        binding.root.rootView.setOnTouchListener { _, event ->
+            val x = event.rawX.toInt()
+            val y = event.rawY.toInt()
+            binding.inputEditCard.getGlobalVisibleRect(rect)
+            when(event.action){
+                MotionEvent.ACTION_DOWN->{
+                    if(rect.contains(x,y)){
+                        if(!micCanUser){
+                            micPermission?.invoke {
+                                micCanUser = true
+                            }
+                        }
+                        if(!micCanUser){
+                            return@setOnTouchListener false
+                        }
+                        binding.recordDesText.text = "正在录音..."
+                        recorder.createRecord()
+                        recorder.start()
+                    }else{
+                        return@setOnTouchListener false
+                    }
+                }
+                MotionEvent.ACTION_MOVE->{
+                    if(rect.contains(x,y)){
+                        binding.recordDesText.text = "正在录音..."
+                        recorder.start()
+                    }else{
+                        binding.recordDesText.text = "暂停录音..."
+                        recorder.pauseRecord()
+                    }
+                }
+                MotionEvent.ACTION_UP,MotionEvent.ACTION_CANCEL->{
+                    binding.recordDesText.text = "按住 录音"
+                    recorder.stopRecord()
+                    if(rect.contains(x,y)){
+                        val content = recorder.getFilePath()
+                        val msg =
+                            Message.obtain(conversationId, Message.MESSAGE_RECORD, content, fromType)
+                        msg.citeMessageId = citeMessageId
+                        pushExecutors {
+                            msgDao.insert(msg)
+                        }
+                    }else{
+
+                    }
+
+                }
+
+            }
+            true
+        }
+    }
+
+
 
     @BusEvent
     fun citeEvent(citeEvent: CiteEvent) {

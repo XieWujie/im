@@ -195,6 +195,11 @@ class MessageListAdapter : RecyclerView.Adapter<MessageHolder>() {
                 val binding = RightWithdrawMessageBinding.inflate(inflater,parent,false)
                 WithDrawHolder.R(binding)
             }
+            TYPE_RIGHT_RECORD->{
+                val binding = RightRecordMessageBinding.inflate(inflater,parent,false)
+                RecordHolder.R(binding)
+            }
+
             else -> throw RuntimeException("no such type")
         }
     }
@@ -217,6 +222,7 @@ class MessageListAdapter : RecyclerView.Adapter<MessageHolder>() {
                 Message.MESSAGE_TEXT -> TYPE_RIGHT_TEXT
                 Message.MESSAGE_WRITE -> TYPE_RIGHT_WRITE
                 Message.MESSAGE_WITHDRAW -> TYPE_RIGHT_WITHDRAW
+                Message.MESSAGE_RECORD-> TYPE_RIGHT_RECORD
                 else -> TYPE_RIGHT_TEXT
             }
         } else {
@@ -225,6 +231,7 @@ class MessageListAdapter : RecyclerView.Adapter<MessageHolder>() {
                 Message.MESSAGE_TEXT -> TYPE_LEFT_TEXT
                 Message.MESSAGE_WRITE -> TYPE_LEFT_WRITE
                 Message.MESSAGE_WITHDRAW -> TYPE_LEFT_WITHDRAW
+                Message.MESSAGE_RECORD-> TYPE_LEFT_RECORD
                 else -> TYPE_RIGHT_TEXT
             }
         }
@@ -245,6 +252,8 @@ class MessageListAdapter : RecyclerView.Adapter<MessageHolder>() {
         private const val TYPE_TIME = 11
         private const val TYPE_LEFT_WITHDRAW = 6
         private const val TYPE_RIGHT_WITHDRAW = 7
+        private const val TYPE_RIGHT_RECORD = 8
+        private const val TYPE_LEFT_RECORD = 9
         private const val TAG = "MessageListAdapter"
 
     }

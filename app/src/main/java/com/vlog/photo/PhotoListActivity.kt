@@ -115,7 +115,7 @@ class PhotoListActivity : BaseActivity() {
                showDirectory()
             }
         }
-        checkPermission {
+        reqPermission {
             getAllPhotoInfo()
         }
 

@@ -55,7 +55,7 @@ class UserAvatarActivity : BaseActivity() {
             .setItems(arrayOf("从相册中选取","保存图片")){_,i->
                 when(i){
                     0->{
-                        checkPermission(){
+                        reqPermission(){
                             dispatchPictureIntent()
                         }
                     }

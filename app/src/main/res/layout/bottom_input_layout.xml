@@ -104,16 +104,24 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dp"
+                    android:id="@+id/input_edit_card"
                     android:layout_marginTop="5dp"
                     android:layout_weight="16"
                     app:cardBackgroundColor="#fefefe"
-                    app:cardCornerRadius="4dp">
+                    app:cardCornerRadius="16dp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_marginStart="10dp"
+                        android:layout_height="match_parent">
 
                     <EditText
                         android:id="@+id/input_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@null"
+                        android:hint="输入消息. . ."
+                        android:layout_toStartOf="@+id/ic_emo"
                         android:ems="10"
                         android:inputType="textMultiLine"
                         android:maxLines="10"
@@ -124,8 +132,30 @@
                         android:id="@+id/input_write"
                         android:layout_width="match_parent"
                         android:layout_height="35dp"
+                        android:layout_toStartOf="@+id/ic_emo"
                         android:padding="5dp"
                         android:visibility="gone" />
+
+                        <ImageView
+                            android:id="@+id/ic_emo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_marginEnd="10dp"
+                            android:layout_centerVertical="true"
+                            android:src="@drawable/ic_emoji" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:id="@+id/record_des_text"
+                            android:text="按住 说话"
+                            android:visibility="gone"
+                            android:textSize="15sp"
+                            android:gravity="center"
+                            android:longClickable="false"
+                            android:layout_height="32dp"/>
+                    </RelativeLayout>
                 </androidx.cardview.widget.CardView>
 
 
@@ -146,12 +176,6 @@
                 app:layout_constraintStart_toEndOf="@+id/input_layout"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="1.0">
-
-                <ImageView
-                    android:id="@+id/ic_emo"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_emoji" />
 
                 <ImageView
                     android:id="@+id/action_bt"
