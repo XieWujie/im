@@ -18,15 +18,16 @@ import java.util.*
 
 class RecordHelper(private val context: Context,) {
 
-    private var mMediaRecorder:MediaRecorder? = null
+    private var mMediaRecorder = MediaRecorder()
     private var isStarted = false
     private var filePath:String? = null
 
     fun createRecord(){
         val file = getFile(context)
         filePath = file.absolutePath
+        isStarted = false
         try {
-            mMediaRecorder ?: MediaRecorder().also { mMediaRecorder = it }.apply {
+            mMediaRecorder.apply {
                 setAudioSource(MediaRecorder.AudioSource.MIC)
                 setOutputFormat(MediaRecorder.OutputFormat.AMR_NB)
                 setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
@@ -42,32 +43,30 @@ class RecordHelper(private val context: Context,) {
 
     fun start(){
         if(!isStarted) {
-            mMediaRecorder?.apply {
-                try {
-                    start()
-                    isStarted = true
-                }catch (i:IllegalStateException){
-                    i.printStackTrace()
-                }catch (e:IOException){
-                    e.printStackTrace()
-                }
+            try {
+                mMediaRecorder.start()
+                isStarted = true
+            }catch (i:IllegalStateException){
+                i.printStackTrace()
+            }catch (e:IOException){
+                e.printStackTrace()
             }
         }
     }
 
 
     fun pauseRecord(){
-        if(Build.VERSION.SDK_INT>24 && isStarted) {
-            mMediaRecorder?.pause()
-            isStarted = false
-        }
+//        if(Build.VERSION.SDK_INT>24 && isStarted) {
+//            mMediaRecorder.pause()
+//            isStarted = false
+//        }
     }
 
     fun stopRecord(){
         if(isStarted) {
-            mMediaRecorder?.apply {
+            mMediaRecorder.apply {
                 stop()
-                release()
+                reset()
                 isStarted = false
             }
         }
@@ -81,11 +80,7 @@ class RecordHelper(private val context: Context,) {
     companion object{
         private fun getFile(context: Context):File{
             val fileName = SimpleDateFormat("yyyyMMdd_HH_mm_ss",Locale.CHINA).format(Date()).toString()
-            val basePath =  if (Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED){
-                Environment.getExternalStorageDirectory().absolutePath
-            }else{
-                context.externalCacheDir?.absolutePath!!
-            }
+            val basePath =   context.cacheDir.absolutePath
             val path = File("$basePath/record")
             try {
                 if(!path.exists()){

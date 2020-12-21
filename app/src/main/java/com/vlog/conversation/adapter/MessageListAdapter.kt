@@ -199,6 +199,10 @@ class MessageListAdapter : RecyclerView.Adapter<MessageHolder>() {
                 val binding = RightRecordMessageBinding.inflate(inflater,parent,false)
                 RecordHolder.R(binding)
             }
+            TYPE_LEFT_RECORD->{
+                val binding = LeftRecordMessageBinding.inflate(inflater,parent,false)
+                RecordHolder.L(binding)
+            }
 
             else -> throw RuntimeException("no such type")
         }

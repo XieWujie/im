@@ -19,6 +19,7 @@ import com.common.util.Util
 import com.dibus.DiBus
 import com.vlog.R
 import com.vlog.connect.MessageSend
+import com.vlog.conversation.record.CirclePlayBar
 import com.vlog.conversation.writeMessage.WordListLayout
 import com.vlog.database.CiteEvent
 import com.vlog.database.Message
@@ -80,6 +81,12 @@ open class MessageHolder(view:View) :RecyclerView.ViewHolder(view){
                         this.handleWrite(msg.content)
                         binding.citeContentLayout.addView(this,ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT)
                     }
+                     Message.MESSAGE_RECORD->{
+                         val layout = LayoutInflater.from(context).inflate(R.layout.cite_record_layout,binding.citeContentLayout,false)
+                         val timeText = layout.findViewById<TextView>(R.id.time_text)
+                         val circleView = layout.findViewById<CirclePlayBar>(R.id.record_play_view)
+                         RecordHolder.b(msg.content,timeText,circleView)
+                     }
                     else->return@pushMainThread
                 }
             }

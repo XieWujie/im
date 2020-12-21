@@ -9,26 +9,7 @@
         android:orientation="horizontal"
         android:id="@+id/write_container"
         android:layout_height="wrap_content">
-        <RelativeLayout
-            android:id="@+id/send_state_layout"
-            android:layout_marginStart="100dp"
-            android:layout_width="wrap_content"
-            android:gravity="center"
-            android:layout_height="match_parent">
-            <ProgressBar
-                android:layout_width="24dp"
-                android:id="@+id/send_ing"
-                android:layout_centerVertical="true"
-                android:visibility="gone"
-                android:layout_height="24dp"/>
-            <ImageView
-                android:layout_width="wrap_content"
-                android:id="@+id/error_state"
-                android:layout_centerVertical="true"
-                android:visibility="gone"
-                android:src="@drawable/ic_error"
-                android:layout_height="wrap_content"/>
-        </RelativeLayout>
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:orientation="vertical"
@@ -58,22 +39,34 @@
                         android:visibility="gone"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>
+                    <FrameLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_margin="10dp"
+                        android:id="@+id/content_record"
+                        android:gravity="center_vertical"
                         android:orientation="horizontal"
                         android:layout_height="wrap_content">
-                        <com.vlog.conversation.record.RecordPlayView
-                            android:layout_width="30dp"
+                        <com.vlog.conversation.record.CirclePlayBar
+                            android:layout_width="20dp"
                             android:id="@+id/record_play_view"
-                            android:layout_height="30dp"/>
+                            android:layout_height="20dp"/>
                         <TextView
                             android:id="@+id/time_text"
+                            android:layout_marginStart="10dp"
                             android:textColor="@android:color/black"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"/>
                     </LinearLayout>
+                        <com.vlog.photo.ImgProgressFilter
+                            android:layout_width="match_parent"
+                            android:id="@+id/progress_view"
+                            android:layout_height="match_parent"/>
+                    </FrameLayout>
                 </LinearLayout>
+
             </androidx.cardview.widget.CardView>
         </LinearLayout>
         <androidx.cardview.widget.CardView

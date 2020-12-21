@@ -21,4 +21,7 @@
         <item name="android:backgroundDimEnabled">false</item>
         <item name="android:backgroundDimAmount">0.6</item>
     </style>
+    <declare-styleable name="CirclePlayBar">
+        <attr name="bar_color" format="color"/>
+    </declare-styleable>
 </resources>

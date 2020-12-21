@@ -266,8 +266,6 @@ class InputBottom : FrameLayout {
                         pushExecutors {
                             msgDao.insert(msg)
                         }
-                    }else{
-
                     }
 
                 }

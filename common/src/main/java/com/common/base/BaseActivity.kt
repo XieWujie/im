@@ -56,7 +56,6 @@ open class BaseActivity :AppCompatActivity(){
             }
         }
         if (mPermissionList.isEmpty()) { //未授予的权限为空，表示都授予了
-           toast("已经授权")
             callback.invoke()
             agreeRequest()
         } else { //请求权限方法
