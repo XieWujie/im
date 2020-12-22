@@ -1,6 +1,8 @@
 package com.common.util
 
 import android.app.Activity
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.database.Cursor
 import android.graphics.Color
@@ -44,6 +46,11 @@ object Util {
             val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(view.windowToken, 0)
         }
+    }
+
+    fun clipText(context: Context,text:String){
+        val m = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        m.setPrimaryClip( ClipData.newPlainText("lineMe",text))
     }
 
     fun showSoftInput(editText: EditText){

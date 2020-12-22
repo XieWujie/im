@@ -21,6 +21,7 @@ import com.common.pushExecutors
 import com.common.util.Util
 import com.dibus.AutoWire
 import com.dibus.BusEvent
+import com.google.gson.Gson
 import com.vlog.conversation.record.RecordHelper
 import com.vlog.photo.PhotoListActivity
 import com.vlog.conversation.writeMessage.event.WordCacheState
@@ -61,8 +62,18 @@ class InputBottom : FrameLayout {
 
 
     init {
-        event()
         InputBottomCreator.inject(this)
+        binding.inputText.post {
+            binding.recordDesText.layoutParams.apply {
+                height = binding.inputText.height
+                binding.recordDesText.layoutParams = this
+            }
+            binding.inputWrite.layoutParams.apply {
+               height = binding.inputText.height
+                binding.inputWrite.layoutParams = this
+            }
+        }
+        event()
     }
 
     fun setBottomContentShowListener(action: (Boolean) -> Unit) {
@@ -104,6 +115,11 @@ class InputBottom : FrameLayout {
 
 
     private fun showWrite() {
+        binding.inputText.visibility = View.GONE
+        binding.inputWrite.visibility = VISIBLE
+        binding.icEmo.visibility = GONE
+        binding.actionBt.isSelected = !binding.inputWrite.isEmpty()
+        binding.recordDesText.visibility = GONE
         Util.hideSoftInput(context, this)
         showMore(binding.writeView).animateEnd {
             hide0(binding.emoContainer)
@@ -111,6 +127,7 @@ class InputBottom : FrameLayout {
             showListener?.invoke(true)
         }
     }
+
 
     private fun showMoreLayout() {
         Util.hideSoftInput(context, this)
@@ -160,11 +177,13 @@ class InputBottom : FrameLayout {
 
     fun event() {
         binding.icWrite.setOnClickListener { it ->
-
+            binding.inputWrite.visibility = GONE
             it.isSelected = if (it.isSelected) {
                 binding.inputText.visibility = VISIBLE
                 binding.recordDesText.visibility = GONE
                 binding.actionBt.isSelected = binding.inputText.text.isNotEmpty()
+                binding.icEmo.visibility = VISIBLE
+                binding.inputWrite.visibility = GONE
                 showSoftKey()
                 false
             } else {
@@ -172,6 +191,7 @@ class InputBottom : FrameLayout {
                 binding.recordDesText.visibility = VISIBLE
                 binding.recordDesText.text = "按住 说话"
                 binding.inputText.visibility = GONE
+                binding.icEmo.visibility = GONE
                 true
             }
         }
@@ -187,9 +207,9 @@ class InputBottom : FrameLayout {
         }
         binding.actionBt.setOnClickListener {
             if (it.isSelected) {
-                if (binding.icWrite.isSelected) {
+                if (binding.inputWrite.visibility == VISIBLE) {
                     binding.inputWrite.sendWordCache(fromType, citeMessageId)
-                } else {
+                } else if(binding.inputText.visibility == VISIBLE){
                     val content = binding.inputText.text.toString()
                     val msg =
                         Message.obtain(conversationId, Message.MESSAGE_TEXT, content, fromType)
@@ -212,6 +232,10 @@ class InputBottom : FrameLayout {
 
         binding.photoLayout.setOnClickListener {
             PhotoListActivity.launch(conversationId, fromType, it.context)
+        }
+
+        binding.writeLayout.setOnClickListener {
+            showWrite()
         }
 
         recordEvent()

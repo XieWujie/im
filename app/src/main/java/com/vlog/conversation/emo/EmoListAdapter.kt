@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.dibus.DiBus
 import com.vlog.R
 import com.vlog.conversation.EmoAddEvent
@@ -24,7 +25,7 @@ class EmoListAdapter :RecyclerView.Adapter<EmoListAdapter.ViewHolder>(){
         private val img = view.findViewById<ImageView>(R.id.emo_src_view)
 
         fun bind(source:String){
-            img.load(source)
+            Glide.with(img).load(source).dontAnimate().into(img)
             img.setOnClickListener {
                 DiBus.postEvent(EmoAddEvent(source))
             }

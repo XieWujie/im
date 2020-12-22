@@ -8,6 +8,7 @@ import android.os.FileUtils
 import android.util.Log
 import androidx.annotation.RequiresApi
 import com.common.pushExecutors
+import com.common.util.ScreenUtils
 import io.reactivex.internal.schedulers.IoScheduler
 import java.io.File
 import java.io.IOException
@@ -60,6 +61,11 @@ class RecordHelper(private val context: Context,) {
 //            mMediaRecorder.pause()
 //            isStarted = false
 //        }
+    }
+
+    fun showDialog(){
+        val width = ScreenUtils.getScreenWidth(context)/2
+        val sH = ScreenUtils.getScreenHeight(context)
     }
 
     fun stopRecord(){

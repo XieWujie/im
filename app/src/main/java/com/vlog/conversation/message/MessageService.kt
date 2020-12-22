@@ -43,7 +43,7 @@ class MessageService: JobIntentService() {
         val progress =  progresses[listenerKey]
         val msgCallback = callbacks[listenerKey]
         when(message.messageType){
-            Message.MESSAGE_IMAGE->{
+            Message.MESSAGE_IMAGE,Message.MESSAGE_RECORD->{
                 val file = File(message.content)
                 try {
                     val msg = messageSource.postFileMessage(message,file,progress)

@@ -44,7 +44,7 @@ class EmoTabAdapter(private val itemClickListener:(View, List<String>)->Unit) : 
                 imag.setImageResource(R.drawable.ic_emoji)
                 val asset = imag.context.assets
                 val list = asset.list("emotions")?:return holder
-                val sources = list.map { "file:///android_asset/$it" }
+                val sources = list.map { "file:///android_asset/emotions/$it" }
                 itemClickListener.invoke(view,sources)
                 view.setOnClickListener {
                     itemClickListener.invoke(it, sources)
@@ -57,7 +57,7 @@ class EmoTabAdapter(private val itemClickListener:(View, List<String>)->Unit) : 
                 imag.setImageResource(R.drawable.ic_gif)
                 val asset = imag.context.assets
                 val list = asset.list("gif_emoji")?:return holder
-                val sources = list.map { "file:///android_asset/$it" }
+                val sources = list.map { "file:///android_asset/gif_emoji/$it" }
                 view.setOnClickListener {
                     itemClickListener.invoke(it,sources)
                 }

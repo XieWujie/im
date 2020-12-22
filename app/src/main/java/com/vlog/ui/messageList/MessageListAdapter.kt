@@ -1,8 +1,10 @@
 package com.vlog.ui.messageList
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.common.ext.setEmotionText
 import com.common.util.Util
 import com.vlog.conversation.ConversationActivity
 import com.vlog.conversation.MsgConv
@@ -28,19 +30,26 @@ class MessageListAdapter:RecyclerView.Adapter<MessageListAdapter.ViewHolder>() {
 
     class ViewHolder(val binding:MessageListItemBinding):RecyclerView.ViewHolder(binding.root){
 
+        @SuppressLint("SetTextI18n")
         fun bind(msgConv: MsgConv){
             val time = Util.getTime(msgConv.message.sendTime)
-            binding.contentText.text = when(msgConv.message.messageType){
+            val content = msgConv.message.content
+            when(msgConv.message.messageType){
                 Message.MESSAGE_IMAGE->{
-                    val content = msgConv.message.content
                     val index = content.lastIndexOf("/")
-                    "图片：${content.substring(index+1)}"
+                    binding.contentText.text =  "图片：${content.substring(index+1)}"
                 }
                 Message.MESSAGE_WRITE->{
-                    "手写消息"
+                    binding.contentText.text  =  "[手写消息]"
+                }
+                Message.MESSAGE_RECORD->{
+                    binding.contentText.text  =  "[语音]"
+                }
+                Message.MESSAGE_TEXT->{
+                    binding.contentText.setEmotionText(content)
                 }
                 else->{
-                    msgConv.message.content
+                    binding.contentText.text = content
                 }
             }
             binding.timeText.text = time

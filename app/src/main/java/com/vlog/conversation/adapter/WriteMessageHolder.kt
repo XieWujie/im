@@ -1,6 +1,5 @@
 package com.vlog.conversation.adapter
 
-import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -8,18 +7,16 @@ import com.common.ext.launch
 import com.dibus.AutoWire
 import com.dibus.DiBus
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.vlog.connect.MessageSend
-import com.vlog.photo.load
-import com.vlog.database.Message
+import com.vlog.conversation.writeMessage.WordListLayout
 import com.vlog.database.MsgWithUser
 import com.vlog.databinding.LeftWriteMessageBinding
 import com.vlog.databinding.RightWriteMessageBinding
-import com.vlog.conversation.writeMessage.MessageWriteWord
-import com.vlog.conversation.writeMessage.WordListLayout
+import com.vlog.photo.load
 import com.vlog.user.Owner
 import com.vlog.user.UserHomeActivity
 import com.vlog.user.UserItemEditActivity
+import com.vlog.util.onLongClick
 import dibus.app.WriteMessageHolderCreator
 
 
@@ -71,6 +68,9 @@ class WriteMessageHolder{
             val msg = m.message
             loadCite(msg.citeMessageId,binding.citeLayout)
             binding.contentCard.setLongClick(m.message,m.user)
+            binding.wordListLayout.onLongClick {
+                longClick(binding.contentCard,m.message,m.user)
+            }
             if(msg.isSend){
                 binding.sendIng.visibility = View.GONE
             }else{

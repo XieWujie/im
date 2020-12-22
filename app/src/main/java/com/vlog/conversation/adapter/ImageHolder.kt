@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import com.bumptech.glide.Glide
 import com.common.ext.launch
 import com.common.ext.toast
 import com.common.pushMainThread
@@ -17,6 +18,7 @@ import com.vlog.database.Message
 import com.vlog.database.MsgWithUser
 import com.vlog.databinding.LeftImgMessageBinding
 import com.vlog.databinding.RightImgMessageBinding
+import com.vlog.photo.PhotoDownloadTarget
 import com.vlog.photo.load
 import com.vlog.photo.loadWithMaxSize
 import com.vlog.photo.showBigView
@@ -47,7 +49,15 @@ class ImageHolder {
         contentView.setOnClickListener {
             contentView.showBigView(m.message.content)
         }
-        contentView.setLongClick(m.message, m.user)
+        contentView.setLongClick(m.message, m.user){d,v->
+            val imgSaveText = TextView(contentView.context)
+            imgSaveText.text = "保存"
+            imgSaveText.setOnClickListener {
+                d.dismiss()
+                Glide.with(it).asFile().load(contentView.drawable).into(PhotoDownloadTarget(it.context))
+            }
+            addActionView(imgSaveText,v)
+        }
         avatarView.load(m.user.avatar)
         usernameText.text = m.user.username
         avatarView.setOnClickListener {

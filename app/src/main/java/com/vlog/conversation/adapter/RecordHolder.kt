@@ -7,6 +7,7 @@ import android.net.Uri
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
+import android.widget.RelativeLayout
 import android.widget.TextView
 import com.common.ext.animateEnd
 import com.common.ext.toast
@@ -31,46 +32,38 @@ import kotlin.math.roundToInt
 class RecordHolder() {
 
 
-
-
-    fun fillData(nameText:TextView,avatarView:ImageView,user: User){
+    fun fillData(nameText: TextView, avatarView: ImageView, user: User) {
         nameText.text = user.username
         avatarView.load(user.avatar)
     }
 
 
-    class L(private val binding:LeftRecordMessageBinding):MessageHolder(binding.root){
+    class L(private val binding: LeftRecordMessageBinding) : MessageHolder(binding.root) {
 
         private val recordHolder = RecordHolder()
 
         override fun bind(message: MsgWithUser) {
             super.bind(message)
-            recordHolder.fillData(binding.usernameText,binding.userAvatarView,message.user)
-            loadCite(message.message.citeMessageId,binding.citeLayout)
-            b(message.message.content,binding.timeText,binding.recordPlayView)
-            binding.contentCard.setLongClick(message.message,message.user)
+            recordHolder.fillData(binding.usernameText, binding.userAvatarView, message.user)
+            loadCite(message.message.citeMessageId, binding.citeLayout)
+            b(message.message.content, binding.timeText, binding.recordPlayView)
+            binding.contentCard.setLongClick(message.message, message.user)
         }
     }
 
-    class R(private val binding:RightRecordMessageBinding):MessageHolder(binding.root){
+    class R(private val binding: RightRecordMessageBinding) : MessageHolder(binding.root) {
 
         private val recordHolder = RecordHolder()
 
         override fun bind(message: MsgWithUser) {
             super.bind(message)
-            recordHolder.fillData(binding.usernameText,binding.userAvatarView,message.user)
-            loadCite(message.message.citeMessageId,binding.citeLayout)
-            b(message.message.content,binding.timeText,binding.recordPlayView)
-            binding.contentCard.setLongClick(message.message,message.user)
+            recordHolder.fillData(binding.usernameText, binding.userAvatarView, message.user)
+            loadCite(message.message.citeMessageId, binding.citeLayout)
+            b(message.message.content, binding.timeText, binding.recordPlayView)
+            binding.contentCard.setLongClick(message.message, message.user)
             val msg = message.message
             if (msg.isSend) {
-                binding.progressView.visibility = View.GONE
             } else {
-                binding.progressView.visibility = View.VISIBLE
-                binding.contentRecord.post {
-                    binding.progressView.layoutParams= binding.contentRecord.layoutParams
-                }
-                binding.progressView.setProgress(0)
                 MessageService.sendMessage(itemView.context, msg, object : MsgCallback {
                     override fun callback(message: Message?, e: IOException?) {
                         if (e != null) {
@@ -90,9 +83,9 @@ class RecordHolder() {
                         pushMainThread {
                             val progress = 100 * upLoadLength.toFloat() / contentLength.toFloat()
                             val text = progress.roundToInt()
-                            binding.progressView.setProgress(text)
-                            if(isComplete){
-                                binding.progressView.visibility = View.GONE
+
+                            if (isComplete) {
+
                             }
                         }
 
@@ -101,26 +94,27 @@ class RecordHolder() {
             }
         }
     }
-    companion object{
-        fun b(source:String,timeText:TextView,recordPlayView: CirclePlayBar){
-            val mediaPlayer =  MediaPlayer()
+
+    companion object {
+        fun b(source: String, timeText: TextView, recordPlayView: CirclePlayBar) {
+            val mediaPlayer = MediaPlayer()
             try {
                 mediaPlayer.setDataSource(source)
-            }catch (e:Exception){
+            } catch (e: Exception) {
                 e.printStackTrace()
-                Log.d("playPath",e.message?:"")
+                Log.d("playPath", e.message ?: "")
                 return
             }
             mediaPlayer.prepareAsync()
             mediaPlayer.setOnPreparedListener {
-                val animate = ValueAnimator.ofInt(0,mediaPlayer.duration)
+                val animate = ValueAnimator.ofInt(0, mediaPlayer.duration)
                 recordPlayView.setAllTime(mediaPlayer.duration)
                 animate.duration = mediaPlayer.duration.toLong()
                 animate.addUpdateListener {
                     val value = it.animatedValue as Int
                     recordPlayView.setTime(value)
                 }
-                timeText.text =formatDuration(mediaPlayer.duration.toLong())
+                timeText.text = formatDuration(mediaPlayer.duration.toLong())
                 recordPlayView.setOnClickListener {
                     mediaPlayer.start()
                     animate.start()
@@ -132,9 +126,10 @@ class RecordHolder() {
                 }
             }
         }
-        private fun formatDuration(duration:Long):String{
-            val second = duration/1000
-            val million = duration/100-second*10
+
+        private fun formatDuration(duration: Long): String {
+            val second = duration / 1000
+            val million = duration / 100 - second * 10
             return "$second″$million"
 
         }

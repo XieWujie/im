@@ -13,15 +13,26 @@ import java.io.IOException
 
 class PhotoDownloadTarget(private val context: Context):SimpleTarget<File>() {
 
-    private lateinit var savePath:String
+    private val  savePath:String
 
     init {
        val basePath = if (Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED){
            Environment.getExternalStorageDirectory().absolutePath
        }else{
-           context.externalCacheDir?.absolutePath
+           context.cacheDir.absolutePath
        }
         savePath = "$basePath/avlog/图片"
+        val path = File(savePath)
+        if(!path.exists()){
+            try {
+                path.mkdirs()
+            }catch (e:IOException){
+                e.printStackTrace()
+                pushMainThread {
+                    context.toast("保存失败:${e.message}")
+                }
+            }
+        }
     }
 
 
@@ -53,14 +64,13 @@ class PhotoDownloadTarget(private val context: Context):SimpleTarget<File>() {
             }
         } catch (e: Exception) {
             e.printStackTrace()
+            pushMainThread {
+                context.toast("保存失败:${e.message}")
+            }
         } finally {
             try {
-                if (fileInputStream != null) {
-                    fileInputStream.close()
-                }
-                if (fileOutputStream != null) {
-                    fileOutputStream.close()
-                }
+                fileInputStream?.close()
+                fileOutputStream?.close()
             } catch (e: IOException) {
                 e.printStackTrace()
             }

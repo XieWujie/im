@@ -17,10 +17,13 @@ class CirclePlayBar :View{
     private lateinit var info:PaintInfo
     private var color = Color.WHITE
 
-    constructor(context:Context):super(context)
+    constructor(context:Context):super(context){
+        init()
+    }
     constructor(context: Context,attributeSet: AttributeSet):super(context,attributeSet){
         val ta = context.obtainStyledAttributes(attributeSet,R.styleable.CirclePlayBar)
         color = ta.getColor(R.styleable.CirclePlayBar_bar_color,Color.WHITE)
+        init()
     }
     private val redPaint:Paint = Paint()
     private val barPaint:Paint = Paint()
@@ -28,13 +31,15 @@ class CirclePlayBar :View{
     private var allTime = 0f
     private var isPlaying = false
 
-    init {
+    fun init(){
         barPaint.color = color
         barPaint.strokeWidth = 4.0f
         barPaint.isDither = true
         barPaint.isAntiAlias = true
         barPaint.style = Paint.Style.STROKE
     }
+
+
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         var r = min(MeasureSpec.getSize(widthMeasureSpec), MeasureSpec.getSize(heightMeasureSpec))
