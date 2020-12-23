@@ -1,6 +1,7 @@
 package com.common.util
 
 import android.app.Activity
+import android.app.Service
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -8,6 +9,7 @@ import android.database.Cursor
 import android.graphics.Color
 import android.net.Uri
 import android.os.Build
+import android.os.Vibrator
 import android.provider.MediaStore
 import android.view.View
 import android.view.WindowManager
@@ -48,9 +50,9 @@ object Util {
         }
     }
 
-    fun clipText(context: Context,text:String){
+    fun clipText(context: Context, text: String){
         val m = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        m.setPrimaryClip( ClipData.newPlainText("lineMe",text))
+        m.setPrimaryClip(ClipData.newPlainText("lineMe", text))
     }
 
     fun showSoftInput(editText: EditText){
@@ -78,6 +80,11 @@ object Util {
                 cursor?.close()
             }
         }
+    }
+
+    fun starVibrate(context: Context, pattern: LongArray?, isRepeat: Boolean = false) {
+        val vib: Vibrator = context.getSystemService(Service.VIBRATOR_SERVICE) as Vibrator
+        vib.vibrate(pattern, if (isRepeat) 1 else -1)
     }
 
     fun setLightBar(activity: Activity, color: Int) {

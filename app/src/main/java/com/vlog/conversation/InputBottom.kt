@@ -263,6 +263,7 @@ class InputBottom : FrameLayout {
                         if(!micCanUser){
                             return@setOnTouchListener false
                         }
+                        Util.starVibrate(context, longArrayOf(0,60))
                         binding.recordDesText.text = "正在录音..."
                         recorder.createRecord()
                         recorder.start()
@@ -275,13 +276,14 @@ class InputBottom : FrameLayout {
                         binding.recordDesText.text = "正在录音..."
                         recorder.start()
                     }else{
-                        binding.recordDesText.text = "暂停录音..."
+                        binding.recordDesText.text = "松开 结束"
                         recorder.pauseRecord()
                     }
                 }
                 MotionEvent.ACTION_UP,MotionEvent.ACTION_CANCEL->{
-                    binding.recordDesText.text = "按住 录音"
+                    binding.recordDesText.text = "按住 说话"
                     recorder.stopRecord()
+                    Util.starVibrate(context, longArrayOf(0,50))
                     if(rect.contains(x,y)){
                         val content = recorder.getFilePath()
                         val msg =

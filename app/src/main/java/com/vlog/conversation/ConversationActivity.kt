@@ -58,7 +58,7 @@ class ConversationActivity : BaseActivity() {
         dispatchEvent()
     }
 
-    fun reqMic(){
+    private fun reqMic(){
         binding.bottomInputLayout.micPermission = {
             checkMic(it)
         }
@@ -166,7 +166,7 @@ class ConversationActivity : BaseActivity() {
             isRoom = false
             viewModel.friendUpdateListen(conversationId).observe(this){
                 if(it == null)return@observe
-                binding.titleText.text = it.markName?:it.user.username
+                binding.titleText.text = if(it.markName.isNullOrEmpty()) it.user.username else it.markName
                 if(!it.background.isNullOrEmpty()){
                     window.decorView.setBg(it.background!!)
                 }else{

@@ -12,10 +12,12 @@
       android:layout_height="wrap_content">
       <RelativeLayout
           android:id="@+id/send_state_layout"
+          android:layout_marginTop="20dp"
+          android:layout_marginEnd="10dp"
           android:layout_width="wrap_content"
           android:gravity="center"
           android:layout_height="match_parent">
-          <ProgressBar
+          <com.vlog.util.LoadingView
               android:layout_width="24dp"
               android:id="@+id/send_ing"
               android:visibility="gone"

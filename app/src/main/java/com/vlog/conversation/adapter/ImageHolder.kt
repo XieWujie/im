@@ -30,7 +30,7 @@ import kotlin.math.roundToInt
 
 class ImageHolder {
 
-    val dp200 = Util.dp2dx(App.get(),200).toInt()
+    private val dp200 = Util.dp2dx(App.get(),200).toInt()
 
     fun load(
         contentView: ImageView,

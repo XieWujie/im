@@ -9,9 +9,12 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
+import com.common.HOST_PORT
 import com.common.ext.animateEnd
 import com.common.ext.toast
 import com.common.pushMainThread
+import com.common.util.FileUtil
 import com.vlog.conversation.message.MessageService
 import com.vlog.conversation.message.MsgCallback
 import com.vlog.conversation.message.ProgressListener
@@ -29,7 +32,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToInt
 
-class RecordHolder() {
+class RecordHolder {
 
 
     fun fillData(nameText: TextView, avatarView: ImageView, user: User) {
@@ -63,12 +66,17 @@ class RecordHolder() {
             binding.contentCard.setLongClick(message.message, message.user)
             val msg = message.message
             if (msg.isSend) {
+                binding.sendIng.visibility = View.GONE
+                binding.errorState.visibility = View.GONE
             } else {
+                binding.sendIng.visibility = View.VISIBLE
                 MessageService.sendMessage(itemView.context, msg, object : MsgCallback {
                     override fun callback(message: Message?, e: IOException?) {
+                        binding.sendIng.visibility = View.GONE
                         if (e != null) {
                             e.printStackTrace()
                             itemView.context.toast(e.message ?: "")
+                            binding.errorState.visibility = View.VISIBLE
                         } else {
                             msg.isSend = true
                         }
@@ -93,10 +101,12 @@ class RecordHolder() {
                 })
             }
         }
+
     }
 
     companion object {
-        fun b(source: String, timeText: TextView, recordPlayView: CirclePlayBar) {
+
+        private fun playPrepare(source: String,timeText: TextView,recordPlayView: CirclePlayBar){
             val mediaPlayer = MediaPlayer()
             try {
                 mediaPlayer.setDataSource(source)
@@ -125,6 +135,37 @@ class RecordHolder() {
                     recordPlayView.setIsPlaying(false)
                 }
             }
+        }
+        fun b(source: String, timeText: TextView, recordPlayView: CirclePlayBar) {
+             if(source.startsWith("/file/get")){
+                val realUrl = "$HOST_PORT$source"
+                val fileName = source.substring(source.indexOfLast { it == '/' }+1)
+                val context = timeText.context
+                val basePath =   context.cacheDir.absolutePath
+                val path = File("$basePath/record")
+                val file = File("$basePath/record/$fileName")
+                try {
+                    if(!path.exists() || !file.exists()){
+                        path.mkdirs()
+                        file.createNewFile()
+                        FileUtil.saveFile(realUrl,"$path/$fileName"){
+                            pushMainThread {
+                                if(it == null){
+                                    playPrepare(file.absolutePath,timeText,recordPlayView)
+                                }else{
+                                    playPrepare(realUrl,timeText,recordPlayView)
+                                }
+                            }
+                        }
+                    }else{
+                        playPrepare(file.absolutePath,timeText,recordPlayView)
+                    }
+                }catch (e:Exception){
+                    playPrepare(source,timeText,recordPlayView)
+                }
+            }else{
+                 playPrepare(source,timeText,recordPlayView)
+             }
         }
 
         private fun formatDuration(duration: Long): String {
