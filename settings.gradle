@@ -1,3 +1,4 @@
+include ':rtp'
 include ':di'
 include ':di-compiler'
 include ':common'

@@ -20,12 +20,23 @@ android {
                 arguments = [moduleName: project.getName()]
             }
         }
+        ndk {
+            moduleName "rtp"
+            ldLibs "log", "z", "m"
+            abiFilters "armeabi", "armeabi-v7a", "x86"
+        }
     }
 
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    sourceSets {
+        main {
+            jniLibs.srcDir('libs')//生成的so文件在这个目录里面app/libs
         }
     }
 }

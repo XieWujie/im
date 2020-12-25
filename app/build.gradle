@@ -53,6 +53,7 @@ dependencies {
     kapt "androidx.room:room-compiler:$room_version"
     implementation project(":common")
     api project(":di-compiler")
+    implementation project(":rtp")
     kapt project(":di-compiler")
     implementation "android.arch.persistence.room:rxjava2:2.2.0"
 }
