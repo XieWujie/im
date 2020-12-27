@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId "com.vlog"
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
@@ -56,4 +56,6 @@ dependencies {
     implementation project(":rtp")
     kapt project(":di-compiler")
     implementation "android.arch.persistence.room:rxjava2:2.2.0"
+
+    implementation 'org.webrtc:google-webrtc:1.0.32006'
 }

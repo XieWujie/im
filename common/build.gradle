@@ -39,6 +39,10 @@ android {
             jniLibs.srcDir('libs')//生成的so文件在这个目录里面app/libs
         }
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {

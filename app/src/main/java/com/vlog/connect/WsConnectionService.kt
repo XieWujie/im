@@ -15,6 +15,8 @@ import com.vlog.connect.notify.ReplyBroadcast
 import com.vlog.conversation.ConversationActivity
 import com.vlog.conversation.MessageChangeEvent
 import com.vlog.conversation.MessageRemoveEvent
+import com.vlog.conversation.phone.PhoneActivity
+import com.vlog.conversation.phone.RTCEvent
 import com.vlog.database.*
 import com.vlog.user.Owner
 import com.vlog.user.UserSource
@@ -121,10 +123,19 @@ class WsConnectionService:JobIntentService(),WsConnectionListener {
                 msgDao.insert(m.message.apply { isSend = true })
                 return@pushExecutors
             }
-            //通过好友认证，数据库插入联系人
-            if(msg.messageType == Message.Agree){
-                val friend = Friend(m.user,msg.conversationId,Owner().userId)
-                friendDao.insert(friend)
+            when(msg.messageType){
+                Message.Agree->{
+                    val friend = Friend(m.user,msg.conversationId,Owner().userId)
+                    friendDao.insert(friend)
+                }
+                Message.RTC_REGISTER->{
+                   PhoneActivity.launchAnswerPhone(this,m.user,msg.conversationId)
+                    return@pushExecutors
+                }
+                Message.RTC_ONLINE,Message.RTC_NOT_ONLINE,Message.RTC_DES_OFFER,Message.RTC_ICE_OFFER,Message.RTC_DEFY->{
+                    DiBus.postEvent(RTCEvent(msg,m.user))
+                    return@pushExecutors
+                }
             }
             //消息通知
             notifyEvent(m)

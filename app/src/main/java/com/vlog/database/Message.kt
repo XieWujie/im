@@ -73,6 +73,16 @@ data class Message(
         const val FROM_TYPE_FRIEND = 1
         const val FROM_TYPE_ROOM = 2
 
+        const val RTC_DES_OFFER = 101
+        const val RTC_DES_ANSWER = 102
+        const val RTC_DEFY = 103
+        const val RTC_AGREE = 104
+        const val RTC_ICE_OFFER = 105
+        const val RTC_ICE_ANSWER = 106
+        const val RTC_REGISTER = 106
+        const val RTC_NOT_ONLINE = 107
+        const val RTC_ONLINE = 108
+
         override fun createFromParcel(parcel: Parcel): Message {
             return Message(parcel)
         }
