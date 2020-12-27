@@ -208,8 +208,12 @@ public class Participant {
 	public String getCNAME() {
 		return cname;
 	}
-	
-	
+
+
+	public void setSsrc(long ssrc) {
+		this.ssrc = ssrc;
+	}
+
 	/**
 	 * NAME registered for this participant.
 	 * 

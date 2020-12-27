@@ -22,6 +22,7 @@ import com.common.util.Util
 import com.dibus.AutoWire
 import com.dibus.BusEvent
 import com.google.gson.Gson
+import com.vlog.conversation.phone.PhoneActivity
 import com.vlog.conversation.record.RecordHelper
 import com.vlog.photo.PhotoListActivity
 import com.vlog.conversation.writeMessage.event.WordCacheState
@@ -47,6 +48,8 @@ class InputBottom : FrameLayout {
 
     var micPermission:((callback:()->Unit)->Unit)? = null
     private var micCanUser = false
+
+    var phoneCallListener:(()->Unit)? = null
 
 
     private var binding: BottomInputLayoutBinding =
@@ -239,6 +242,10 @@ class InputBottom : FrameLayout {
         }
 
         recordEvent()
+
+        binding.voicePhotoLayout.setOnClickListener {
+           phoneCallListener?.invoke()
+        }
 
     }
 

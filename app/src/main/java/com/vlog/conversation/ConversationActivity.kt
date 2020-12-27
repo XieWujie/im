@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.WindowManager
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -18,6 +19,7 @@ import com.dibus.BusEvent
 import com.vlog.R
 import com.vlog.conversation.adapter.MessageListAdapter
 import com.vlog.conversation.friend.FriendEditActivity
+import com.vlog.conversation.phone.PhoneActivity
 import com.vlog.conversation.room.CovRoomEditActivity
 import com.vlog.database.Friend
 import com.vlog.database.Message
@@ -54,7 +56,7 @@ class ConversationActivity : BaseActivity() {
         binding.recyclerView.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, true).apply {
             stackFromEnd = true
         }
-        init()
+        init(intent)
         dispatchEvent()
     }
 
@@ -125,7 +127,7 @@ class ConversationActivity : BaseActivity() {
                     val originLiveData =
                         viewModel.queryBeforeMessage(currentConversationId, adapter.getFirstItemBefore())
                     originLiveData.apply {
-                        observe(this@ConversationActivity) {
+                        observe(this@ConversationActivity, Observer{
                             if (it.isNotEmpty()) {
                                 adapter.addBefore(it)
                             }
@@ -134,15 +136,15 @@ class ConversationActivity : BaseActivity() {
                                     adapter.getFirstItemBefore() / 1000,
                                     currentConversationId
                                 )
-                                originNetLiveData.observe(this@ConversationActivity) {
+                                originNetLiveData.observe(this@ConversationActivity, Observer{
                                     isLoading = false
                                     originNetLiveData.removeObservers(this@ConversationActivity)
-                                }
+                                })
                             } else {
                                 isLoading = false
                             }
                             removeObservers(this@ConversationActivity)
-                        }
+                        })
                     }
                 }
             }
@@ -152,20 +154,21 @@ class ConversationActivity : BaseActivity() {
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
+        intent?:return
         adapter.clearData()
-        init()
+        init(intent)
     }
 
 
 
-    private fun init() {
+    private fun init(intent: Intent) {
         var conversationId = -1
         val friend = intent.getParcelableExtra<Friend>("friend")
         if (friend != null) {
             conversationId = friend.conversationId
             isRoom = false
-            viewModel.friendUpdateListen(conversationId).observe(this){
-                if(it == null)return@observe
+            viewModel.friendUpdateListen(conversationId).observe(this, Observer{
+                if(it == null)return@Observer
                 binding.titleText.text = if(it.markName.isNullOrEmpty()) it.user.username else it.markName
                 if(!it.background.isNullOrEmpty()){
                     window.decorView.setBg(it.background!!)
@@ -175,13 +178,16 @@ class ConversationActivity : BaseActivity() {
                 binding.moreActionView.setOnClickListener {
                     FriendEditActivity.launch(friend,this)
                 }
-            }
+                binding.bottomInputLayout.phoneCallListener = {
+                    PhoneActivity.launchVoicePhone(this,it.user)
+                }
+            })
         } else {
             val room =
                 intent.getParcelableExtra<Room>("room") ?: throw RuntimeException("传入friend 或者room")
             isRoom = true
             conversationId = room.conversationId
-            viewModel.roomChangeListen(room.conversationId).observe(this){r->
+            viewModel.roomChangeListen(room.conversationId).observe(this, Observer{ r->
                 binding.moreActionView.setOnClickListener {
                     CovRoomEditActivity.launch(this, r)
                 }
@@ -191,7 +197,7 @@ class ConversationActivity : BaseActivity() {
                 }else{
                     window.decorView.setBg(R.drawable.cov_default_bg)
                 }
-            }
+            })
         }
         if (isRoom) {
             binding.bottomInputLayout.fromType = Message.FROM_TYPE_ROOM
@@ -212,20 +218,20 @@ class ConversationActivity : BaseActivity() {
 
     private fun dispatchEvent(conversationId: Int) {
         viewModel.queryMessage(conversationId, maxTime).apply {
-            observe(this@ConversationActivity) { list ->
+            observe(this@ConversationActivity, Observer { list ->
                 adapter.flashList(list)
                 removeObservers(this@ConversationActivity)
                 viewModel.getLatest(conversationId).apply {
-                    observe(this@ConversationActivity){
+                    observe(this@ConversationActivity, Observer{
                         if(conversationId != currentConversationId){
-                            return@observe
+                            return@Observer
                         }
                         if(it != null){
                             adapter.messageInsert(it)
                         }
-                    }
+                    })
                 }
-            }
+            })
         }
 
     }

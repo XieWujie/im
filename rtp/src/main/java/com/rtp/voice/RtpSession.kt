@@ -7,12 +7,12 @@ import com.rtp.jlibrtp.RTPSession
 import java.net.DatagramSocket
 
 object RtpSession : RTPAppIntf, Runnable {
-    val rtpSession: RTPSession
+    lateinit var rtpSession: RTPSession
     private val track = RtpAudioTrack()
     private val record = RtpAudioRecord()
 
-    private var callListener:((Participant)->Unit)? = null
-    private var byeListener:((Participant)->Unit)? = null
+    var callListener:((Participant)->Unit)? = null
+    var byeListener:((Participant)->Unit)? = null
 
 
     @Volatile
@@ -25,12 +25,12 @@ object RtpSession : RTPAppIntf, Runnable {
 
     override fun userEvent(type: Int, participant: Array<Participant>) {
         when(type){
-            1->participant?.forEach {
-                byeListener?.invoke(it)
-            }
-            2-> participant.forEach {
-                callListener?.invoke(it)
-            }
+//            1->participant.forEach {
+//                byeListener?.invoke(it)
+//            }
+//            2-> participant.forEach {
+//              //  callListener?.invoke(it)
+//            }
         }
     }
 
@@ -39,15 +39,15 @@ object RtpSession : RTPAppIntf, Runnable {
     }
 
     override fun run() {
-        while (!isReleased) {
-            val b = ByteArray(1024)
-            record.read(b)
-            rtpSession.sendData(b)
-        }
+//        while (!isReleased) {
+//            val b = ByteArray(1024)
+//            record.read(b)
+//            rtpSession.sendData(b)
+//        }
     }
 
     fun start(){
-        Thread(this).start()
+        //Thread(this).start()
     }
 
 
@@ -60,9 +60,10 @@ object RtpSession : RTPAppIntf, Runnable {
         } catch (e: Exception) {
             e.printStackTrace()
         }
-        rtpSession = RTPSession(rtpSocket, rtcpSocket).apply {
-            RTPSessionRegister(this@RtpSession, null, null)
-        }
+        Thread(Runnable {
+            rtpSession = RTPSession(rtpSocket, rtcpSocket)
+            rtpSession.RTPSessionRegister(this,null,null)
+        }).start()
 
 
         //建立会话
@@ -72,4 +73,5 @@ object RtpSession : RTPAppIntf, Runnable {
     fun addParticipant(p:Participant) {
         rtpSession.addParticipant(p)
     }
+
 }
