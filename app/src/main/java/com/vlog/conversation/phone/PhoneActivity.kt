@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import com.common.ext.toast
 import com.dibus.AutoWire
 import com.vlog.R
 import com.vlog.database.Friend
@@ -13,10 +12,6 @@ import com.vlog.database.Message
 import com.vlog.database.User
 import com.vlog.databinding.ActivityPhoneBinding
 import dibus.app.PhoneActivityCreator
-import org.webrtc.Camera1Enumerator
-import org.webrtc.Camera2Enumerator
-import org.webrtc.CameraEnumerator
-import org.webrtc.VideoCapturer
 
 
 class PhoneActivity : AppCompatActivity() {
@@ -31,6 +26,7 @@ class PhoneActivity : AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this,R.layout.activity_phone)
         PhoneActivityCreator.inject(this)
         init(intent)
+        dispatchEvent()
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -39,23 +35,33 @@ class PhoneActivity : AppCompatActivity() {
         init(intent)
     }
 
+   private fun dispatchEvent(){
+        binding.closeCallLayout.setOnClickListener {
+            viewModel.closeMediaCapturer()
+        }
+       binding.cameraSwitchLayout.setOnClickListener {
+           viewModel.changeVideoCapturer()
+       }
+       binding.voiceStateLayout.setOnClickListener {
+           it.isSelected = !it.isSelected
+           viewModel.setVoice(it.isSelected)
+       }
+       binding.micStateLayout.setOnClickListener {
+           it.isSelected = !it.isSelected
+           viewModel.setVideoOrVoice(!it.isSelected)
+       }
+    }
+
     private fun init(intent: Intent){
         val conversationId = intent.getIntExtra("conversationId",-1)
-        val user = intent.getParcelableExtra<User>("user")?:return
-        initUi(user)
-        viewModel.connect(conversationId,Message.FROM_TYPE_FRIEND,this)
-        val videoCapturer = createVideoCapturer()
-        if(videoCapturer == null){
-            toast("获取不到摄像头")
-            return
-        }
-        viewModel.attachView(binding.localSurface,binding.remoteSurface,videoCapturer)
+        viewModel.init(conversationId,Message.FROM_TYPE_FRIEND,this)
+        viewModel.attachView(binding.localSurface,binding.remoteSurface)
         when(intent.getIntExtra(ACTION,0)){
             ACTION_CALL->{
-
+                viewModel.call()
             }
             ACTION_ANSWER->{
-
+                viewModel.reCall()
             }
         }
     }
@@ -84,43 +90,10 @@ class PhoneActivity : AppCompatActivity() {
             val intent = Intent(context,PhoneActivity::class.java).apply {
                 putExtra("user",user)
                 putExtra("conversationId",conversationId)
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 putExtra(ACTION, ACTION_ANSWER)
             }
             context.startActivity(intent)
         }
-    }
-
-    private fun createVideoCapturer(): VideoCapturer? {
-        return if (Camera2Enumerator.isSupported(this)) {
-            createCameraCapturer(Camera2Enumerator(this))
-        } else {
-            createCameraCapturer(Camera1Enumerator(true))
-        }
-    }
-
-    private fun createCameraCapturer(enumerator: CameraEnumerator): VideoCapturer? {
-        val deviceNames = enumerator.deviceNames
-
-
-        for (deviceName in deviceNames) {
-            if (enumerator.isFrontFacing(deviceName)) {
-
-                val videoCapturer: VideoCapturer? = enumerator.createCapturer(deviceName, null)
-                if (videoCapturer != null) {
-                    return videoCapturer
-                }
-            }
-        }
-
-        for (deviceName in deviceNames) {
-            if (!enumerator.isFrontFacing(deviceName)) {
-
-                val videoCapturer: VideoCapturer? = enumerator.createCapturer(deviceName, null)
-                if (videoCapturer != null) {
-                    return videoCapturer
-                }
-            }
-        }
-        return null
     }
 }

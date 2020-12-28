@@ -2,20 +2,14 @@ package com.vlog.conversation
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.view.WindowManager
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.common.base.BaseActivity
 import com.common.util.Util
 import com.dibus.AutoWire
-import com.dibus.BusEvent
 import com.vlog.R
 import com.vlog.conversation.adapter.MessageListAdapter
 import com.vlog.conversation.friend.FriendEditActivity
@@ -23,7 +17,6 @@ import com.vlog.conversation.phone.PhoneActivity
 import com.vlog.conversation.room.CovRoomEditActivity
 import com.vlog.database.Friend
 import com.vlog.database.Message
-import com.vlog.database.MsgWithUser
 import com.vlog.database.Room
 import com.vlog.databinding.ActivityConversationBinding
 import com.vlog.photo.setBg
@@ -179,7 +172,7 @@ class ConversationActivity : BaseActivity() {
                     FriendEditActivity.launch(friend,this)
                 }
                 binding.bottomInputLayout.phoneCallListener = {
-                    PhoneActivity.launchVoicePhone(this,it.user)
+                    PhoneActivity.launchVoicePhone(this,it)
                 }
             })
         } else {

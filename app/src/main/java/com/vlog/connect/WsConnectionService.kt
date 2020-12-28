@@ -118,7 +118,7 @@ class WsConnectionService:JobIntentService(),WsConnectionListener {
                 return@pushExecutors
             }
             //自己发送的消息，更新数据库并发送数据更新事件
-            if(msg.sendFrom == Owner().userId){
+            if(msg.sendFrom == Owner().userId && msg.messageType<100){
                 DiBus.postEvent(MessageChangeEvent(MsgWithUser(m.message, m.user)))
                 msgDao.insert(m.message.apply { isSend = true })
                 return@pushExecutors
@@ -132,8 +132,10 @@ class WsConnectionService:JobIntentService(),WsConnectionListener {
                    PhoneActivity.launchAnswerPhone(this,m.user,msg.conversationId)
                     return@pushExecutors
                 }
-                Message.RTC_ONLINE,Message.RTC_NOT_ONLINE,Message.RTC_DES_OFFER,Message.RTC_ICE_OFFER,Message.RTC_DEFY->{
-                    DiBus.postEvent(RTCEvent(msg,m.user))
+                Message.RTC_ONLINE,Message.RTC_NOT_ONLINE,Message.RTC_DES_OFFER,Message.RTC_ICE_OFFER,Message.RTC_DEFY,Message.RTC_AGREE->{
+                    if(msg.sendFrom != Owner().userId) {
+                        DiBus.postEvent(RTCEvent(msg, m.user))
+                    }
                     return@pushExecutors
                 }
             }

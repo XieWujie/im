@@ -16,17 +16,19 @@ private const val TAG = "SessionInitial"
 
 class SessionInitial(private val fromType:Int,private val conversationId:Int,private val  context: Context) {
 
-    private lateinit var localSurfaceView: SurfaceViewRenderer
     private lateinit var remoteSurfaceView: SurfaceViewRenderer
     private lateinit var eglBase: EglBase
     private lateinit var peerConnectionFactory: PeerConnectionFactory
 
-    private lateinit var channel: DataChannel
+    private  var channel: DataChannel? = null
     private lateinit var videoTrack: VideoTrack
     private lateinit var audioTrack: AudioTrack
     private lateinit var peerConnection: PeerConnection
     private lateinit var streamList: List<String>
     private lateinit var observer: MySdpObserver
+
+    private var mMediaStream:MediaStream? = null
+    private var mCameraVideoCapturer:CameraVideoCapturer? = null
 
     private lateinit var iceServers: ArrayList<IceServer>
 
@@ -62,7 +64,8 @@ class SessionInitial(private val fromType:Int,private val conversationId:Int,pri
         val configuration = RTCConfiguration(iceServers)
         val connectionObserver: PeerConnectionObserver = getObserver()
         peerConnection =
-            peerConnectionFactory.createPeerConnection(configuration, connectionObserver)!!
+            peerConnectionFactory.
+            createPeerConnection(configuration, connectionObserver)?:throw RuntimeException("can not create peerConnection")
 
 
         /*
@@ -75,6 +78,8 @@ class SessionInitial(private val fromType:Int,private val conversationId:Int,pri
         channel = peerConnection.createDataChannel(PhoneConstant.CHANNEL, init)
         val channelObserver = DateChannelObserver()
         connectionObserver.setObserver(channelObserver)
+
+         mMediaStream = peerConnectionFactory.createLocalMediaStream("ARDAMS")
         initObserver()
     }
 
@@ -111,6 +116,7 @@ class SessionInitial(private val fromType:Int,private val conversationId:Int,pri
         return object : PeerConnectionObserver() {
             override fun onIceCandidate(iceCandidate: IceCandidate?) {
                 super.onIceCandidate(iceCandidate)
+                Log.d(TAG,"ice")
                 if (iceCandidate != null) {
                     setIceCandidate(iceCandidate)
                 }
@@ -134,14 +140,50 @@ class SessionInitial(private val fromType:Int,private val conversationId:Int,pri
     }
 
     fun addIce(iceCandidate: IceCandidate){
-        peerConnection?.addIceCandidate(iceCandidate)
+        peerConnection.addIceCandidate(iceCandidate)
     }
 
-    fun attachView(local: SurfaceViewRenderer,remote:SurfaceViewRenderer,videoCapturer: VideoCapturer){
-        initSurfaceView(remote)
+    private fun createVideoCapturer(): VideoCapturer? {
+        return if (Camera2Enumerator.isSupported(context)) {
+            createCameraCapturer(Camera2Enumerator(context))
+        } else {
+            createCameraCapturer(Camera1Enumerator(true))
+        }
+    }
+
+    private fun createCameraCapturer(enumerator: CameraEnumerator): VideoCapturer? {
+        val deviceNames = enumerator.deviceNames
+
+
+        for (deviceName in deviceNames) {
+            if (enumerator.isFrontFacing(deviceName)) {
+
+                mCameraVideoCapturer = enumerator.createCapturer(deviceName, null)
+                if (mCameraVideoCapturer != null) {
+
+                    return mCameraVideoCapturer
+                }
+            }
+        }
+
+        for (deviceName in deviceNames) {
+            if (!enumerator.isFrontFacing(deviceName)) {
+
+                val videoCapturer: VideoCapturer? = enumerator.createCapturer(deviceName, null)
+                if (videoCapturer != null) {
+                    return videoCapturer
+                }
+            }
+        }
+        return null
+    }
+
+    fun attachView(local: SurfaceViewRenderer,remote:SurfaceViewRenderer){
+        this.remoteSurfaceView = remote
         initSurfaceView(local)
+        initSurfaceView(remote)
         startLocalAudioCapture()
-        startLocalVideoCapture(localSurfaceView,videoCapturer)
+        startLocalVideoCapture(local,createVideoCapturer()?:throw RuntimeException("找不到摄像头"))
     }
 
     private fun startLocalVideoCapture(localSurfaceView: SurfaceViewRenderer,videoCapturer: VideoCapturer) {
@@ -202,13 +244,19 @@ class SessionInitial(private val fromType:Int,private val conversationId:Int,pri
         peerConnection.addStream(localMediaStream)
     }
 
-    private fun initSurfaceView(localSurfaceView: SurfaceViewRenderer) {
-        localSurfaceView.init(eglBase.eglBaseContext, null)
-        localSurfaceView.setMirror(true)
-        localSurfaceView.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FILL)
-        localSurfaceView.keepScreenOn = true
-        localSurfaceView.setZOrderMediaOverlay(true)
-        localSurfaceView.setEnableHardwareScaler(false)
+    private fun initSurfaceView(surfaceView: SurfaceViewRenderer) {
+        surfaceView.apply {
+            try {
+                init(eglBase.eglBaseContext, null)
+            }catch (e:Exception){
+                e.printStackTrace()
+            }
+            setMirror(true)
+            setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FILL)
+            keepScreenOn = true
+            setZOrderMediaOverlay(true)
+            setEnableHardwareScaler(false)
+        }
     }
 
     fun createOffer() {
@@ -217,7 +265,7 @@ class SessionInitial(private val fromType:Int,private val conversationId:Int,pri
         peerConnection.createOffer(observer, mediaConstraints)
     }
 
-     fun createAnswer() {
+     private fun createAnswer() {
         val mediaConstraints = MediaConstraints()
         mediaConstraints.mandatory.add(MediaConstraints.KeyValuePair("OfferToReceiveVideo", "true"))
         peerConnection.createAnswer(observer, mediaConstraints)
@@ -260,6 +308,54 @@ class SessionInitial(private val fromType:Int,private val conversationId:Int,pri
         DiBus.postEvent(message,MessageSend{
 
         })
+    }
+
+    /**
+     * 切换前后摄像头
+     */
+    fun changeVideoCapturer() {
+        val cameraVideoCapturer: CameraVideoCapturer = mCameraVideoCapturer?:return
+        cameraVideoCapturer.switchCamera(null)
+    }
+
+    /**
+     * 关闭通话
+     */
+    fun closeMediaCapturer() {
+        if (mMediaStream != null) {
+            mMediaStream?.dispose()
+        }
+        if (mCameraVideoCapturer != null) {
+            mCameraVideoCapturer?.dispose()
+        }
+    }
+
+    /**
+     * 视频转语音
+     */
+    fun setVideoOrVoice(video: Boolean) {
+        val mediaStream = mMediaStream?:return
+        if (video) {
+            val currentTrack: VideoTrack = mediaStream.videoTracks[0]
+            currentTrack.setEnabled(false)
+        } else {
+            val currentTrack: VideoTrack = mediaStream.videoTracks[0]
+            currentTrack.setEnabled(true)
+        }
+    }
+
+    /**
+     * 静音切换
+     */
+    fun setVoice(voice: Boolean) {
+        val mediaStream = mMediaStream?:return
+        if (voice) {
+            val currentTrack: AudioTrack = mediaStream.audioTracks[0]
+            currentTrack.setEnabled(false)
+        } else {
+            val currentTrack: AudioTrack = mediaStream.audioTracks[0]
+            currentTrack.setEnabled(true)
+        }
     }
 
 
