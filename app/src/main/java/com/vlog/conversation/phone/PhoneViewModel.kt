@@ -109,7 +109,9 @@ class PhoneViewModel @ViewModelService(PhoneActivity::class)internal constructor
     /**
      * 静音切换
      */
-    fun setVoice(voice: Boolean)  = sessionInitial?.setVoice(voice)
+    fun setMic(mic: Boolean)  = sessionInitial?.setMic(mic)
+
+    fun setIsVoice(voice: Boolean) = sessionInitial?.setIsVoice(voice)
 
 }
 

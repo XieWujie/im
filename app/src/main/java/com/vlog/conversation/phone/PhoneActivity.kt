@@ -1,5 +1,6 @@
 package com.vlog.conversation.phone
 
+import android.animation.ObjectAnimator
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -39,17 +40,28 @@ class PhoneActivity : AppCompatActivity() {
         binding.closeCallLayout.setOnClickListener {
             viewModel.closeMediaCapturer()
         }
+       val rotAni = ObjectAnimator.ofFloat(binding.cameraSwitchView,"rotationY",0f,180f)
+       rotAni.duration = 1000
        binding.cameraSwitchLayout.setOnClickListener {
+           rotAni.start()
            viewModel.changeVideoCapturer()
        }
        binding.voiceStateLayout.setOnClickListener {
-           it.isSelected = !it.isSelected
-           viewModel.setVoice(it.isSelected)
+           val view = binding.voiceStateView
+           view.isSelected = !view.isSelected
+           viewModel.setIsVoice(view.isSelected)
+       }
+       binding.cameraStateLayout.setOnClickListener {
+           val view = binding.cameraStateView
+           view.isSelected = !view.isSelected
+           viewModel.setVideoOrVoice(view.isSelected)
        }
        binding.micStateLayout.setOnClickListener {
-           it.isSelected = !it.isSelected
-           viewModel.setVideoOrVoice(!it.isSelected)
+           val view = binding.micStateView
+           view.isSelected = !view.isSelected
+           viewModel.setMic(view.isSelected)
        }
+
     }
 
     private fun init(intent: Intent){

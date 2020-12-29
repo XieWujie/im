@@ -27,10 +27,14 @@ class SessionInitial(private val fromType:Int,private val conversationId:Int,pri
     private lateinit var streamList: List<String>
     private lateinit var observer: MySdpObserver
 
-    private var mMediaStream:MediaStream? = null
+    private var videoStream:MediaStream? = null
+    private var audioStream:MediaStream? = null
     private var mCameraVideoCapturer:CameraVideoCapturer? = null
 
     private lateinit var iceServers: ArrayList<IceServer>
+
+    @Volatile
+    private  var noAudio = false
 
 
      fun createPeerConnection() {
@@ -78,8 +82,6 @@ class SessionInitial(private val fromType:Int,private val conversationId:Int,pri
         channel = peerConnection.createDataChannel(PhoneConstant.CHANNEL, init)
         val channelObserver = DateChannelObserver()
         connectionObserver.setObserver(channelObserver)
-
-         mMediaStream = peerConnectionFactory.createLocalMediaStream("ARDAMS")
         initObserver()
     }
 
@@ -100,7 +102,6 @@ class SessionInitial(private val fromType:Int,private val conversationId:Int,pri
                 val localDescription = peerConnection.localDescription
                 val type = localDescription.type
                 Log.e(TAG, "onCreateSuccess ==  type == $type")
-                //接下来使用之前的WebSocket实例将offer发送给服务器
                 when (type) {
                     SessionDescription.Type.OFFER -> offer(sessionDescription)
                     SessionDescription.Type.ANSWER -> answer(sessionDescription)
@@ -134,6 +135,7 @@ class SessionInitial(private val fromType:Int,private val conversationId:Int,pri
                 if (audioTracks != null && audioTracks.size > 0) {
                     val audioTrack = audioTracks[0]
                     audioTrack?.setVolume(PhoneConstant.VOLUME.toDouble())
+                    audioTrack?.setEnabled(noAudio)
                 }
             }
         }
@@ -178,6 +180,10 @@ class SessionInitial(private val fromType:Int,private val conversationId:Int,pri
         return null
     }
 
+    fun setIsVoice(voice: Boolean){
+        noAudio = voice
+    }
+
     fun attachView(local: SurfaceViewRenderer,remote:SurfaceViewRenderer){
         this.remoteSurfaceView = remote
         initSurfaceView(local)
@@ -208,6 +214,7 @@ class SessionInitial(private val fromType:Int,private val conversationId:Int,pri
         localMediaStream.addTrack(videoTrack)
         peerConnection.addTrack(videoTrack, streamList)
         peerConnection.addStream(localMediaStream)
+        videoStream = localMediaStream
     }
 
     private fun startLocalAudioCapture() {
@@ -225,12 +232,7 @@ class SessionInitial(private val fromType:Int,private val conversationId:Int,pri
         //高音过滤
         audioConstraints.mandatory.add(MediaConstraints.KeyValuePair("googHighpassFilter", "true"))
         //噪音处理
-        audioConstraints.mandatory.add(
-            MediaConstraints.KeyValuePair(
-                "googNoiseSuppression",
-                "true"
-            )
-        )
+        audioConstraints.mandatory.add(MediaConstraints.KeyValuePair("googNoiseSuppression", "true"))
         val audioSource = peerConnectionFactory.createAudioSource(audioConstraints)
         audioTrack = peerConnectionFactory.createAudioTrack(
             PhoneConstant.AUDIO_TRACK_ID,
@@ -242,6 +244,7 @@ class SessionInitial(private val fromType:Int,private val conversationId:Int,pri
         audioTrack.setVolume(PhoneConstant.VOLUME.toDouble())
         peerConnection.addTrack(audioTrack, streamList)
         peerConnection.addStream(localMediaStream)
+        audioStream = localMediaStream
     }
 
     private fun initSurfaceView(surfaceView: SurfaceViewRenderer) {
@@ -322,9 +325,8 @@ class SessionInitial(private val fromType:Int,private val conversationId:Int,pri
      * 关闭通话
      */
     fun closeMediaCapturer() {
-        if (mMediaStream != null) {
-            mMediaStream?.dispose()
-        }
+
+        videoStream?.dispose()
         if (mCameraVideoCapturer != null) {
             mCameraVideoCapturer?.dispose()
         }
@@ -334,7 +336,8 @@ class SessionInitial(private val fromType:Int,private val conversationId:Int,pri
      * 视频转语音
      */
     fun setVideoOrVoice(video: Boolean) {
-        val mediaStream = mMediaStream?:return
+        val mediaStream = videoStream?:return
+        if(mediaStream.videoTracks.isEmpty())return
         if (video) {
             val currentTrack: VideoTrack = mediaStream.videoTracks[0]
             currentTrack.setEnabled(false)
@@ -347,9 +350,11 @@ class SessionInitial(private val fromType:Int,private val conversationId:Int,pri
     /**
      * 静音切换
      */
-    fun setVoice(voice: Boolean) {
-        val mediaStream = mMediaStream?:return
-        if (voice) {
+    fun setMic(mic: Boolean) {
+        val mediaStream = audioStream?:return
+        Log.d("voice",mediaStream.audioTracks.size.toString())
+        if(mediaStream.audioTracks.isEmpty())return
+        if (mic) {
             val currentTrack: AudioTrack = mediaStream.audioTracks[0]
             currentTrack.setEnabled(false)
         } else {

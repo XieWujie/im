@@ -77,10 +77,11 @@
         app:layout_constraintTop_toBottomOf="@+id/phone_state_text"
         app:layout_constraintVertical_bias="0.7"
         android:layout_height="70dp">
-        <ImageButton
+        <ImageView
             android:layout_width="wrap_content"
             android:src="@drawable/camera_state"
             android:background="@null"
+            android:id="@+id/camera_state_view"
             android:layout_centerInParent="true"
             android:layout_height="wrap_content"/>
     </RelativeLayout>
@@ -96,10 +97,11 @@
         app:layout_constraintTop_toBottomOf="@+id/phone_state_text"
         app:layout_constraintVertical_bias="0.7"
         android:layout_height="70dp">
-        <ImageButton
+        <ImageView
             android:layout_width="wrap_content"
             android:src="@drawable/ic_switch_camera"
             android:background="@null"
+            android:id="@+id/camera_switch_view"
             android:layout_centerInParent="true"
             android:layout_height="wrap_content"/>
     </RelativeLayout>
@@ -114,9 +116,10 @@
         app:layout_constraintTop_toBottomOf="@+id/camera_switch_layout"
         app:layout_constraintVertical_bias="0.4"
         android:layout_height="70dp">
-        <ImageButton
+        <ImageView
             android:layout_width="wrap_content"
             android:src="@drawable/mic_state"
+            android:id="@+id/mic_state_view"
             android:layout_centerInParent="true"
             android:background="@null"
             android:layout_height="wrap_content"/>
@@ -132,10 +135,11 @@
         app:layout_constraintTop_toBottomOf="@+id/camera_switch_layout"
         app:layout_constraintVertical_bias="0.4"
         android:layout_height="70dp">
-        <ImageButton
+        <ImageView
             android:layout_width="wrap_content"
             android:src="@drawable/ic_close_call"
             android:background="@null"
+            android:id="@+id/close_call_view"
             android:layout_centerInParent="true"
             android:layout_height="wrap_content"/>
     </RelativeLayout>
@@ -150,10 +154,11 @@
         app:layout_constraintTop_toBottomOf="@+id/camera_switch_layout"
         app:layout_constraintVertical_bias="0.4"
         android:layout_height="70dp">
-        <ImageButton
+        <ImageView
             android:layout_width="wrap_content"
             android:src="@drawable/voice_state"
             android:background="@null"
+            android:id="@+id/voice_state_view"
             android:layout_centerInParent="true"
             android:layout_height="wrap_content"/>
     </RelativeLayout>
