@@ -5,7 +5,6 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.net.ConnectivityManager.EXTRA_REASON
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
@@ -65,6 +64,43 @@ class Notify(private val context: Context) {
         }
     }
 
+    fun sendPhoneNotification(user: User,intent: Intent,des:String){
+        checkChanel()
+        pushExecutors {
+            val myBitmap = Glide.with(context)
+                .asBitmap()
+                .load("$HOST_PORT${user.avatar}")
+                .submit()
+                .get()
+
+            val notify = NotificationCompat.Builder(context, channelId)
+                .setContentTitle(user.username)
+                .setContentText(des)
+                .setDefaults(NotificationCompat.DEFAULT_LIGHTS)
+                .setAutoCancel(false)
+                .setDefaults(NotificationCompat.DEFAULT_SOUND)
+                .setDefaults(NotificationCompat.DEFAULT_VIBRATE)
+                .setWhen(System.currentTimeMillis())
+                .setContentIntent(
+                    PendingIntent.getActivity(
+                        context,
+                        0,
+                        intent,
+                        PendingIntent.FLAG_CANCEL_CURRENT
+                    )
+                )
+                .setSmallIcon(R.drawable.ic_message)
+                .setLargeIcon(myBitmap)
+
+            manager.notify(1, notify.build())
+        }
+    }
+
+    fun removeNotification(){
+        manager.cancel(1)
+    }
+
+
     private fun sendNotification(title: String, message: Message, avatar: String, intent: Intent) {
         val myBitmap = Glide.with(context)
             .asBitmap()
@@ -102,6 +138,7 @@ class Notify(private val context: Context) {
         }
         manager.notify(1, notify.build())
     }
+
 
     @RequiresApi(Build.VERSION_CODES.KITKAT_WATCH)
     private fun getRemoveAction(message: Message): NotificationCompat.Action? {

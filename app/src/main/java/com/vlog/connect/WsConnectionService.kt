@@ -128,11 +128,16 @@ class WsConnectionService:JobIntentService(),WsConnectionListener {
                     val friend = Friend(m.user,msg.conversationId,Owner().userId)
                     friendDao.insert(friend)
                 }
-                Message.RTC_REGISTER->{
-                   PhoneActivity.launchAnswerPhone(this,m.user,msg.conversationId)
+                Message.RTC_REGISTER_AUDIO->{
+                   PhoneActivity.launchAnswerAudio(this,m.user,msg.conversationId)
                     return@pushExecutors
                 }
-                Message.RTC_ONLINE,Message.RTC_NOT_ONLINE,Message.RTC_DES_OFFER,Message.RTC_ICE_OFFER,Message.RTC_DEFY,Message.RTC_AGREE->{
+                Message.RTC_REGISTER_VIDEO->{
+                    PhoneActivity.launchAnswerVideo(this,m.user,msg.conversationId)
+                    return@pushExecutors
+                }
+                Message.RTC_ONLINE,Message.RTC_NOT_ONLINE,Message.RTC_DES_OFFER,Message.RTC_ICE_OFFER,
+                Message.RTC_DEFY,Message.RTC_AGREE_AUDIO,Message.RTC_AGREE_VIDEO,Message.RTC_CLOSE->{
                     if(msg.sendFrom != Owner().userId) {
                         DiBus.postEvent(RTCEvent(msg, m.user))
                     }

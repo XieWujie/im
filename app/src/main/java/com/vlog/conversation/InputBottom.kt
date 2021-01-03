@@ -5,31 +5,25 @@ import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Rect
-import android.graphics.RectF
-import android.text.Editable
-import android.text.Html
-import android.text.TextWatcher
 import android.util.AttributeSet
-import android.util.Log
-import android.view.GestureDetector
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.widget.FrameLayout
-import com.common.ext.*
+import com.common.ext.afterTextChanged
+import com.common.ext.animateEnd
+import com.common.ext.setEmotionText
 import com.common.pushExecutors
 import com.common.util.Util
 import com.dibus.AutoWire
 import com.dibus.BusEvent
-import com.google.gson.Gson
-import com.vlog.conversation.phone.PhoneActivity
 import com.vlog.conversation.record.RecordHelper
-import com.vlog.photo.PhotoListActivity
 import com.vlog.conversation.writeMessage.event.WordCacheState
 import com.vlog.database.CiteEvent
 import com.vlog.database.Message
 import com.vlog.database.MsgDao
 import com.vlog.databinding.BottomInputLayoutBinding
+import com.vlog.photo.PhotoListActivity
 import com.vlog.photo.load
 import dibus.app.InputBottomCreator
 
@@ -50,6 +44,7 @@ class InputBottom : FrameLayout {
     private var micCanUser = false
 
     var phoneCallListener:(()->Unit)? = null
+    var videoCallListener:(()->Unit)? = null
 
 
     private var binding: BottomInputLayoutBinding =
@@ -246,7 +241,9 @@ class InputBottom : FrameLayout {
         binding.voicePhotoLayout.setOnClickListener {
            phoneCallListener?.invoke()
         }
-
+        binding.videoPhotoLayout.setOnClickListener {
+            videoCallListener?.invoke()
+        }
     }
 
 

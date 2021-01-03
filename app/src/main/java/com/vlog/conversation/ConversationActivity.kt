@@ -172,7 +172,10 @@ class ConversationActivity : BaseActivity() {
                     FriendEditActivity.launch(friend,this)
                 }
                 binding.bottomInputLayout.phoneCallListener = {
-                    PhoneActivity.launchVoicePhone(this,it)
+                    PhoneActivity.launchAudioPhone(this,it)
+                }
+                binding.bottomInputLayout.videoCallListener = {
+                    PhoneActivity.launchVideoPhone(this,it)
                 }
             })
         } else {

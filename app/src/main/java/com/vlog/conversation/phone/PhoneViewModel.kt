@@ -24,6 +24,9 @@ class PhoneViewModel @ViewModelService(PhoneActivity::class)internal constructor
     private var conversationId = -1
     private var fromType = -1
 
+    val calledLiveData = MutableLiveData<Int>()
+    val closeLiveData = MutableLiveData<Boolean>()
+
     private lateinit var local: SurfaceViewRenderer
     private lateinit var remote: SurfaceViewRenderer
 
@@ -37,25 +40,24 @@ class PhoneViewModel @ViewModelService(PhoneActivity::class)internal constructor
     }
 
 
-    fun reCall(){
-        DiBus.postEvent(Message.obtain(conversationId,Message.RTC_AGREE,"",fromType),MessageSend{
+    fun reCall(type: Int){
+        val newType = if(type == PhoneActivity.PHONE_TYPE_VIDEO) Message.RTC_AGREE_VIDEO else Message.RTC_AGREE_AUDIO
+        DiBus.postEvent(Message.obtain(conversationId,newType,"",fromType),MessageSend{
             if(it == null){
                 sessionInitial?.apply {
                     createPeerConnection()
                     attachView(local,remote)
                 }
+                sessionInitial
             }
         })
     }
 
-    fun call(){
-        DiBus.postEvent(Message.obtain(conversationId,Message.RTC_REGISTER,"",fromType),MessageSend{
+    fun call(type: Int){
+        val newType = if(type == PhoneActivity.PHONE_TYPE_VIDEO) Message.RTC_REGISTER_VIDEO else Message.RTC_REGISTER_AUDIO
+        DiBus.postEvent(Message.obtain(conversationId,newType,"",fromType),MessageSend{
 
         })
-        sessionInitial?.apply {
-            createPeerConnection()
-            attachView(local,remote)
-        }
     }
 
     @BusEvent(threadPolicy = THREAD_POLICY_MAIN)
@@ -67,9 +69,44 @@ class PhoneViewModel @ViewModelService(PhoneActivity::class)internal constructor
         when(event.message.messageType){
             Message.RTC_NOT_ONLINE->onlineLiveData.value = false
             Message.RTC_ONLINE->{}
-            Message.RTC_AGREE->sessionInitial?.createOffer()
+            Message.RTC_AGREE_AUDIO->{
+               connect()
+                calledLiveData.value = PhoneActivity.PHONE_TYPE_AUDIO
+            }
+            Message.RTC_AGREE_VIDEO->{
+                connect()
+                calledLiveData.value = PhoneActivity.PHONE_TYPE_VIDEO
+            }
             Message.RTC_DES_OFFER->answer(event.message.content)
             Message.RTC_ICE_OFFER->addIce(event.message.content)
+            Message.RTC_DEFY->{
+                sessionInitial?.closeMediaCapturer()
+                closeLiveData.value = true
+            }
+            Message.RTC_CLOSE->{
+                sessionInitial?.closeMediaCapturer()
+                closeLiveData.value = true
+            }
+        }
+    }
+
+    fun defyPhone(){
+        DiBus.postEvent(Message.obtain(conversationId,Message.RTC_DEFY,"",fromType),MessageSend{
+
+        })
+    }
+
+    fun closePhone(){
+        DiBus.postEvent(Message.obtain(conversationId,Message.RTC_CLOSE,"",fromType),MessageSend{
+
+        })
+    }
+
+    private fun connect(){
+        sessionInitial?.apply {
+            createPeerConnection()
+            attachView(local,remote)
+            createOffer()
         }
     }
 

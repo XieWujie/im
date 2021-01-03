@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
+    android:background="#1e1f23"
     android:layout_height="match_parent"
     tools:context=".conversation.phone.PhoneActivity">
 
@@ -32,39 +33,48 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_height="150dp"/>
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:src="@drawable/ic_back"
-        android:layout_margin="10dp"
-        app:layout_constraintBottom_toTopOf="parent"
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/avatar_view_card"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0"
-        app:layout_constraintVertical_bias="0"
-        android:layout_height="wrap_content"/>
+        app:cardCornerRadius="25dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.19999999" >
+        <ImageView
+            android:layout_width="match_parent"
+            android:id="@+id/avatar_view"
+            android:scaleType="centerCrop"
+            android:layout_height="match_parent"/>
+    </androidx.cardview.widget.CardView>
 
     <TextView
-        android:layout_width="wrap_content"
         android:id="@+id/username_text"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:textColor="@android:color/white"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintVertical_bias="0.3"
-        android:layout_height="wrap_content"/>
+        app:layout_constraintEnd_toEndOf="@+id/avatar_view_card"
+        app:layout_constraintStart_toStartOf="@+id/avatar_view_card"
+        app:layout_constraintTop_toBottomOf="@+id/avatar_view_card"
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
+        android:id="@+id/calling_text"
         android:layout_width="wrap_content"
-        android:id="@+id/phone_state_text"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:textColor="@color/grey_text"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="正在呼叫. . ."
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintVertical_bias="0"
-        android:layout_marginTop="10dp"
+        app:layout_constraintEnd_toEndOf="@+id/avatar_view_card"
+        app:layout_constraintStart_toStartOf="@+id/avatar_view_card"
         app:layout_constraintTop_toBottomOf="@+id/username_text"
-        android:layout_height="wrap_content"/>
-
+        app:layout_constraintVertical_bias="0.0" />
 
 
     <RelativeLayout
@@ -74,7 +84,7 @@
         app:layout_constraintEnd_toStartOf="@+id/camera_switch_layout"
         app:layout_constraintBottom_toBottomOf="parent"
         android:background="@drawable/circle_bg"
-        app:layout_constraintTop_toBottomOf="@+id/phone_state_text"
+        app:layout_constraintTop_toBottomOf="@+id/calling_text"
         app:layout_constraintVertical_bias="0.7"
         android:layout_height="70dp">
         <ImageView
@@ -94,7 +104,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:background="@drawable/circle_bg"
-        app:layout_constraintTop_toBottomOf="@+id/phone_state_text"
+        app:layout_constraintTop_toBottomOf="@+id/calling_text"
         app:layout_constraintVertical_bias="0.7"
         android:layout_height="70dp">
         <ImageView
@@ -129,9 +139,9 @@
         android:layout_width="70dp"
         android:id="@+id/close_call_layout"
         app:layout_constraintStart_toEndOf="@+id/mic_state_layout"
-        app:layout_constraintEnd_toStartOf="@+id/voice_state_layout"
+        app:layout_constraintEnd_toStartOf="@+id/speaker_state_layout"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:background="@drawable/circle_bg"
+        android:background="@drawable/circle_red_bg"
         app:layout_constraintTop_toBottomOf="@+id/camera_switch_layout"
         app:layout_constraintVertical_bias="0.4"
         android:layout_height="70dp">
@@ -146,7 +156,7 @@
 
     <RelativeLayout
         android:layout_width="70dp"
-        android:id="@+id/voice_state_layout"
+        android:id="@+id/speaker_state_layout"
         app:layout_constraintStart_toEndOf="@+id/close_call_layout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -162,11 +172,105 @@
             android:layout_centerInParent="true"
             android:layout_height="wrap_content"/>
     </RelativeLayout>
+    
+    <androidx.constraintlayout.widget.Group
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:id="@+id/video_group"
+        app:constraint_referenced_ids="camera_state_layout,camera_switch_layout,close_call_layout,speaker_state_layout,mic_state_layout"
+        tools:visibility="invisible"/>
 
 
 
+    <RelativeLayout
+        android:layout_width="70dp"
+        android:id="@+id/defy_call_layout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/agree_call_layout"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="@drawable/circle_red_bg"
+        app:layout_constraintTop_toBottomOf="@+id/camera_switch_layout"
+        app:layout_constraintVertical_bias="0.4"
+        android:layout_height="70dp">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:src="@drawable/ic_close_call"
+            android:background="@null"
+            android:layout_centerInParent="true"
+            android:layout_height="wrap_content"/>
+    </RelativeLayout>
 
 
+    <RelativeLayout
+        android:layout_width="70dp"
+        android:id="@+id/agree_call_layout"
+        app:layout_constraintStart_toEndOf="@+id/defy_call_layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="@drawable/circle_yellow_bg"
+        app:layout_constraintTop_toBottomOf="@+id/camera_switch_layout"
+        app:layout_constraintVertical_bias="0.4"
+        android:layout_height="70dp">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:src="@drawable/ic_agree_call"
+            android:background="@null"
+            android:layout_centerInParent="true"
+            android:layout_height="wrap_content"/>
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/audio_agree"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:text="语音接听"
+        android:textColor="@android:color/white"
+        app:layout_constraintBottom_toTopOf="@id/agree_call_layout"
+        app:layout_constraintEnd_toEndOf="@id/agree_call_layout"
+        app:layout_constraintStart_toStartOf="@+id/agree_call_layout"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <ImageView
+        android:id="@+id/ic_audio_agree"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/audio_agree"
+        app:layout_constraintEnd_toEndOf="@+id/audio_agree"
+        app:layout_constraintStart_toStartOf="@+id/audio_agree"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"
+        android:src="@drawable/ic_audio_agree" />
+
+    <androidx.constraintlayout.widget.Group
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/receive_call_group"
+        android:visibility="gone"
+        app:constraint_referenced_ids="ic_audio_agree,audio_agree,agree_call_layout,defy_call_layout"/>
+
+    <androidx.constraintlayout.widget.Group
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/calling_group"
+        android:visibility="gone"
+        app:constraint_referenced_ids="username_text,avatar_view_card,calling_text"/>
+
+    <androidx.constraintlayout.widget.Group
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/call_controller_group"
+        android:visibility="gone"
+        app:constraint_referenced_ids="close_call_layout,speaker_state_layout,mic_state_layout" />
+
+    <androidx.constraintlayout.widget.Group
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/surface_group"
+        android:visibility="visible"
+        app:constraint_referenced_ids="remote_surface,local_surface"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

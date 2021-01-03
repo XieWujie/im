@@ -134,8 +134,8 @@ class SessionInitial(private val fromType:Int,private val conversationId:Int,pri
                 val audioTracks = mediaStream.audioTracks
                 if (audioTracks != null && audioTracks.size > 0) {
                     val audioTrack = audioTracks[0]
-                    audioTrack?.setVolume(PhoneConstant.VOLUME.toDouble())
-                    audioTrack?.setEnabled(noAudio)
+                    audioTrack.setVolume(PhoneConstant.VOLUME.toDouble())
+                    audioTrack.setEnabled(true)
                 }
             }
         }
@@ -222,10 +222,7 @@ class SessionInitial(private val fromType:Int,private val conversationId:Int,pri
         val audioConstraints = MediaConstraints()
         //回声消除
         audioConstraints.mandatory.add(
-            MediaConstraints.KeyValuePair(
-                "googEchoCancellation",
-                "true"
-            )
+            MediaConstraints.KeyValuePair("googEchoCancellation", "true")
         )
         //自动增益
         audioConstraints.mandatory.add(MediaConstraints.KeyValuePair("googAutoGainControl", "true"))
@@ -325,26 +322,21 @@ class SessionInitial(private val fromType:Int,private val conversationId:Int,pri
      * 关闭通话
      */
     fun closeMediaCapturer() {
-
-        videoStream?.dispose()
         if (mCameraVideoCapturer != null) {
             mCameraVideoCapturer?.dispose()
         }
+        peerConnection.dispose()
     }
 
     /**
      * 视频转语音
      */
+
     fun setVideoOrVoice(video: Boolean) {
         val mediaStream = videoStream?:return
         if(mediaStream.videoTracks.isEmpty())return
-        if (video) {
-            val currentTrack: VideoTrack = mediaStream.videoTracks[0]
-            currentTrack.setEnabled(false)
-        } else {
-            val currentTrack: VideoTrack = mediaStream.videoTracks[0]
-            currentTrack.setEnabled(true)
-        }
+        val currentTrack: VideoTrack = mediaStream.videoTracks[0]
+        currentTrack.setEnabled(video)
     }
 
     /**
@@ -354,13 +346,8 @@ class SessionInitial(private val fromType:Int,private val conversationId:Int,pri
         val mediaStream = audioStream?:return
         Log.d("voice",mediaStream.audioTracks.size.toString())
         if(mediaStream.audioTracks.isEmpty())return
-        if (mic) {
-            val currentTrack: AudioTrack = mediaStream.audioTracks[0]
-            currentTrack.setEnabled(false)
-        } else {
-            val currentTrack: AudioTrack = mediaStream.audioTracks[0]
-            currentTrack.setEnabled(true)
-        }
+        val currentTrack: AudioTrack = mediaStream.audioTracks[0]
+        currentTrack.setEnabled(mic)
     }
 
 
