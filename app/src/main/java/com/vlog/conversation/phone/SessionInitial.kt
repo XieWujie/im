@@ -23,7 +23,7 @@ class SessionInitial(private val fromType:Int,private val conversationId:Int,pri
     private  var channel: DataChannel? = null
     private lateinit var videoTrack: VideoTrack
     private lateinit var audioTrack: AudioTrack
-    private lateinit var peerConnection: PeerConnection
+    private var peerConnection: PeerConnection? = null
     private lateinit var streamList: List<String>
     private lateinit var observer: MySdpObserver
 
@@ -79,7 +79,7 @@ class SessionInitial(private val fromType:Int,private val conversationId:Int,pri
         maxRetransmits：重传允许的最大次数；
         */
         val init = DataChannel.Init()
-        channel = peerConnection.createDataChannel(PhoneConstant.CHANNEL, init)
+        channel = peerConnection?.createDataChannel(PhoneConstant.CHANNEL, init)
         val channelObserver = DateChannelObserver()
         connectionObserver.setObserver(channelObserver)
         initObserver()
@@ -88,7 +88,7 @@ class SessionInitial(private val fromType:Int,private val conversationId:Int,pri
 
 
     fun setDes(description: SessionDescription){
-        peerConnection.setRemoteDescription(observer,description)
+        peerConnection?.setRemoteDescription(observer,description)
         createAnswer()
     }
 
@@ -98,8 +98,8 @@ class SessionInitial(private val fromType:Int,private val conversationId:Int,pri
             override fun onCreateSuccess(sessionDescription: SessionDescription?) {
                 //将会话描述设置在本地
                 sessionDescription ?: throw RuntimeException("sessionDescription == null")
-                peerConnection.setLocalDescription(this, sessionDescription)
-                val localDescription = peerConnection.localDescription
+                peerConnection?.setLocalDescription(this, sessionDescription)
+                val localDescription = peerConnection?.localDescription?:return
                 val type = localDescription.type
                 Log.e(TAG, "onCreateSuccess ==  type == $type")
                 when (type) {
@@ -142,7 +142,7 @@ class SessionInitial(private val fromType:Int,private val conversationId:Int,pri
     }
 
     fun addIce(iceCandidate: IceCandidate){
-        peerConnection.addIceCandidate(iceCandidate)
+        peerConnection?.addIceCandidate(iceCandidate)
     }
 
     private fun createVideoCapturer(): VideoCapturer? {
@@ -192,6 +192,8 @@ class SessionInitial(private val fromType:Int,private val conversationId:Int,pri
         startLocalVideoCapture(local,createVideoCapturer()?:throw RuntimeException("找不到摄像头"))
     }
 
+
+
     private fun startLocalVideoCapture(localSurfaceView: SurfaceViewRenderer,videoCapturer: VideoCapturer) {
         val videoSource = peerConnectionFactory.createVideoSource(true)
         val surfaceTextureHelper = SurfaceTextureHelper.create(
@@ -212,12 +214,12 @@ class SessionInitial(private val fromType:Int,private val conversationId:Int,pri
         val localMediaStream =
             peerConnectionFactory.createLocalMediaStream(PhoneConstant.LOCAL_VIDEO_STREAM)
         localMediaStream.addTrack(videoTrack)
-        peerConnection.addTrack(videoTrack, streamList)
-        peerConnection.addStream(localMediaStream)
+        peerConnection?.addTrack(videoTrack, streamList)
+        peerConnection?.addStream(localMediaStream)
         videoStream = localMediaStream
     }
 
-    private fun startLocalAudioCapture() {
+     fun startLocalAudioCapture() {
         //语音
         val audioConstraints = MediaConstraints()
         //回声消除
@@ -239,8 +241,8 @@ class SessionInitial(private val fromType:Int,private val conversationId:Int,pri
             peerConnectionFactory.createLocalMediaStream(PhoneConstant.LOCAL_AUDIO_STREAM)
         localMediaStream.addTrack(audioTrack)
         audioTrack.setVolume(PhoneConstant.VOLUME.toDouble())
-        peerConnection.addTrack(audioTrack, streamList)
-        peerConnection.addStream(localMediaStream)
+        peerConnection?.addTrack(audioTrack, streamList)
+        peerConnection?.addStream(localMediaStream)
         audioStream = localMediaStream
     }
 
@@ -262,13 +264,13 @@ class SessionInitial(private val fromType:Int,private val conversationId:Int,pri
     fun createOffer() {
         val mediaConstraints = MediaConstraints()
         mediaConstraints.mandatory.add(MediaConstraints.KeyValuePair("OfferToReceiveVideo", "true"))
-        peerConnection.createOffer(observer, mediaConstraints)
+        peerConnection?.createOffer(observer, mediaConstraints)
     }
 
      private fun createAnswer() {
         val mediaConstraints = MediaConstraints()
         mediaConstraints.mandatory.add(MediaConstraints.KeyValuePair("OfferToReceiveVideo", "true"))
-        peerConnection.createAnswer(observer, mediaConstraints)
+        peerConnection?.createAnswer(observer, mediaConstraints)
     }
 
     /**
@@ -325,7 +327,8 @@ class SessionInitial(private val fromType:Int,private val conversationId:Int,pri
         if (mCameraVideoCapturer != null) {
             mCameraVideoCapturer?.dispose()
         }
-        peerConnection.dispose()
+        peerConnection?.dispose()
+        peerConnection = null
     }
 
     /**

@@ -85,6 +85,7 @@ data class Message(
         const val RTC_NOT_ONLINE = 103
         const val RTC_ONLINE = 104
         const val RTC_CLOSE = 112
+        const val RTC_CALLING = 113
 
         override fun createFromParcel(parcel: Parcel): Message {
             return Message(parcel)

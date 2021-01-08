@@ -3,21 +3,18 @@ package com.vlog.room
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
 import com.common.Result
 import com.common.ext.afterTextChanged
 import com.common.ext.toast
 import com.dibus.DiBus
 import com.vlog.R
-import com.vlog.conversation.room.RoomEditSource
 import com.vlog.database.Room
 import com.vlog.databinding.ItemEditLayoutBinding
-import com.vlog.user.Owner
 import dibus.app.RoomEditSourceCreator
-import java.lang.IllegalArgumentException
-import java.lang.RuntimeException
 
 class RoomNameEditActivity : AppCompatActivity() {
 
@@ -53,7 +50,7 @@ class RoomNameEditActivity : AppCompatActivity() {
             val text =binding.editText.text.toString()
             if(isChange && text.isNotEmpty()){
                 val newRoom = room.copy(roomName= text)
-                source.update(newRoom).observe(this){
+                source.update(newRoom).observe(this, Observer{
                     when(it){
                         is Result.Error->{
                             it.error.printStackTrace()
@@ -64,7 +61,7 @@ class RoomNameEditActivity : AppCompatActivity() {
                             onBackPressed()
                         }
                     }
-                }
+                })
             }
         }
         binding.leftView.setOnClickListener {

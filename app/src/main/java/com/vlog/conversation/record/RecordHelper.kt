@@ -2,22 +2,9 @@ package com.vlog.conversation.record
 
 import android.content.Context
 import android.media.MediaRecorder
-import android.os.Build
-import android.os.Environment
-import android.os.FileUtils
-import android.util.Log
-import androidx.annotation.RequiresApi
-import com.common.ext.enqueue
-import com.common.pushExecutors
 import com.common.util.ScreenUtils
-import com.dibus.DiBus
-import io.reactivex.internal.schedulers.IoScheduler
-import okhttp3.OkHttpClient
-import okhttp3.Request
 import java.io.File
 import java.io.IOException
-import java.lang.IllegalArgumentException
-import java.lang.IllegalStateException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -74,10 +61,12 @@ class RecordHelper(private val context: Context,) {
 
     fun stopRecord(){
         if(isStarted) {
-            mMediaRecorder.apply {
-                stop()
-                reset()
+            try {
+                mMediaRecorder.stop()
+                mMediaRecorder.reset()
                 isStarted = false
+            }catch (e:Exception){
+                e.printStackTrace()
             }
         }
     }

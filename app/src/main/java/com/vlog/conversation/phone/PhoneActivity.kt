@@ -10,7 +10,10 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import com.common.ext.toast
 import com.dibus.AutoWire
+import com.vlog.App
 import com.vlog.R
 import com.vlog.connect.notify.Notify
 import com.vlog.conversation.ConversationActivity
@@ -21,7 +24,6 @@ import com.vlog.databinding.ActivityPhoneBinding
 import com.vlog.photo.load
 import com.vlog.user.Owner
 import com.vlog.util.AudioUtil
-import dibus.app.PhoneActivityCreator
 
 
 class PhoneActivity : AppCompatActivity() {
@@ -32,6 +34,7 @@ class PhoneActivity : AppCompatActivity() {
     private lateinit var newIntent: Intent
     private var conversationId = 0
     private lateinit var notify: Notify
+    private var action = ACTION_CALL
 
     @AutoWire
     lateinit var viewModel: PhoneViewModel
@@ -39,7 +42,7 @@ class PhoneActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this,R.layout.activity_phone)
-        PhoneActivityCreator.inject(this)
+        viewModel = ViewModelProvider(this)[PhoneViewModel::class.java]
         notify = Notify(this)
         init(intent)
         dispatchEvent()
@@ -49,6 +52,15 @@ class PhoneActivity : AppCompatActivity() {
        ConversationActivity.launch(this,Friend(user,conversationId,Owner().userId))
     }
 
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        intent?:return
+        val cId = intent.getIntExtra("conversationId",-1)
+        if(cId != conversationId){
+            viewModel.sendCalling(cId)
+        }
+    }
+
 
     private fun closePhone(){
         binding.surfaceGroup.visibility = View.GONE
@@ -56,19 +68,28 @@ class PhoneActivity : AppCompatActivity() {
         binding.callControllerGroup.visibility = View.GONE
         binding.receiveCallGroup.visibility = View.GONE
         binding.callingGroup.visibility = View.VISIBLE
+        binding.videoGroup.visibility = View.GONE
+        notify.removeNotification(conversationId)
         Handler(Looper.getMainLooper()).postDelayed({
-            notify.removeNotification()
            finish()
         },500)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
     }
 
    private fun dispatchEvent(){
         binding.closeCallLayout.setOnClickListener {
             viewModel.closeMediaCapturer()
-            binding.surfaceGroup.visibility = View.GONE
             viewModel.closePhone()
             closePhone()
         }
+
+       viewModel.callingLiveData.observe(this, Observer {
+           toast("正在通話中，請稍後再播")
+           closePhone()
+       })
        val rotAni = ObjectAnimator.ofFloat(binding.cameraSwitchView,"rotationY",0f,180f)
        rotAni.duration = 1000
        binding.cameraSwitchLayout.setOnClickListener {
@@ -106,6 +127,17 @@ class PhoneActivity : AppCompatActivity() {
            viewModel.calledLiveData.value = type
        }
 
+       binding.audioAgree.setOnClickListener {
+           type = PHONE_TYPE_AUDIO
+           viewModel.reCall(PHONE_TYPE_AUDIO)
+           viewModel.calledLiveData.value = PHONE_TYPE_AUDIO
+       }
+       binding.icAudioAgree.setOnClickListener {
+           type = PHONE_TYPE_AUDIO
+           viewModel.reCall(PHONE_TYPE_AUDIO)
+           viewModel.calledLiveData.value = PHONE_TYPE_AUDIO
+       }
+
        viewModel.closeLiveData.observe(this, Observer {
            closePhone()
        })
@@ -115,25 +147,23 @@ class PhoneActivity : AppCompatActivity() {
            viewModel.defyPhone()
        }
 
-
        viewModel.calledLiveData.observe(this, Observer {
            binding.receiveCallGroup.visibility = View.GONE
            binding.videoGroup.visibility = View.VISIBLE
            binding.callingText.visibility = View.INVISIBLE
            binding.callingText.text = ""
-           notify.sendPhoneNotification(user,newIntent, "正在通话中. . .")
-           binding.callingGroup.visibility = if(it == PHONE_TYPE_AUDIO){
-               viewModel.setVideoOrVoice(false)
+           notify.sendPhoneNotification(user,newIntent, "正在通话中. . .",conversationId)
+           if(it == PHONE_TYPE_AUDIO){
                binding.cameraStateView.isSelected = false
-               View.VISIBLE
-           }else{
+               binding.callingGroup.visibility = View.VISIBLE
+               toast("audio")
+           }else if(it == PHONE_TYPE_VIDEO){
                binding.callingGroup.visibility = View.GONE
-               viewModel.setVideoOrVoice(true)
                binding.cameraStateView.isSelected = true
-               View.INVISIBLE
+               binding.callingGroup.visibility = View.INVISIBLE
+               toast("video")
            }
        })
-
     }
 
 
@@ -141,7 +171,7 @@ class PhoneActivity : AppCompatActivity() {
         conversationId = intent.getIntExtra("conversationId",-1)
         user = intent.getParcelableExtra<User>("user")?:throw IllegalArgumentException("user can not be null")
         type = intent.getIntExtra(PHONE_TYPE, PHONE_TYPE_AUDIO)
-        val action = intent.getIntExtra(ACTION,0)
+        action = intent.getIntExtra(ACTION, ACTION_CALL)
          newIntent= Intent(this,PhoneActivity::class.java).apply {
             putExtra("user",user)
             putExtra("conversationId",conversationId)
@@ -149,7 +179,7 @@ class PhoneActivity : AppCompatActivity() {
             putExtra(PHONE_TYPE, type)
         }
         initUi(user)
-        viewModel.init(conversationId,Message.FROM_TYPE_FRIEND,this)
+        viewModel.init(conversationId,Message.FROM_TYPE_FRIEND,App.get())
         viewModel.attachView(binding.localSurface,binding.remoteSurface)
         when(action){
             ACTION_CALL->{
@@ -159,7 +189,7 @@ class PhoneActivity : AppCompatActivity() {
                 binding.callingGroup.visibility = View.VISIBLE
                 binding.callingText.text = "正在呼叫. . ."
                 viewModel.call(type)
-                notify.sendPhoneNotification(user,newIntent,"正在呼叫. . .")
+                notify.sendPhoneNotification(user,newIntent,"正在呼叫. . .",conversationId)
             }
             ACTION_ANSWER->{
                 binding.videoGroup.visibility = View.GONE
@@ -168,16 +198,22 @@ class PhoneActivity : AppCompatActivity() {
                 binding.callingGroup.visibility = View.VISIBLE
                 val typeDes = if(type == PHONE_TYPE_VIDEO)"视频" else "语音"
                 binding.callingText.text = "邀请你进行${typeDes}通话"
-                notify.sendPhoneNotification(user,newIntent, "邀请你进行${typeDes}通话")
+                notify.sendPhoneNotification(user,newIntent, "邀请你进行${typeDes}通话",conversationId)
             }
         }
     }
 
 
 
+
     private fun initUi(user: User){
         binding.usernameText.text = user.username
         binding.avatarView.load(user.avatar)
+        if(type == PHONE_TYPE_VIDEO && action == ACTION_ANSWER){
+            binding.audioAgreeGroup.visibility = View.VISIBLE
+        }else{
+            binding.audioAgreeGroup.visibility = View.GONE
+        }
     }
 
 

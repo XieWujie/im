@@ -1,19 +1,16 @@
 package com.vlog.conversation.adapter
 
 import android.app.Dialog
-import android.graphics.Color
-import android.view.Gravity
 import android.view.View
-import android.view.ViewGroup
 import android.widget.GridLayout
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.view.children
 import com.common.ext.launch
 import com.common.ext.setEmotionText
 import com.common.util.Util
 import com.dibus.DiBus
 import com.vlog.connect.MessageSend
+import com.vlog.database.Message
 import com.vlog.database.MsgWithUser
 import com.vlog.databinding.LeftTextMessageBinding
 import com.vlog.databinding.RightTextMessageBinding
@@ -73,7 +70,13 @@ class TextHolder{
             binding.contentCard.setLongClick(m.message, m.user){ dialog, v->
                  holder.getSaveTextActionView(binding.contentText, dialog, v)
             }
-            val msg = m.message
+            sendMsg(m.message)
+            binding.errorState.setOnClickListener {
+                sendMsg(m.message)
+            }
+        }
+
+        private fun sendMsg(msg:Message){
             if(msg.isSend ||msg.createAt != 0L){
                 binding.sendIng.visibility = View.GONE
             }else{

@@ -11,11 +11,11 @@ class RegisterViewModel @ViewModelService(RegisterActivity::class)constructor(pr
 
     fun register(username:String, password:String):LiveData<Result<LoginResponse>>{
         val checkLiveData = MutableLiveData<Result<LoginResponse>>()
-        if(username.isEmpty() || password.isEmpty()){
+        return if(username.isEmpty() || password.isEmpty()){
             checkLiveData.value = Result.Error(Exception("账号密码长度不能为空"))
-            return checkLiveData
+            checkLiveData
         }else{
-            return source.register(username,password)
+            source.register(username,password)
         }
     }
 }

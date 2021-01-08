@@ -3,6 +3,7 @@ package com.vlog.room
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.common.Result
 import com.common.ext.toast
@@ -38,19 +39,19 @@ class RoomCreateActivity : AppCompatActivity() {
         val recyclerView = binding.recyclerView
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
-        friendDao.getFriend(Owner().userId).observe(this){ list ->
+        friendDao.getFriend(Owner().userId).observe(this, Observer{ list ->
             adapter.setList(list.map { it.user })
-        }
+        })
         binding.nextBt.setOnClickListener {
             source.create(Room(0,"","",Owner().userId),adapter.checkList.toList())
-                .observe(this){
+                .observe(this, Observer{
                     when(it){
                         is Result.Error->toast(it.toString())
                         is Result.Data->{
                             ConversationActivity.launch(this,it.data)
                         }
                     }
-                }
+                })
         }
         binding.cancelAction.setOnClickListener {
             onBackPressed()

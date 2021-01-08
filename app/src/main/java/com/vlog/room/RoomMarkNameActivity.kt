@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
 import com.common.Result
 import com.common.ext.afterTextChanged
 import com.common.ext.toast
@@ -48,12 +49,12 @@ class RoomMarkNameActivity : AppCompatActivity() {
             val text = binding.markNameText.text.toString()
             if(text.isNotEmpty()){
                 room.markName = text
-                source.updateRoomMarkNameOfMe(Owner().userId,room).observe(this){
+                source.updateRoomMarkNameOfMe(Owner().userId,room).observe(this, Observer{
                     when(it){
                         is Result.Error->toast(it.toString())
                         is Result.Data->onBackPressed()
                     }
-                }
+                })
             }
         }
         binding.icBackView.setOnClickListener {

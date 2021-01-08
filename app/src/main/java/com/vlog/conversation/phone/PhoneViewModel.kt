@@ -12,13 +12,13 @@ import com.google.gson.Gson
 import com.vlog.connect.MessageSend
 import com.vlog.database.Message
 import com.vlog.database.User
-import com.vlog.user.UserSource
+import dibus.app.PhoneViewModelCreator
 import org.webrtc.IceCandidate
 import org.webrtc.SessionDescription
 import org.webrtc.SurfaceViewRenderer
 
 
-class PhoneViewModel @ViewModelService(PhoneActivity::class)internal constructor(private val source: VoicePhoneSource,val userSource: UserSource):ViewModel(){
+class PhoneViewModel @ViewModelService(PhoneActivity::class)internal constructor():ViewModel(){
 
     private var sessionInitial:SessionInitial? = null
     private var conversationId = -1
@@ -26,9 +26,15 @@ class PhoneViewModel @ViewModelService(PhoneActivity::class)internal constructor
 
     val calledLiveData = MutableLiveData<Int>()
     val closeLiveData = MutableLiveData<Boolean>()
+    val callingLiveData = MutableLiveData<Boolean>()
 
     private lateinit var local: SurfaceViewRenderer
     private lateinit var remote: SurfaceViewRenderer
+
+    init {
+        PhoneViewModelCreator.inject(this)
+    }
+
 
 
     val onlineLiveData = MutableLiveData<Boolean>()
@@ -46,9 +52,12 @@ class PhoneViewModel @ViewModelService(PhoneActivity::class)internal constructor
             if(it == null){
                 sessionInitial?.apply {
                     createPeerConnection()
-                    attachView(local,remote)
+                    if(type == PhoneActivity.PHONE_TYPE_AUDIO) {
+                       startLocalAudioCapture()
+                    }else{
+                        attachView(local,remote)
+                    }
                 }
-                sessionInitial
             }
         })
     }
@@ -68,26 +77,36 @@ class PhoneViewModel @ViewModelService(PhoneActivity::class)internal constructor
         Log.d("RTC_EVENT",event.toString())
         when(event.message.messageType){
             Message.RTC_NOT_ONLINE->onlineLiveData.value = false
-            Message.RTC_ONLINE->{}
+            Message.RTC_ONLINE->{
+
+            }
             Message.RTC_AGREE_AUDIO->{
-               connect()
+               connectAudio()
                 calledLiveData.value = PhoneActivity.PHONE_TYPE_AUDIO
             }
             Message.RTC_AGREE_VIDEO->{
-                connect()
+                connectVideo()
                 calledLiveData.value = PhoneActivity.PHONE_TYPE_VIDEO
             }
             Message.RTC_DES_OFFER->answer(event.message.content)
             Message.RTC_ICE_OFFER->addIce(event.message.content)
             Message.RTC_DEFY->{
-                sessionInitial?.closeMediaCapturer()
+                closeMediaCapturer()
                 closeLiveData.value = true
             }
             Message.RTC_CLOSE->{
-                sessionInitial?.closeMediaCapturer()
+                closeMediaCapturer()
                 closeLiveData.value = true
             }
+            Message.RTC_CALLING->{
+                callingLiveData.value = true
+            }
         }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        closeMediaCapturer()
     }
 
     fun defyPhone(){
@@ -102,12 +121,30 @@ class PhoneViewModel @ViewModelService(PhoneActivity::class)internal constructor
         })
     }
 
-    private fun connect(){
+    private fun connectVideo(){
         sessionInitial?.apply {
             createPeerConnection()
             attachView(local,remote)
             createOffer()
         }
+    }
+
+    private fun connectAudio(){
+        sessionInitial?.apply {
+            createPeerConnection()
+            startLocalAudioCapture()
+            createOffer()
+        }
+    }
+
+    fun startAudio(){
+        sessionInitial?.startLocalAudioCapture()
+    }
+
+    fun sendCalling(cId: Int){
+        DiBus.postEvent(Message.obtain(cId,Message.RTC_CALLING,"",fromType),MessageSend{
+
+        })
     }
 
     fun attachView(local:SurfaceViewRenderer,remote:SurfaceViewRenderer){
@@ -135,7 +172,10 @@ class PhoneViewModel @ViewModelService(PhoneActivity::class)internal constructor
     /**
      * 结束通话
      */
-    fun closeMediaCapturer() = sessionInitial?.closeMediaCapturer()
+    fun closeMediaCapturer(){
+        sessionInitial?.closeMediaCapturer()
+        sessionInitial = null
+    }
 
     /**
      * 视频转语音
@@ -148,7 +188,6 @@ class PhoneViewModel @ViewModelService(PhoneActivity::class)internal constructor
      */
     fun setMic(mic: Boolean)  = sessionInitial?.setMic(mic)
 
-    fun setIsVoice(voice: Boolean) = sessionInitial?.setIsVoice(voice)
 
 }
 

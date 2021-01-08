@@ -272,5 +272,11 @@
         android:visibility="visible"
         app:constraint_referenced_ids="remote_surface,local_surface"/>
 
+    <androidx.constraintlayout.widget.Group
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/audio_agree_group"
+        app:constraint_referenced_ids="ic_audio_agree,audio_agree"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

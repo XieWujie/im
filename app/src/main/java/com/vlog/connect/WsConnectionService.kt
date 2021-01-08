@@ -137,7 +137,7 @@ class WsConnectionService:JobIntentService(),WsConnectionListener {
                     return@pushExecutors
                 }
                 Message.RTC_ONLINE,Message.RTC_NOT_ONLINE,Message.RTC_DES_OFFER,Message.RTC_ICE_OFFER,
-                Message.RTC_DEFY,Message.RTC_AGREE_AUDIO,Message.RTC_AGREE_VIDEO,Message.RTC_CLOSE->{
+                Message.RTC_DEFY,Message.RTC_AGREE_AUDIO,Message.RTC_AGREE_VIDEO,Message.RTC_CLOSE,Message.RTC_CALLING->{
                     if(msg.sendFrom != Owner().userId) {
                         DiBus.postEvent(RTCEvent(msg, m.user))
                     }

@@ -64,7 +64,7 @@ class Notify(private val context: Context) {
         }
     }
 
-    fun sendPhoneNotification(user: User,intent: Intent,des:String){
+    fun sendPhoneNotification(user: User,intent: Intent,des:String,id:Int){
         checkChanel()
         pushExecutors {
             val myBitmap = Glide.with(context)
@@ -92,12 +92,12 @@ class Notify(private val context: Context) {
                 .setSmallIcon(R.drawable.ic_message)
                 .setLargeIcon(myBitmap)
 
-            manager.notify(1, notify.build())
+            manager.notify(id, notify.build())
         }
     }
 
-    fun removeNotification(){
-        manager.cancel(1)
+    fun removeNotification(conversationId:Int){
+        manager.cancel(conversationId)
     }
 
 
@@ -136,7 +136,7 @@ class Notify(private val context: Context) {
             val action = getRemoveAction(message)
             notify.addAction(action)
         }
-        manager.notify(1, notify.build())
+        manager.notify(message.conversationId, notify.build())
     }
 
 
@@ -161,5 +161,9 @@ class Notify(private val context: Context) {
             R.mipmap.ic_launcher,
             "回复", replyPi
         ).addRemoteInput(remoteInput).build()
+    }
+
+    fun notifyUpdate(message: Message,reply:String){
+        manager.cancel(message.conversationId)
     }
 }

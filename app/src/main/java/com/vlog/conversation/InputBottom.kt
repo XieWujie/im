@@ -190,6 +190,7 @@ class InputBottom : FrameLayout {
                 binding.recordDesText.text = "按住 说话"
                 binding.inputText.visibility = GONE
                 binding.icEmo.visibility = GONE
+                hide()
                 true
             }
         }

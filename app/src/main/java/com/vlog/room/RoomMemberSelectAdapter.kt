@@ -3,7 +3,6 @@ package com.vlog.room
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.vlog.database.Friend
 import com.vlog.database.User
 import com.vlog.databinding.RoomCreateSelectedItemBinding
 import com.vlog.photo.load
@@ -20,7 +19,6 @@ class RoomMemberSelectAdapter:RecyclerView.Adapter<RoomMemberSelectAdapter.ViewH
         mList.addAll(list)
         notifyDataSetChanged()
     }
-
 
 
     inner class ViewHolder(val binding: RoomCreateSelectedItemBinding) :RecyclerView.ViewHolder(binding.root){
