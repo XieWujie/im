@@ -3,13 +3,14 @@ package com.vlog.conversation.emo
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.View
 import android.widget.FrameLayout
-import android.widget.ImageView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.common.ext.enqueue
+import com.common.ext.getType
 import com.vlog.R
+import okhttp3.Request
 
 class EmoContainerView :FrameLayout{
 
@@ -31,8 +32,11 @@ class EmoContainerView :FrameLayout{
         }
         tabList.apply {
             layoutManager = LinearLayoutManager(context,RecyclerView.HORIZONTAL,false)
-            adapter = EmoTabAdapter{_,list->
-                listAdapter.setList(list)
+            adapter = EmoTabAdapter{_,url->
+                val request = Request.Builder().url(url).get().build()
+                request.enqueue<List<Emo>>({
+                    listAdapter.setList(it.map { it.icon })
+                },{}, getType(List::class.java,Emo::class.java))
             }
         }
     }
