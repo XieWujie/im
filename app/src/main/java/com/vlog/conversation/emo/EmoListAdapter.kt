@@ -6,10 +6,10 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.common.pushMainThread
 import com.dibus.DiBus
 import com.vlog.R
 import com.vlog.conversation.EmoAddEvent
-import com.vlog.photo.load
 
 class EmoListAdapter :RecyclerView.Adapter<EmoListAdapter.ViewHolder>(){
 
@@ -18,8 +18,11 @@ class EmoListAdapter :RecyclerView.Adapter<EmoListAdapter.ViewHolder>(){
     fun setList(list:List<String>){
         mList.clear()
         mList.addAll(list)
-        notifyDataSetChanged()
+        pushMainThread {
+            notifyDataSetChanged()
+        }
     }
+
 
     class ViewHolder( private val view:View):RecyclerView.ViewHolder(view){
         private val img = view.findViewById<ImageView>(R.id.emo_src_view)

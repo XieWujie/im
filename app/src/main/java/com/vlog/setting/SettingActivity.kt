@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.databinding.DataBindingUtil
 import com.common.Result
+import com.common.base.BaseActivity
 import com.common.ext.launch
 import com.common.ext.toast
 import com.dibus.AutoWire
@@ -14,7 +15,7 @@ import com.vlog.user.Owner
 import com.vlog.user.UserSource
 import dibus.app.SettingActivityCreator
 
-class SettingActivity : AppCompatActivity() {
+class SettingActivity :BaseActivity() {
 
     private lateinit var binding:ActivitySettingBinding
 

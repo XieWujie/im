@@ -3,7 +3,6 @@ package com.vlog.conversation.adapter
 import android.app.Dialog
 import android.content.Context
 import android.graphics.Color
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -12,7 +11,6 @@ import android.widget.GridLayout
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.common.ext.toast
 import com.common.pushExecutors
 import com.common.pushMainThread
@@ -29,7 +27,6 @@ import com.vlog.database.MsgWithUser
 import com.vlog.database.User
 import com.vlog.databinding.CiteMessageLayoutBinding
 import com.vlog.databinding.MsgLongClickLayoutBinding
-import com.vlog.photo.load
 import com.vlog.photo.loadWithMaxSize
 import com.vlog.user.Owner
 import dibus.app.MessageSourceCreator
@@ -173,7 +170,7 @@ internal fun longClick(
         addActionView(withDrawText, grid)
     }
 
-    if(message.isSend && message.createAt>1000L) {
+    if(message.isSend && message.createAt>1000L &&message.messageType != Message.MESSAGE_RECORD) {
         val citeText = TextView(context).apply {
             text = "引用"
             addActionView(this, grid)

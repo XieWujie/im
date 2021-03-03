@@ -187,7 +187,7 @@ class ConversationActivity : BaseActivity() {
                 binding.moreActionView.setOnClickListener {
                     CovRoomEditActivity.launch(this, r)
                 }
-                binding.titleText.text = r.roomName
+                binding.titleText.text = if(r.markName.isNullOrBlank()) r.roomName else r.markName
                 if(!r.background.isNullOrEmpty()){
                     window.decorView.setBg(r.background)
                 }else{

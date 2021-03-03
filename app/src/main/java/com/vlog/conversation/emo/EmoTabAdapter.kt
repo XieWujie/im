@@ -1,14 +1,17 @@
 package com.vlog.conversation.emo
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
+import com.common.HOST_PORT
+import com.common.ext.enqueue
+import com.common.ext.getType
 import com.vlog.R
+import okhttp3.Request
 
-class EmoTabAdapter(private val itemClickListener:(View, List<String>)->Unit) : RecyclerView.Adapter<EmoTabAdapter.ViewHolder>() {
+class EmoTabAdapter(private val itemClickListener:(View, List<String>)->Unit): RecyclerView.Adapter<EmoTabAdapter.ViewHolder>() {
 
 
     class ViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
@@ -42,12 +45,15 @@ class EmoTabAdapter(private val itemClickListener:(View, List<String>)->Unit) : 
         when(viewType){
             SMALL_EMO->{
                 imag.setImageResource(R.drawable.ic_emoji)
-                val asset = imag.context.assets
-                val list = asset.list("emotions")?:return holder
-                val sources = list.map { "file:///android_asset/emotions/$it" }
-                itemClickListener.invoke(view,sources)
+                val netEmoUrl = "$HOST_PORT/file/emo?name=ordinary"
+                val request = Request.Builder().url(netEmoUrl).get().build()
+                request.enqueue<List<Emo>>({
+                    itemClickListener.invoke(view, it.map { it.icon})
+                },{}, getType(List::class.java,Emo::class.java))
                 view.setOnClickListener {
-                    itemClickListener.invoke(it, sources)
+                    request.enqueue<List<Emo>>({
+                        itemClickListener.invoke(view, it.map { it.icon})
+                    },{}, getType(List::class.java,Emo::class.java))
                 }
             }
             FAVORITE->{
@@ -55,11 +61,12 @@ class EmoTabAdapter(private val itemClickListener:(View, List<String>)->Unit) : 
             }
             GIF->{
                 imag.setImageResource(R.drawable.ic_gif)
-                val asset = imag.context.assets
-                val list = asset.list("gif_emoji")?:return holder
-                val sources = list.map { "file:///android_asset/gif_emoji/$it" }
-                view.setOnClickListener {
-                    itemClickListener.invoke(it,sources)
+                val netEmoUrl = "$HOST_PORT/file/emo?name=magic"
+                val request = Request.Builder().url(netEmoUrl).get().build()
+                view.setOnClickListener {view->
+                    request.enqueue<List<Emo>>({
+                        itemClickListener.invoke(view, it.map { "${it.icon}"}.filter { it.contains(".gif") })
+                    },{}, getType(List::class.java,Emo::class.java))
                 }
             }
 

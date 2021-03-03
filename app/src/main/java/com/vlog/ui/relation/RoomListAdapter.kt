@@ -3,10 +3,10 @@ package com.vlog.ui.relation
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.vlog.photo.load
 import com.vlog.conversation.ConversationActivity
 import com.vlog.database.Room
 import com.vlog.databinding.RelationListItemBinding
+import com.vlog.photo.load
 
 class RoomListAdapter :RecyclerView.Adapter<RoomListAdapter.ViewHolder>(){
 
@@ -21,7 +21,7 @@ class RoomListAdapter :RecyclerView.Adapter<RoomListAdapter.ViewHolder>(){
     class ViewHolder(private val binding: RelationListItemBinding):RecyclerView.ViewHolder(binding.root){
 
         fun bind(room:Room){
-            binding.nameText.text = room.roomName
+            binding.nameText.text = if(room.markName.isNullOrBlank()) room.roomName else room.markName
             binding.avatarView.load(room.roomAvatar)
             itemView.setOnClickListener {
                 ConversationActivity.launch(it.context,room)

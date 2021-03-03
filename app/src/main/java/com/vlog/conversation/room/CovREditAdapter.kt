@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.common.Result
 import com.common.ext.launch
 import com.common.ext.toast
+import com.vlog.R
 import com.vlog.database.Room
 import com.vlog.databinding.CovRoomItemBinding
 import com.vlog.photo.load
@@ -35,10 +36,12 @@ class CovREditAdapter(private val lifecycleOwner: LifecycleOwner,private val roo
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return when(viewType){
             ROOM_USER_LIST->{
-                RUViewHolder(RecyclerView(parent.context))
+                val view = LayoutInflater.from(parent.context).inflate(R.layout.room_users_layout,parent,false)
+                RUViewHolder(view as RecyclerView)
             }
             COV_ROOM_ITEM->{
                 val binding = CovRoomItemBinding.inflate(LayoutInflater.from(parent.context),parent,false)
+
                 ItemViewHolder(binding)
             }
             else->throw RuntimeException("no such viewType")
@@ -88,6 +91,10 @@ class CovREditAdapter(private val lifecycleOwner: LifecycleOwner,private val roo
 
     inner class ItemViewHolder(private val binding:CovRoomItemBinding):ViewHolder(binding.root){
         init {
+            if(room.roomMasterId != Owner().userId){
+                binding.roomNameLayout.visibility = View.GONE
+                binding.avatarLayout.visibility = View.GONE
+            }
             bind()
             binding.avatarLayout.setOnClickListener {
                 RoomAvatarEditActivity.launch(it.context,room)

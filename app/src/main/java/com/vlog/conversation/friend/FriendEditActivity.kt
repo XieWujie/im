@@ -36,13 +36,13 @@ class FriendEditActivity : BaseActivity() {
         dispatchEvent()
         source.friendDao.getFriendByCovId(friend.conversationId).observe(this){
             friend = it
+            binding.notifySwitch.isChecked = !friend.notify
+            binding.markNameText.text = friend.markName?:""
         }
     }
 
 
     private fun dispatchEvent(){
-        binding.notifySwitch.isChecked = !friend.notify
-        binding.markNameText.text = friend.markName?:""
         binding.changeBackgroundLayout.setOnClickListener {
             reqPermission {
                 val photoPickerIntent = Intent(Intent.ACTION_PICK, null)

@@ -8,6 +8,7 @@ import com.dibus.AutoWire
 import com.dibus.Service
 import com.google.gson.Gson
 import com.vlog.conversation.ConversationSource
+import com.vlog.ui.relation.RelationSource
 import com.vlog.ui.relation.RoomListSource
 import com.vlog.user.Owner
 import okhttp3.Request
@@ -25,6 +26,9 @@ class LoginSource {
     @AutoWire
     lateinit var conversationSource: ConversationSource
 
+    @AutoWire
+    lateinit var relationSource: RelationSource
+
 
     fun login(username:String, password:String):LiveData<Result<LoginResponse>>{
         val entity = LoginEntity(username,password)
@@ -37,6 +41,7 @@ class LoginSource {
             Owner().init(it)
             try {
                 roomListSource.requestRoomListSyn(it.userId)
+                relationSource.getRelationsSyc(it.userId)
                 conversationSource.getRecentMessageByNet(it.userId)
             }catch (e:Exception){
                 e.printStackTrace()

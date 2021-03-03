@@ -126,7 +126,7 @@
         android:layout_height="50dp">
         <TextView
             android:layout_width="wrap_content"
-            android:text="我在群里的昵称"
+            android:text="群备注"
             android:layout_centerVertical="true"
             android:layout_marginStart="10dp"
             android:textColor="@android:color/black"

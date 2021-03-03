@@ -25,7 +25,7 @@
         android:id="@+id/text_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="我在群里的昵称"
+        android:text="群备注"
         android:textSize="18sp"
         android:textColor="@android:color/black"
         app:layout_constraintBottom_toBottomOf="parent"

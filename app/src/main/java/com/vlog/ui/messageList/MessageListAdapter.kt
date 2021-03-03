@@ -64,7 +64,7 @@ class MessageListAdapter:RecyclerView.Adapter<MessageListAdapter.ViewHolder>() {
             }
             msgConv.room?.also {
                 binding.apply {
-                    titleText.text = it.roomName
+                    titleText.text = if(it.markName.isNullOrEmpty()) it.roomName else it.markName
                     avatarView.load(it.roomAvatar)
                     root.setOnClickListener { view->
                         ConversationActivity.launch(view.context,it)

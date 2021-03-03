@@ -7,11 +7,10 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.databinding.DataBindingUtil
 import androidx.viewpager2.widget.ViewPager2
-import com.common.util.Util
 import com.common.base.BaseActivity
 import com.common.ext.launch
+import com.common.util.Util
 import com.vlog.R
-import com.vlog.connect.WsConnectionListener
 import com.vlog.connect.WsConnectionService
 import com.vlog.databinding.ActivityMainBinding
 import com.vlog.login.StartActivity
@@ -77,6 +76,7 @@ class MainActivity :BaseActivity() {
         val owner = Owner()
         if (owner.userId <0) {
                launch<StartActivity>()
+            finish()
         }else{
             if(owner.isLogout) {
                 WsConnectionService.connect(this, Owner().userId)

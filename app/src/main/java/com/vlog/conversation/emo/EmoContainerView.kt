@@ -7,10 +7,7 @@ import android.widget.FrameLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.common.ext.enqueue
-import com.common.ext.getType
 import com.vlog.R
-import okhttp3.Request
 
 class EmoContainerView :FrameLayout{
 
@@ -32,11 +29,8 @@ class EmoContainerView :FrameLayout{
         }
         tabList.apply {
             layoutManager = LinearLayoutManager(context,RecyclerView.HORIZONTAL,false)
-            adapter = EmoTabAdapter{_,url->
-                val request = Request.Builder().url(url).get().build()
-                request.enqueue<List<Emo>>({
-                    listAdapter.setList(it.map { it.icon })
-                },{}, getType(List::class.java,Emo::class.java))
+            adapter = EmoTabAdapter{_,list->
+               listAdapter.setList(list)
             }
         }
     }
