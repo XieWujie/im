@@ -48,7 +48,9 @@ class RoomSource {
             .url(url)
             .post(body.toRequestBody())
             .build()
-        return request.toLiveData()
+        return request.toLiveData{
+            roomDao.insert(it)
+        }
     }
 
     fun updateCustomerRoomBg(userId: Int, room: Room,file:File):LiveData<Result<HashMap<String,String>>>{

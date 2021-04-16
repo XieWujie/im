@@ -36,7 +36,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:targetApi="q">
-        <activity android:name=".conversation.phone.PhoneActivity" android:launchMode="singleInstance" />
+        <activity android:name=".setting.ModifyPasswordActivity"></activity>
+        <activity
+            android:name=".conversation.phone.PhoneActivity"
+            android:launchMode="singleInstance" />
         <activity android:name=".conversation.friend.FriendMarkNameEditActivity" />
         <activity android:name=".room.RoomMarkNameActivity" />
         <activity android:name=".conversation.friend.FriendEditActivity" />

@@ -3,12 +3,12 @@ package com.vlog.room
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.common.Result
+import com.common.base.BaseActivity
 import com.common.ext.toast
 import com.dibus.AutoWire
 import com.vlog.R
@@ -18,7 +18,7 @@ import com.vlog.databinding.ActivityMemberAddBinding
 import com.vlog.user.Owner
 import dibus.app.MemberAddActivityCreator
 
-class MemberAddActivity : AppCompatActivity() {
+class MemberAddActivity : BaseActivity() {
 
     private lateinit var binding:ActivityMemberAddBinding
 

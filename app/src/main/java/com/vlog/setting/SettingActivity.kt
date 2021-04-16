@@ -1,6 +1,5 @@
 package com.vlog.setting
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.databinding.DataBindingUtil
 import com.common.Result
@@ -41,6 +40,9 @@ class SettingActivity :BaseActivity() {
                     }
                 }
             }
+        }
+        binding.modifyPassword.setOnClickListener {
+            launch<ModifyPasswordActivity>()
         }
     }
 }

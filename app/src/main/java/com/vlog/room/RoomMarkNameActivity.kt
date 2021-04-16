@@ -4,10 +4,10 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import com.common.Result
+import com.common.base.BaseActivity
 import com.common.ext.afterTextChanged
 import com.common.ext.toast
 import com.vlog.R
@@ -17,7 +17,7 @@ import com.vlog.photo.load
 import com.vlog.user.Owner
 import dibus.app.RoomSourceCreator
 
-class RoomMarkNameActivity : AppCompatActivity() {
+class RoomMarkNameActivity : BaseActivity() {
 
     private lateinit var binding:ActivityRoomMarkNameBinding
     private val source = RoomSourceCreator.get()

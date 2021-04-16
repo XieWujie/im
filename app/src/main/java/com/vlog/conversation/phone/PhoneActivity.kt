@@ -149,19 +149,18 @@ class PhoneActivity : AppCompatActivity() {
 
        viewModel.calledLiveData.observe(this, Observer {
            binding.receiveCallGroup.visibility = View.GONE
-           binding.videoGroup.visibility = View.VISIBLE
            binding.callingText.visibility = View.INVISIBLE
            binding.callingText.text = ""
            notify.sendPhoneNotification(user,newIntent, "正在通话中. . .",conversationId)
            if(it == PHONE_TYPE_AUDIO){
                binding.cameraStateView.isSelected = false
                binding.callingGroup.visibility = View.VISIBLE
-               toast("audio")
+               binding.audioGroup.visibility = View.VISIBLE
            }else if(it == PHONE_TYPE_VIDEO){
                binding.callingGroup.visibility = View.GONE
                binding.cameraStateView.isSelected = true
                binding.callingGroup.visibility = View.INVISIBLE
-               toast("video")
+               binding.videoGroup.visibility = View.VISIBLE
            }
        })
     }

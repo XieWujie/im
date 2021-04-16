@@ -1,7 +1,6 @@
 package com.vlog.search
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -45,15 +44,18 @@ class FindActivity : BaseActivity() {
             }
         }
         binding.inputEdit.afterTextChanged { key ->
-            if(key.isNotEmpty())
-            viewModel.findUser(key).observe(this, Observer {
-                when(it){
-                    is Result.Error->toast(it.toString())
-                    is Result.Data->{
-                        adapter.setList(it.data)
+            if(key.isNotEmpty()) {
+                viewModel.findUser(key).observe(this, Observer {
+                    when (it) {
+                        is Result.Error -> toast(it.toString())
+                        is Result.Data -> {
+                            adapter.setList(it.data)
+                        }
                     }
-                }
-            })
+                })
+            }else{
+                adapter.setList(emptyList())
+            }
         }
     }
 }

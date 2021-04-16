@@ -7,8 +7,8 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bumptech.glide.Glide
 import com.common.Result
 import com.common.base.BaseActivity
 import com.common.ext.toast
@@ -16,7 +16,6 @@ import com.common.util.Util
 import com.dibus.AutoWire
 import com.vlog.R
 import com.vlog.database.Room
-import com.vlog.database.RoomDao
 import com.vlog.databinding.ActivityCovRoomEditBinding
 import com.vlog.room.RoomSource
 import com.vlog.user.Owner
@@ -52,7 +51,7 @@ class CovRoomEditActivity :BaseActivity() {
 
     fun init(){
         roomSource.roomDao.getRoomById(conversationId).apply {
-            observe(this@CovRoomEditActivity){
+            observe(this@CovRoomEditActivity, Observer{
                 room = it
                 binding.titleText.text = it.roomName
                 adapter =  CovREditAdapter(this@CovRoomEditActivity,it)
@@ -63,7 +62,7 @@ class CovRoomEditActivity :BaseActivity() {
                     startActivityForResult(photoPickerIntent, 1)
                 }
                 removeObservers(this@CovRoomEditActivity)
-            }
+            })
         }
     }
 
@@ -83,7 +82,7 @@ class CovRoomEditActivity :BaseActivity() {
             toast("获取图片失败")
         }else {
             roomSource.updateCustomerRoomBg(Owner().userId,room,File(realPath))
-                .observe(this){
+                .observe(this, Observer{
                 when(it){
                     is Result.Error->{
                         it.error.printStackTrace()
@@ -93,7 +92,7 @@ class CovRoomEditActivity :BaseActivity() {
                         toast("更换成功")
                     }
                 }
-            }
+            })
         }
     }
 

@@ -7,15 +7,15 @@ import com.common.Result
 import com.common.net.HttpResponse
 import com.dibus.DiBus
 import com.google.gson.Gson
+import com.google.gson.JsonSyntaxException
 import okhttp3.*
 import java.io.IOException
-import java.lang.RuntimeException
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
 
 
 inline fun<reified T> Request.enqueue(crossinline onResponse:(response: T)->Unit, crossinline onFailure:(e: Exception)->Unit,type:Type = T::class.java){
-    val httpClient = DiBus().fetch(OkHttpClient::class.java.canonicalName!!)
+    val httpClient:OkHttpClient = DiBus.load()
     if(httpClient == null){
         onFailure(Exception("httpClient is null"))
     }else{
@@ -31,20 +31,25 @@ inline fun<reified T> Request.enqueue(crossinline onResponse:(response: T)->Unit
                         onFailure(Exception(response.message))
                         return
                     }
-                    val gs = DiBus.get(Gson::class.java.canonicalName!!) as Gson
+                    val gs:Gson = DiBus.load()
                     val realType = getType(HttpResponse::class.java,type)
                     val body = response.body!!.string()
                     Log.d("net_body",body)
-                    val r = gs.fromJson<HttpResponse<T>>(body,realType)
-                    if(r.statusCode != 200){
-                        Log.e("HttpException",r.description)
-                        onFailure(java.lang.Exception(r.description))
-                    }else if (r.data == null){
-                        onFailure(java.lang.Exception("data == null"))
-                    }else{
-                        Log.d("request result",r.data.toString())
-                        onResponse(r.data)
+                    try {
+                        val r = gs.fromJson<HttpResponse<T>>(body,realType)
+                        if(r.statusCode != 200){
+                            onFailure(Exception(r.description))
+                        }else if (r.data == null){
+                            onFailure(Exception("data == null"))
+                        }else{
+                            onResponse(r.data)
+                        }
+                    }catch (jsonE :JsonSyntaxException){
+                        val failType = getType(HttpResponse::class.java,String::class.java)
+                        val u = gs.fromJson<HttpResponse<String>>(body,failType)
+                        onFailure(Exception(u.description))
                     }
+
                 }
 
             })
@@ -57,6 +62,7 @@ inline fun<reified T> Request.enqueue(crossinline onResponse:(response: T)->Unit
     override fun getActualTypeArguments(): Array<out Type> = args
     override fun getOwnerType(): Type? = null
 }
+
 inline fun <reified T> Request.toLiveData(type:Type = T::class.java,noinline action:((data:T)->Unit)? = null): LiveData<Result<T>> {
     val liveData = MutableLiveData<Result<T>>()
     this.enqueue<T>({

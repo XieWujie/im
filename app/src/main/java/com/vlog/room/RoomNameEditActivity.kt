@@ -4,10 +4,10 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import com.common.Result
+import com.common.base.BaseActivity
 import com.common.ext.afterTextChanged
 import com.common.ext.toast
 import com.dibus.DiBus
@@ -16,7 +16,7 @@ import com.vlog.database.Room
 import com.vlog.databinding.ItemEditLayoutBinding
 import dibus.app.RoomEditSourceCreator
 
-class RoomNameEditActivity : AppCompatActivity() {
+class RoomNameEditActivity : BaseActivity() {
 
     private lateinit var binding: ItemEditLayoutBinding
     private lateinit var room:Room

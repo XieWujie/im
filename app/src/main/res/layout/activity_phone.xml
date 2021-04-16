@@ -181,6 +181,14 @@
         app:constraint_referenced_ids="camera_state_layout,camera_switch_layout,close_call_layout,speaker_state_layout,mic_state_layout"
         tools:visibility="invisible"/>
 
+    <androidx.constraintlayout.widget.Group
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:id="@+id/audio_group"
+        app:constraint_referenced_ids="close_call_layout,speaker_state_layout,mic_state_layout"
+        tools:visibility="invisible"/>
+
 
 
     <RelativeLayout

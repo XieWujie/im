@@ -5,12 +5,10 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.TextWatcher
 import android.text.style.ImageSpan
-import android.util.Log
 import android.widget.EditText
 import android.widget.TextView
 import com.common.customer.GlideImageGetter
 import com.common.pushExecutors
-import com.common.util.Util
 
 fun EditText.afterTextChanged(afterTextChanged: (String) -> Unit) {
     this.addTextChangedListener(object : TextWatcher {

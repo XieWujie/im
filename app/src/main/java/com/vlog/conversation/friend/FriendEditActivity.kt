@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
 import com.common.Result
 import com.common.base.BaseActivity
 import com.common.ext.toast
@@ -34,11 +35,11 @@ class FriendEditActivity : BaseActivity() {
         FriendEditActivityCreator.inject(this)
         friend = intent.getParcelableExtra<Friend>("friend")!!
         dispatchEvent()
-        source.friendDao.getFriendByCovId(friend.conversationId).observe(this){
+        source.friendDao.getFriendByCovId(friend.conversationId).observe(this, Observer{
             friend = it
             binding.notifySwitch.isChecked = !friend.notify
             binding.markNameText.text = friend.markName?:""
-        }
+        })
     }
 
 
@@ -78,7 +79,7 @@ class FriendEditActivity : BaseActivity() {
             toast("获取图片失败")
         }else {
             source.updateCustomerFriendBg(Owner().userId,friend, File(realPath))
-                .observe(this){
+                .observe(this, Observer{
                     when(it){
                         is Result.Error->{
                             it.error.printStackTrace()
@@ -88,7 +89,7 @@ class FriendEditActivity : BaseActivity() {
                             toast("更换成功")
                         }
                     }
-                }
+                })
         }
     }
 

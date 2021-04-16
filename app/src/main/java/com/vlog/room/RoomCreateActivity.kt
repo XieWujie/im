@@ -1,11 +1,11 @@
 package com.vlog.room
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.common.Result
+import com.common.base.BaseActivity
 import com.common.ext.toast
 import com.dibus.AutoWire
 import com.vlog.R
@@ -16,7 +16,7 @@ import com.vlog.databinding.ActivityRoomCreateBinding
 import com.vlog.user.Owner
 import dibus.app.RoomCreateActivityCreator
 
-class RoomCreateActivity : AppCompatActivity() {
+class RoomCreateActivity : BaseActivity() {
 
 
     private lateinit var binding:ActivityRoomCreateBinding

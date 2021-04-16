@@ -196,7 +196,11 @@ class InputBottom : FrameLayout {
         }
 
         binding.icEmo.setOnClickListener {
-            showEmo()
+            if(binding.emoContainer.height<50){
+                showEmo()
+            }else{
+                showSoftKey()
+            }
         }
 
 
@@ -253,7 +257,7 @@ class InputBottom : FrameLayout {
         val rect = Rect()
         binding.inputEditCard.getHitRect(rect)
         val recorder = RecordHelper(context)
-        binding.root.rootView.setOnTouchListener { _, event ->
+        binding.recordDesText.setOnTouchListener { _, event ->
             val x = event.rawX.toInt()
             val y = event.rawY.toInt()
             binding.inputEditCard.getGlobalVisibleRect(rect)
@@ -333,7 +337,7 @@ class InputBottom : FrameLayout {
             else -> return
         }
         val content = "${citeEvent.from}:$r"
-        binding.citeText.text = content
+        binding.citeText.setEmotionText(content)
         binding.citeDismissCard.setOnClickListener {
             binding.citeText.clearComposingText()
             binding.citeCard.visibility = View.GONE

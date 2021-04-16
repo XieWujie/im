@@ -100,6 +100,7 @@ class WsConnectionService:JobIntentService(),WsConnectionListener {
         Log.d(TAG,"failure")
         t.printStackTrace()
         if(!Owner().isLogout){
+            Log.d(TAG,"正在重连")
             connection.connect()
         }
     }
@@ -173,6 +174,7 @@ class WsConnectionService:JobIntentService(),WsConnectionListener {
     override fun onClose(ws: WsConnection) {
         Log.d(TAG,"onClosed")
         if(!Owner().isLogout){
+            Log.d(TAG,"正在重连")
             connection.connect()
         }
     }

@@ -31,7 +31,7 @@ class RegisterActivity : BaseActivity(){
 
     private fun dispatchEvent(){
         binding.loginBotton.setOnClickListener {
-            viewModel.register(binding.userText.text.toString(),binding.passwordText.text.toString()).observe(this,
+            viewModel.register(binding.userText.text.toString(),binding.passwordText.text.toString(),binding.passwordRepeatText.text.toString()).observe(this,
                 Observer {
                     when(it){
                         is Result.Error->toast(it.toString())
@@ -54,6 +54,13 @@ class RegisterActivity : BaseActivity(){
                 binding.icPassword.visibility = View.GONE
             }else{
                 binding.icPassword.visibility = View.VISIBLE
+            }
+        }
+        binding.passwordRepeatText.setOnFocusChangeListener { v, hasFocus ->
+            if(hasFocus || binding.passwordRepeatText.text.isNotEmpty()){
+                binding.icPasswordRepeat.visibility = View.GONE
+            }else{
+                binding.icPasswordRepeat.visibility = View.VISIBLE
             }
         }
     }

@@ -14,7 +14,6 @@ import com.vlog.database.Message
 import com.vlog.database.MsgWithUser
 import com.vlog.databinding.*
 import com.vlog.user.Owner
-import kotlin.collections.ArrayList
 
 private const val TAG = "MessageListAdapter"
 
@@ -203,7 +202,6 @@ class MessageListAdapter : RecyclerView.Adapter<MessageHolder>() {
                 val binding = LeftRecordMessageBinding.inflate(inflater,parent,false)
                 RecordHolder.L(binding)
             }
-
             else -> throw RuntimeException("no such type")
         }
     }

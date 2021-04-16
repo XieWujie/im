@@ -11,6 +11,7 @@ import android.widget.GridLayout
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.common.ext.setEmotionText
 import com.common.ext.toast
 import com.common.pushExecutors
 import com.common.pushMainThread
@@ -70,7 +71,7 @@ open class MessageHolder(view: View) : RecyclerView.ViewHolder(view) {
                 viewGroup.addView(binding.root)
                 when (msg.messageType) {
                     Message.MESSAGE_TEXT -> TextView(context).apply {
-                        text = msg.content
+                        setEmotionText(msg.content)
                         textSize = 10f
                         setTextColor(Color.BLACK)
                         binding.citeContentLayout.addView(this)

@@ -1,8 +1,6 @@
 package com.vlog.conversation.room
 
-import android.content.Intent
 import android.graphics.Color
-import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -112,7 +110,6 @@ class CovREditAdapter(private val lifecycleOwner: LifecycleOwner,private val roo
                         }
                         is Result.Data->{
                             room.notify = !isChecked
-                            view.context.toast("更新成功")
                         }
                     }
                 }

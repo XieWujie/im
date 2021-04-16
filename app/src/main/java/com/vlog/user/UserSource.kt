@@ -8,7 +8,6 @@ import com.common.ext.sync
 import com.common.ext.toLiveData
 import com.common.pushExecutors
 import com.dibus.AutoWire
-import com.dibus.DiBus
 import com.dibus.Service
 import com.google.gson.Gson
 import com.vlog.App
@@ -87,6 +86,20 @@ class UserSource {
 
     fun userUpdate(user: User):LiveData<Result<String>>{
        val request = buildUserRequest(user)
+        return request.toLiveData()
+    }
+
+    fun modifyPassword(userId: Int,oldPassword:String,newPassword:String):LiveData<Result<String>>{
+        val url = "$HOST_PORT/user/pswModify"
+        val map = HashMap<String,Any>()
+        map["user_id"] = userId
+        map["old_password"] = oldPassword
+        map["new_password"] = newPassword
+        val json = gson.toJson(map)
+        val request = Request.Builder()
+            .url(url)
+            .post(json.toRequestBody())
+            .build()
         return request.toLiveData()
     }
 
